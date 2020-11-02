@@ -40,13 +40,6 @@ import com.yxing.utils.SizeUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * This view is overlaid on top of the camera preview. It adds the viewfinder
- * rectangle and partial transparency outside it, as well as the laser scanner
- * animation and result points. 这是一个位于相机顶部的预览view,它增加了一个外部部分透明的取景框，以及激光扫描动画和结果组件
- *
- * @author dswitkin@google.com (Daniel Switkin)
- */
 public final class ViewfinderView extends View {
 
     private static final long ANIMATION_DELAY = 80L;

@@ -5,11 +5,14 @@ import android.content.Intent
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Size
+import android.widget.RelativeLayout
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.example.yxing.R
 import com.yxing.iface.OnScancodeListenner
+import com.yxing.view.ScanWechatView
+import com.yxing.view.base.BaseScanView
 import kotlinx.android.synthetic.main.activity_scancode.*
 import java.io.File
 import java.lang.Math.*
@@ -20,11 +23,12 @@ import java.util.concurrent.Executors
 
 class ScanCodeActivity : BaseScanActivity() {
 
-    private var lensFacing: Int = CameraSelector.LENS_FACING_BACK
-    private var camera: Camera? = null
-    private var preview: Preview? = null
-    private var imageAnalyzer: ImageAnalysis? = null
-    private lateinit var cameraExecutor: ExecutorService
+    private var lensFacing : Int = CameraSelector.LENS_FACING_BACK
+    private var camera : Camera? = null
+    private var preview : Preview? = null
+    private var imageAnalyzer : ImageAnalysis? = null
+    private lateinit var cameraExecutor : ExecutorService
+    private lateinit var baseScanView : BaseScanView
 
     companion object {
         private const val TAG = "CameraXBasic"
@@ -42,6 +46,7 @@ class ScanCodeActivity : BaseScanActivity() {
     override fun getLayoutId() : Int = R.layout.activity_scancode
 
     override fun initData() {
+        addScanView()
         // Initialize our background executor
         cameraExecutor = Executors.newSingleThreadExecutor()
         // surface准备监听
@@ -49,6 +54,13 @@ class ScanCodeActivity : BaseScanActivity() {
             //设置需要实现的用例（预览，拍照，图片数据解析等等）
             bindCameraUseCases()
         }
+    }
+
+    private fun addScanView() {
+        baseScanView = ScanWechatView(this)
+        val lp : RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
+        baseScanView.layoutParams = lp
+        rlParent.addView(baseScanView)
     }
 
     private fun bindCameraUseCases() {
@@ -66,7 +78,6 @@ class ScanCodeActivity : BaseScanActivity() {
             (width * RATIO_4_3_VALUE).toInt()
         }
         val size = Size(width, height)
-
 
         //获取旋转角度
         val rotation = pvCamera.display.rotation
@@ -128,5 +139,6 @@ class ScanCodeActivity : BaseScanActivity() {
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
+        baseScanView.cancelAnim()
     }
 }

@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
                         }.buidler().start(ScanCodeActivity::class.java)
                     }
                 }
-         }
+        }
     }
 
 
