@@ -1,5 +1,6 @@
 package com.yxing
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.util.DisplayMetrics
@@ -10,6 +11,7 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.example.yxing.R
+import com.tbruyelle.rxpermissions3.RxPermissions
 import com.yxing.def.ScanStyle
 import com.yxing.iface.OnScancodeListenner
 import com.yxing.view.ScanQQView
@@ -54,11 +56,17 @@ class ScanCodeActivity : BaseScanActivity() {
         addScanView(scanCodeModel?.style)
         // Initialize our background executor
         cameraExecutor = Executors.newSingleThreadExecutor()
-        // surface准备监听
-        pvCamera.post {
-            //设置需要实现的用例（预览，拍照，图片数据解析等等）
-            bindCameraUseCases()
-        }
+        //权限申请
+        RxPermissions(this@ScanCodeActivity)
+            .requestEachCombined(Manifest.permission.CAMERA).subscribe {
+                if(it.granted){
+                    // surface准备监听
+                    pvCamera.post {
+                        //设置需要实现的用例（预览，拍照，图片数据解析等等）
+                        bindCameraUseCases()
+                    }
+                }
+            }
     }
 
     private fun addScanView(style: Int?) {

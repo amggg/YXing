@@ -52,4 +52,9 @@ dependencies {
     implementation 'com.google.zxing:core:3.3.3'
     //lifecycle
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    def rxandroidVersion = '3.0.7'
+    //rxpermissions
+    implementation 'com.github.tbruyelle:rxpermissions:0.12'
+    //RxJava
+    implementation "io.reactivex.rxjava3:rxjava:$rxandroidVersion"
 }
