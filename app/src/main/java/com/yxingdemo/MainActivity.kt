@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.yxing.ScanCodeActivity
 import com.yxing.ScanCodeConfig
+import com.yxing.def.ScanStyle
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -22,6 +23,7 @@ class MainActivity : AppCompatActivity() {
                     if(it.granted){
                         ScanCodeConfig.create(this@MainActivity).apply {
                             isPlayAudio = true
+                            style = ScanStyle.QQ
                         }.buidler().start(ScanCodeActivity::class.java)
                     }
                 }

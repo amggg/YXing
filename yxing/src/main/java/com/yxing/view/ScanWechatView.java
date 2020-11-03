@@ -57,21 +57,26 @@ public class ScanWechatView extends BaseScanView {
     }
 
     @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        scanMaginWith = getMeasuredWidth() / 10;
+        scanMaginheight = getMeasuredHeight() >> 2;
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        scanMaginWith = getWidth() / 10;
-        scanMaginheight = getHeight() >> 2;
         scanRect.set(scanMaginWith, scanMaginheight, getWidth() - scanMaginWith, getHeight() - scanMaginheight);
         startAnim();
         paint.setAlpha(alpha);
-        lineRect.set(scanMaginWith, scanLineTop, getWidth() - scanMaginWith, scanLineTop + SizeUtils.dp2px(getContext(), 20));
+        lineRect.set(scanMaginWith, scanLineTop, getWidth() - scanMaginWith, scanLineTop + SizeUtils.dp2px(getContext(), 45));
         canvas.drawBitmap(scanLine, null, lineRect, paint);
     }
 
     @Override
     public void startAnim() {
         if(valueAnimator == null) {
-            valueAnimator = ValueAnimator.ofInt(scanRect.top, scanRect.bottom - SizeUtils.dp2px(getContext(), 20));
+            valueAnimator = ValueAnimator.ofInt(scanRect.top, scanRect.bottom);
             valueAnimator.setRepeatCount(ValueAnimator.INFINITE);
             valueAnimator.setRepeatMode(ValueAnimator.RESTART);
             valueAnimator.setDuration(4000);

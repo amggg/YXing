@@ -10,7 +10,9 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.example.yxing.R
+import com.yxing.def.ScanStyle
 import com.yxing.iface.OnScancodeListenner
+import com.yxing.view.ScanQQView
 import com.yxing.view.ScanWechatView
 import com.yxing.view.base.BaseScanView
 import kotlinx.android.synthetic.main.activity_scancode.*
@@ -28,7 +30,9 @@ class ScanCodeActivity : BaseScanActivity() {
     private var preview : Preview? = null
     private var imageAnalyzer : ImageAnalysis? = null
     private lateinit var cameraExecutor : ExecutorService
-    private lateinit var baseScanView : BaseScanView
+    private var baseScanView : BaseScanView? = null
+    private var rlParentContent : RelativeLayout? = null
+    private var scanCodeModel: ScanCodeModel? = null
 
     companion object {
         private const val TAG = "CameraXBasic"
@@ -46,7 +50,8 @@ class ScanCodeActivity : BaseScanActivity() {
     override fun getLayoutId() : Int = R.layout.activity_scancode
 
     override fun initData() {
-        addScanView()
+        scanCodeModel = intent?.extras?.getParcelable(ScanCodeConfig.MODEL_KEY)
+        addScanView(scanCodeModel?.style)
         // Initialize our background executor
         cameraExecutor = Executors.newSingleThreadExecutor()
         // surface准备监听
@@ -56,11 +61,21 @@ class ScanCodeActivity : BaseScanActivity() {
         }
     }
 
-    private fun addScanView() {
-        baseScanView = ScanWechatView(this)
+    private fun addScanView(style: Int?) {
+        rlParentContent = findViewById(R.id.rlparent)
         val lp : RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
-        baseScanView.layoutParams = lp
-        rlParent.addView(baseScanView)
+        when (style){
+            ScanStyle.QQ -> {
+                baseScanView = ScanQQView(this)
+            }
+            ScanStyle.WECHAT -> {
+                baseScanView = ScanWechatView(this)
+            }
+        }
+        baseScanView?.let {
+            it.layoutParams = lp
+            rlParentContent?.addView(it)
+        }
     }
 
     private fun bindCameraUseCases() {
@@ -99,7 +114,7 @@ class ScanCodeActivity : BaseScanActivity() {
                 .setTargetRotation(rotation)
                 .build()
                 .apply {
-                    setAnalyzer(cameraExecutor, ScanCodeAnalyzer(this@ScanCodeActivity, object : OnScancodeListenner{
+                    setAnalyzer(cameraExecutor, ScanCodeAnalyzer(this@ScanCodeActivity, scanCodeModel, object : OnScancodeListenner{
                         override fun onBackCode(code: String) {
                             val intent = Intent()
                             intent.putExtra(ScanCodeConfig.CODE_KEY, code)
@@ -139,6 +154,6 @@ class ScanCodeActivity : BaseScanActivity() {
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
-        baseScanView.cancelAnim()
+        baseScanView?.cancelAnim()
     }
 }

@@ -12,7 +12,7 @@ import com.yxing.utils.AudioUtil
 import java.nio.ByteBuffer
 import java.util.*
 
-class ScanCodeAnalyzer(mActivity: Activity, val onScancodeListenner: OnScancodeListenner) : ImageAnalysis.Analyzer  {
+class ScanCodeAnalyzer(mActivity: Activity, val scanCodeModel: ScanCodeModel?, val onScancodeListenner: OnScancodeListenner) : ImageAnalysis.Analyzer  {
 
     private val audioUtil : AudioUtil = AudioUtil(mActivity)
     private val reader: MultiFormatReader = initReader()
@@ -57,7 +57,7 @@ class ScanCodeAnalyzer(mActivity: Activity, val onScancodeListenner: OnScancodeL
         val bitmap = BinaryBitmap(HybridBinarizer(source))
         try {
             val result = reader.decode(bitmap)
-            audioUtil.playBeepSoundAndVibrate()
+            if (scanCodeModel?.isPlayAudio!!)   audioUtil.playBeepSoundAndVibrate()
             onScancodeListenner.onBackCode(result.text)
         } catch (e: Exception) {
             image.close()
