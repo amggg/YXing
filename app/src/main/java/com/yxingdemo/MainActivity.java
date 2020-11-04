@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import androidx.annotation.Nullable;
@@ -31,7 +30,7 @@ import io.reactivex.rxjava3.disposables.Disposable;
 public class MainActivity extends AppCompatActivity {
 
     private RadioGroup rgParent;
-    private AppCompatButton btnScan;
+    private AppCompatButton btnScan, btnScanMystyle;
     private AppCompatTextView tvCode;
     private AppCompatImageView ivCode;
     private AppCompatButton btnBuildCode, btnBuildLogoCode;
@@ -42,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         rgParent = findViewById(R.id.rg_parent);
         btnScan = findViewById(R.id.btn_scan);
+        btnScanMystyle = findViewById(R.id.btn_scanmystyle);
         tvCode = findViewById(R.id.tv_code);
         ivCode = findViewById(R.id.ivcode);
         btnBuildCode = findViewById(R.id.btn_buildcode);
@@ -57,13 +57,13 @@ public class MainActivity extends AppCompatActivity {
                 int checkedRadioButtonId = rgParent.getCheckedRadioButtonId();
                 switch (checkedRadioButtonId){
                     case R.id.rb_none:
-                        startScan(ScanStyle.NONE);
+                        startScan(ScanStyle.NONE, ScanCodeActivity.class);
                         break;
                     case R.id.rb_qq:
-                        startScan(ScanStyle.QQ);
+                        startScan(ScanStyle.QQ, ScanCodeActivity.class);
                         break;
                     case R.id.rb_wechat:
-                        startScan(ScanStyle.WECHAT);
+                        startScan(ScanStyle.WECHAT, ScanCodeActivity.class);
                         break;
                     default:
                         break;
@@ -87,10 +87,29 @@ public class MainActivity extends AppCompatActivity {
                 ivCode.setImageBitmap(bitmap);
             }
         });
+        btnScanMystyle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int checkedRadioButtonId = rgParent.getCheckedRadioButtonId();
+                switch (checkedRadioButtonId){
+                    case R.id.rb_none:
+                        startScan(ScanStyle.NONE, MyScanActivity.class);
+                        break;
+                    case R.id.rb_qq:
+                        startScan(ScanStyle.QQ, MyScanActivity.class);
+                        break;
+                    case R.id.rb_wechat:
+                        startScan(ScanStyle.WECHAT, MyScanActivity.class);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
     }
 
     //开始扫描
-    private void startScan(int style) {
+    private void startScan(int style, Class mClass) {
         new RxPermissions(this)
                 .requestEachCombined(Manifest.permission.CAMERA)
                 .subscribe(new Observer<Permission>() {
@@ -104,10 +123,10 @@ public class MainActivity extends AppCompatActivity {
                                     //设置扫码页样式 ScanStyle.NONE：无  ScanStyle.QQ ：仿QQ样式   ScanStyle.WECHAT ：仿微信样式
                                     .setStyle(style)
                                     //扫码成功是否播放音效  true ： 播放   false ： 不播放
-                                    .setPlayAudio(false)
+                                    .setPlayAudio(true)
                                     .buidler()
                                     //跳转扫码页   扫码页可自定义样式
-                                    .start(ScanCodeActivity.class);
+                                    .start(mClass);
                         }
                     }
                     @Override

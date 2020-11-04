@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlparent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/pvCamera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!--开始自定义界面-->
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_openflash"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="打开闪光灯"
+        android:layout_alignParentBottom="true"
+        />
+
+</RelativeLayout>
