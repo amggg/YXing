@@ -9,8 +9,9 @@ import java.lang.annotation.RetentionPolicy;
  * @author apple
  */
 @Retention(RetentionPolicy.SOURCE)
-@IntDef()
+@IntDef({ScanStyle.NONE, ScanStyle.QQ, ScanStyle.WECHAT})
 public @interface ScanStyle {
-    int QQ = 0X001;
-    int WECHAT = 0X002;
+    int NONE = -1;
+    int QQ = 1001;
+    int WECHAT = 1002;
 }

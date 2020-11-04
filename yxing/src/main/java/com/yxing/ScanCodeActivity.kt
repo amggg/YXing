@@ -23,7 +23,7 @@ import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class ScanCodeActivity : BaseScanActivity() {
+open class ScanCodeActivity : BaseScanActivity() {
 
     private var lensFacing : Int = CameraSelector.LENS_FACING_BACK
     private var camera : Camera? = null
@@ -32,7 +32,7 @@ class ScanCodeActivity : BaseScanActivity() {
     private lateinit var cameraExecutor : ExecutorService
     private var baseScanView : BaseScanView? = null
     private var rlParentContent : RelativeLayout? = null
-    private var scanCodeModel: ScanCodeModel? = null
+    private var scanCodeModel : ScanCodeModel? = null
 
     companion object {
         private const val TAG = "CameraXBasic"

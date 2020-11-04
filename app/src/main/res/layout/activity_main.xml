@@ -4,12 +4,72 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:orientation="vertical"
+    >
+
+    <RadioGroup
+        android:id="@+id/rg_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <RadioButton
+            android:id="@+id/rb_none"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="无"
+            android:checked="true"
+            />
+
+        <RadioButton
+            android:id="@+id/rb_qq"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="QQ"
+            />
+
+        <RadioButton
+            android:id="@+id/rb_wechat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="WeChat"
+            />
+
+    </RadioGroup>
 
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_scan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="scan"
+        />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_buildcode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="生成单独二维码（大小可配置）"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_buildlogocode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="生成带logo二维码（大小 圆角可配置）"
+        />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/ivCode"
+        android:id="@+id/ivcode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

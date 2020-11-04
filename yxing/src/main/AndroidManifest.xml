@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.yxing" >
-    <uses-permission android:name="android.permission.CAMERA"/>
     <application>
         <activity android:name="com.yxing.ScanCodeActivity" />
     </application>
