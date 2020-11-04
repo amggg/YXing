@@ -2,6 +2,10 @@ package com.yxing;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+
+import com.yxing.utils.QrCodeUtil;
 
 public class ScanCodeConfig {
     public static final int QUESTCODE = 0x001;
@@ -24,5 +28,25 @@ public class ScanCodeConfig {
         Intent intent = new Intent(mActivity, mClass);
         intent.putExtra(MODEL_KEY, model);
         mActivity.startActivityForResult(intent, QUESTCODE);
+    }
+
+    public static Bitmap createQRCode(String text){
+        return QrCodeUtil.createQRCode(text);
+    }
+
+    public static Bitmap createQRCode(String text, int size) {
+        return QrCodeUtil.createQRCode(text, size);
+    }
+
+    public static Bitmap createQRcodeWithLogo(String text, Bitmap logo){
+        return QrCodeUtil.createQRcodeWithLogo(text, logo);
+    }
+
+    public static Bitmap createQRcodeWithLogo(String text, int size, Bitmap logo, int logoWith, int logoHigh, float logoRaduisX, float logoRaduisY){
+        return QrCodeUtil.createQRcodeWithLogo(text, size, logo, logoWith, logoHigh, logoRaduisX, logoRaduisY);
+    }
+
+    public static String scanningImage(Activity mActivity, Uri uri) {
+        return QrCodeUtil.scanningImage(mActivity, uri);
     }
 }

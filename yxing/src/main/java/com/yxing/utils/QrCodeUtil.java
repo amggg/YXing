@@ -32,17 +32,16 @@ import java.util.Map;
 
 public class QrCodeUtil {
 
-    //宽度值，影响中间图片大小
-    private static int IMAGE_HALFWIDTH = 50;
+    public static final int DEFAULTE_SIZE = 500;
 
     /**
-     * 生成二维码，默认大小为500*500
+     * 生成二维码，默认大小为50500
      *
      * @param text 需要生成二维码的文字、网址等
      * @return bitmap
      */
     public static Bitmap createQRCode(String text) {
-        return createQRCode(text, 500);
+        return createQRCode(text, DEFAULTE_SIZE);
     }
 
     /**
@@ -80,148 +79,71 @@ public class QrCodeUtil {
         }
     }
 
-    /**
-     * 生成带logo的二维码，默认二维码的大小为500，logo为二维码的1/5
-     *
-     * @param text    需要生成二维码的文字、网址等
-     * @param mBitmap logo文件
-     * @return bitmap
+
+    /**生成带logo 二维码
+     * @param text  文字
+     * @param logo   logo
+     * @return
      */
-    public static Bitmap createQRCodeWithLogo(String text, Bitmap mBitmap) {
-        return createQRCodeWithLogo(text, 500, mBitmap);
+    public static Bitmap createQRcodeWithLogo(String text, Bitmap logo){
+       return createQRcodeWithLogo(text, DEFAULTE_SIZE, logo, DEFAULTE_SIZE / 5, DEFAULTE_SIZE / 5, 0 ,0);
     }
 
-    /**
-     * 生成带logo的二维码，logo默认为二维码的1/5
-     *
-     * @param text    需要生成二维码的文字、网址等
-     * @param size    需要生成二维码的大小（）
-     * @param mBitmap logo文件
-     * @return bitmap
+
+    /** 生成带logo 二维码
+     * @param text  文字
+     * @param size   二维码大小 1 ：1
+     * @param logo   logo
+     * @param logoWith logo宽
+     * @param logoHigh  logo高
+     * @param logoRaduisX  logo x圆角
+     * @param logoRaduisY  logo y圆角
+     * @return
      */
-    public static Bitmap createQRCodeWithLogo(String text, int size, Bitmap mBitmap) {
+    public static Bitmap createQRcodeWithLogo(String text, int size, Bitmap logo, int logoWith, int logoHigh, float logoRaduisX, float logoRaduisY){
         try {
-            IMAGE_HALFWIDTH = size / 10;
             Hashtable<EncodeHintType, Object> hints = new Hashtable<>();
             hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
-            /*
-             * 设置容错级别，默认为ErrorCorrectionLevel.L
-             * 因为中间加入logo所以建议你把容错级别调至H,否则可能会出现识别不了
-             */
             hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
-            //设置空白边距的宽度
-            hints.put(EncodeHintType.MARGIN, 1); //default is 4
-            // 图像数据转换，使用了矩阵转换
+            hints.put(EncodeHintType.MARGIN, 1);
             BitMatrix bitMatrix = new QRCodeWriter().encode(text,
                     BarcodeFormat.QR_CODE, size, size, hints);
-
-            int width = bitMatrix.getWidth();//矩阵高度
-            int height = bitMatrix.getHeight();//矩阵宽度
-            int halfW = width / 2;
-            int halfH = height / 2;
-
-            Matrix m = new Matrix();
-            float sx = (float) 2 * IMAGE_HALFWIDTH / mBitmap.getWidth();
-            float sy = (float) 2 * IMAGE_HALFWIDTH
-                    / mBitmap.getHeight();
-            m.setScale(sx, sy);
-            //设置缩放信息
-            //将logo图片按martix设置的信息缩放
-            mBitmap = Bitmap.createBitmap(mBitmap, 0, 0,
-                    mBitmap.getWidth(), mBitmap.getHeight(), m, false);
-
             int[] pixels = new int[size * size];
             for (int y = 0; y < size; y++) {
                 for (int x = 0; x < size; x++) {
-                    if (x > halfW - IMAGE_HALFWIDTH && x < halfW + IMAGE_HALFWIDTH
-                            && y > halfH - IMAGE_HALFWIDTH
-                            && y < halfH + IMAGE_HALFWIDTH) {
-                        //该位置用于存放图片信息
-                        //记录图片每个像素信息
-                        pixels[y * width + x] = mBitmap.getPixel(x - halfW
-                                + IMAGE_HALFWIDTH, y - halfH + IMAGE_HALFWIDTH);
+                    if (bitMatrix.get(x, y)) {
+                        pixels[y * size + x] = 0xff000000;
                     } else {
-                        if (bitMatrix.get(x, y)) {
-                            pixels[y * size + x] = 0xff000000;
-                        } else {
-                            pixels[y * size + x] = 0xffffffff;
-                        }
+                        pixels[y * size + x] = 0xffffffff;
                     }
                 }
             }
             Bitmap bitmap = Bitmap.createBitmap(size, size,
                     Bitmap.Config.ARGB_8888);
             bitmap.setPixels(pixels, 0, size, 0, 0, size, size);
-            return bitmap;
+            if(logo == null){
+                return bitmap;
+            }else{
+                return addLogo(bitmap, logo, logoWith, logoHigh, logoRaduisX,logoRaduisY);
+            }
         } catch (WriterException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-
-    /**
-     * 生成二维码Bitmap  此方法与上面的createQRCodeWithLogo方法效果一样（设置Bitmap两种写方法）
-     *
-     * @param context
-     * @param data    文本内容
-     * @param logoBm  二维码中心的Logo图标（可以为null）
-     * @return 合成后的bitmap
-     */
-    public static Bitmap createQRImage(Context context, String data, Bitmap logoBm) {
-        try {
-            if (data == null || "".equals(data)) {
-                return null;
-            }
-            int widthPix = ((Activity) context).getWindowManager().getDefaultDisplay()
-                    .getWidth();
-            widthPix = widthPix / 5 * 3;
-            int heightPix = widthPix;
-
-            //配置参数
-            Map<EncodeHintType, Object> hints = new HashMap<EncodeHintType, Object>();
-            hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
-            //容错级别
-            hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
-            //设置空白边距的宽度
-            hints.put(EncodeHintType.MARGIN, 1); //default is 4
-
-            // 图像数据转换，使用了矩阵转换
-            BitMatrix bitMatrix = new QRCodeWriter().encode(data, BarcodeFormat.QR_CODE, widthPix, heightPix, hints);
-            int[] pixels = new int[widthPix * heightPix];
-            // 下面这里按照二维码的算法，逐个生成二维码的图片，
-            // 两个for循环是图片横列扫描的结果
-            for (int y = 0; y < heightPix; y++) {
-                for (int x = 0; x < widthPix; x++) {
-                    if (bitMatrix.get(x, y)) {
-                        pixels[y * widthPix + x] = 0xff000000;
-                    } else {
-                        pixels[y * widthPix + x] = 0xffffffff;
-                    }
-                }
-            }
-            // 生成二维码图片的格式，使用ARGB_8888
-            Bitmap bitmap = Bitmap.createBitmap(widthPix, heightPix, Bitmap.Config.ARGB_8888);
-            bitmap.setPixels(pixels, 0, widthPix, 0, 0, widthPix, heightPix);
-
-            if (logoBm != null) {
-//                bitmap = addLogo(bitmap, logoBm);
-            }
-
-            return bitmap;
-            //必须使用compress方法将bitmap保存到文件中再进行读取。直接返回的bitmap是没有任何压缩的，内存消耗巨大！
-            //return bitmap != null && bitmap.compress(Bitmap.CompressFormat.JPEG, 100, new FileOutputStream(filePath));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     /**
      * 在二维码中间添加Logo图案
+     * @param src         原图
+     * @param logo        logo
+     * @param logoWith     添加logo的宽度
+     * @param logoHigh     添加logo的高度
+     * @param logoRaduisX  logo圆角
+     * @param logoRaduisY  logo圆角
+     * @return
      */
     @SuppressLint("NewApi")
-    private static Bitmap addLogo(Bitmap src, Bitmap logo, int logoWith, int logoHigh, float logoRaduisX, float logoRaduisY) {
+    public static Bitmap addLogo(Bitmap src, Bitmap logo, int logoWith, int logoHigh, float logoRaduisX, float logoRaduisY) {
         if (src == null) {
             return null;
         }
@@ -232,18 +154,40 @@ public class QrCodeUtil {
         int srcWidth = src.getWidth();
         int srcHeight = src.getHeight();
 
-        int logoWidth = logo.getWidth();
-        int logoHeight = logo.getHeight();
+        int logoW = logo.getWidth();
+        int logoH = logo.getHeight();
 
         if (srcWidth == 0 || srcHeight == 0) {
             return null;
         }
-        if (logoWidth == 0 || logoHeight == 0) {
+        if (logoW == 0 || logoH == 0) {
             return src;
         }
-        return addLogo(src, logo, logoWith, logoHigh, logoRaduisX, logoRaduisY);
-    }
 
+        float scaleW = logoWith / (float)logoW;
+        float scaleH = logoHigh / (float)logoH;
+        Matrix matrix = new Matrix();
+        matrix.postScale(scaleW, scaleH);
+        matrix.postTranslate((srcWidth >> 1) - (logoWith >> 1), (srcHeight >> 1) - (logoHigh >> 1));
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        BitmapShader bitmapShader = new BitmapShader(logo, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+        bitmapShader.setLocalMatrix(matrix);
+        paint.setShader(bitmapShader);
+        Bitmap bitmap = Bitmap.createBitmap(srcWidth, srcHeight, Bitmap.Config.ARGB_8888);
+        try {
+            Canvas canvas = new Canvas(bitmap);
+            canvas.drawBitmap(src, 0, 0, null);
+            canvas.drawRoundRect(new RectF((srcWidth >> 1) - (logoWith >> 1), (srcHeight >> 1) - (logoHigh >> 1), (srcWidth >> 1) + (logoWith >> 1), (srcHeight >> 1) + (logoHigh >> 1)), logoRaduisX, logoRaduisY, paint);
+            canvas.save();
+            canvas.restore();
+        } catch (Exception e) {
+            bitmap = null;
+            e.getStackTrace();
+        }
+
+        return bitmap;
+
+    }
 
     /**
      * 解码uri二维码图片
