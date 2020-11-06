@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import com.example.yxing.R
 import com.yxing.def.ScanStyle
 import com.yxing.iface.OnScancodeListenner
+import com.yxing.view.ScanCustomizeView
 import com.yxing.view.ScanQQView
 import com.yxing.view.ScanWechatView
 import com.yxing.view.base.BaseScanView
@@ -32,7 +33,7 @@ open class ScanCodeActivity : BaseScanActivity() {
     private lateinit var cameraExecutor : ExecutorService
     private var baseScanView : BaseScanView? = null
     private var rlParentContent : RelativeLayout? = null
-    private var scanCodeModel : ScanCodeModel? = null
+    private lateinit var scModel : ScanCodeModel
 
     companion object {
         private const val TAG = "CameraXBasic"
@@ -50,8 +51,8 @@ open class ScanCodeActivity : BaseScanActivity() {
     override fun getLayoutId() : Int = R.layout.activity_scancode
 
     override fun initData() {
-        scanCodeModel = intent?.extras?.getParcelable(ScanCodeConfig.MODEL_KEY)
-        addScanView(scanCodeModel?.style)
+        scModel = intent?.extras?.getParcelable(ScanCodeConfig.MODEL_KEY)!!
+        addScanView(scModel.style)
         // Initialize our background executor
         cameraExecutor = Executors.newSingleThreadExecutor()
         //权限申请
@@ -71,6 +72,11 @@ open class ScanCodeActivity : BaseScanActivity() {
             }
             ScanStyle.WECHAT -> {
                 baseScanView = ScanWechatView(this)
+            }
+            ScanStyle.CUSTOMIZE -> {
+                baseScanView = ScanCustomizeView(this).apply {
+                    setScanCodeModel(scModel)
+                }
             }
         }
         baseScanView?.let {
@@ -115,7 +121,7 @@ open class ScanCodeActivity : BaseScanActivity() {
                 .setTargetRotation(rotation)
                 .build()
                 .apply {
-                    setAnalyzer(cameraExecutor, ScanCodeAnalyzer(this@ScanCodeActivity, scanCodeModel, object : OnScancodeListenner{
+                    setAnalyzer(cameraExecutor, ScanCodeAnalyzer(this@ScanCodeActivity, scModel, object : OnScancodeListenner{
                         override fun onBackCode(code: String) {
                             val intent = Intent()
                             intent.putExtra(ScanCodeConfig.CODE_KEY, code)

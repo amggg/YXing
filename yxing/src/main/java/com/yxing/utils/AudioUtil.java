@@ -20,9 +20,12 @@ public class AudioUtil implements MediaPlayer.OnCompletionListener,
     private final Activity activity;
     private MediaPlayer mediaPlayer;
 
-    public AudioUtil(Activity activity) {
+    private int audioId;
+
+    public AudioUtil(Activity activity, int audioId) {
         this.activity = activity;
         this.mediaPlayer = null;
+        this.audioId = audioId;
         updatePrefs();
     }
 
@@ -45,7 +48,6 @@ public class AudioUtil implements MediaPlayer.OnCompletionListener,
 
     /**
      * 创建MediaPlayer
-     *
      * @param activity
      * @return
      */
@@ -58,7 +60,7 @@ public class AudioUtil implements MediaPlayer.OnCompletionListener,
         // 配置播放资源
         try {
             AssetFileDescriptor file = activity.getResources()
-                    .openRawResourceFd(R.raw.beep);
+                    .openRawResourceFd(audioId == 0 ? R.raw.beep : audioId);
             try {
                 mediaPlayer.setDataSource(file.getFileDescriptor(),
                         file.getStartOffset(), file.getLength());

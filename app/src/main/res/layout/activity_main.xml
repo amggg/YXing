@@ -48,6 +48,15 @@
 
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_scantwo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="配置 ScanStyle.CUSTOMIZE  scan"
+        android:textAllCaps="false"
+        />
+
+
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_scanmystyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

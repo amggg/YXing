@@ -4,9 +4,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.BitmapShader;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -17,72 +15,98 @@ import androidx.core.content.ContextCompat;
 
 import com.example.yxing.R;
 import com.yxing.ScanCodeModel;
+import com.yxing.bean.ScanRect;
 import com.yxing.utils.SizeUtils;
 import com.yxing.view.base.BaseScanView;
 
-public class ScanQQView extends BaseScanView {
-
-    private int scanMaginWith;
-    private int scanMaginheight;
+public class ScanCustomizeView extends BaseScanView {
+    //边框角默认宽度
+    public static final int DEFALUTE_WITH = 4;
+    //边框角默认长度
+    public static final int DEFAULTE_LENGTH = 15;
+    //边框角默认圆角
+    public static final int DEFAULTE_RADUIS = 0;
 
     private Paint paint;
     private Bitmap scanLine;
     private Rect scanRect;
     private Rect lineRect;
-    //画布截取
-    private Rect interceptiRect;
+
     //扫描线位置
     private int scanLineTop;
-    //扫描框大小
-    private int scanWith;
 
     private int bitmapHigh;
 
-    public ScanQQView(Context context) {
+    private ScanCodeModel scanCodeModel;
+
+    private ScanRect sRect;
+
+    public ScanCustomizeView(Context context) {
         super(context);
         init();
     }
 
-    public ScanQQView(Context context, @Nullable AttributeSet attrs) {
+    public ScanCustomizeView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public ScanQQView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ScanCustomizeView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
+    public void setScanCodeModel(ScanCodeModel scanCodeModel) {
+        this.scanCodeModel = scanCodeModel;
+
+        scanLine = BitmapFactory.decodeResource(getResources(),
+                scanCodeModel.getScanBitmapId());
+
+        bitmapHigh = scanLine == null ? 0 : scanLine.getHeight();
+        sRect = scanCodeModel.getScanRect();
+
+        postInvalidate();
+    }
+
     private void init() {
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        scanLine = BitmapFactory.decodeResource(getResources(),
-                R.drawable.scanqq);
-
-        bitmapHigh = scanLine.getHeight();
-
-        interceptiRect = new Rect();
+        paint.setStyle(Paint.Style.FILL);
         scanRect = new Rect();
         lineRect = new Rect();
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        scanMaginWith = getMeasuredWidth() / 10;
-        scanMaginheight = getMeasuredHeight() >> 2;
-        scanWith = getMeasuredWidth() - 2*scanMaginWith;
-    }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        scanRect.set(scanMaginWith, scanMaginheight, getWidth() - scanMaginWith, scanMaginheight + scanWith);
-        startAnim();
-        drawFrameBounds(canvas, scanRect);
-        lineRect.set(scanMaginWith, scanLineTop, getWidth() - scanMaginWith, scanLineTop + bitmapHigh);
-        canvas.drawBitmap(scanLine, null, lineRect, paint);
+        if(sRect != null){
+            scanRect.set(SizeUtils.dp2px(getContext(), sRect.getLeft()), SizeUtils.dp2px(getContext(), sRect.getTop()), SizeUtils.dp2px(getContext(), sRect.getRight()), SizeUtils.dp2px(getContext(), sRect.getBottom()));
+            if(scanCodeModel.isShowFrame()){
+                drawFrameBounds(canvas, scanRect);
+            }
+            if(scanCodeModel.isShowShadow()){
+                drawShadow(canvas, scanRect);
+            }
+        }
+        if(scanLine != null){
+            startAnim();
+            lineRect.set(SizeUtils.dp2px(getContext(), sRect.getLeft()), scanLineTop, SizeUtils.dp2px(getContext(), sRect.getRight()), scanLineTop + bitmapHigh);
+            canvas.drawBitmap(scanLine, null, lineRect, paint);
+        }
     }
 
+    /** 绘制阴影
+     * @param canvas
+     * @param frame
+     */
+    private void drawShadow(Canvas canvas, Rect frame) {
+        paint.setColor(ContextCompat.getColor(getContext(), scanCodeModel.getShaowColor() == 0 ? R.color.black_tran30 : scanCodeModel.getShaowColor()));
+        int frameWith = SizeUtils.dp2px(getContext(), scanCodeModel.getFrameWith() == 0 ? DEFALUTE_WITH : scanCodeModel.getFrameWith());
+        canvas.drawRect(0, 0, getWidth(), frame.top - frameWith, paint);
+        canvas.drawRect(0, frame.top - frameWith, frame.left - frameWith, frame.bottom + frameWith, paint);
+        canvas.drawRect(frame.right + frameWith, frame.top - frameWith, getWidth(), frame.bottom + frameWith, paint);
+        canvas.drawRect(0, frame.bottom + frameWith, getWidth(), getHeight(), paint);
+    }
 
 
     /**
@@ -92,15 +116,11 @@ public class ScanQQView extends BaseScanView {
      * @param frame
      */
     private void drawFrameBounds(Canvas canvas, Rect frame) {
-        paint.setColor(ContextCompat.getColor(getContext(), R.color.qqscan));
-        paint.setStrokeWidth(2);
-        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(ContextCompat.getColor(getContext(), scanCodeModel.getFrameColor() == 0 ? R.color.qqscan : scanCodeModel.getFrameColor()));
 
-        int corWidth = SizeUtils.dp2px(getContext(), 4);
-        int corLength = SizeUtils.dp2px(getContext(), 15);
-        int radius = SizeUtils.dp2px(getContext(), 2);
-
-        interceptiRect.set(scanRect.left - corWidth, scanRect.top - corWidth, scanRect.right + corWidth, scanRect.bottom + corWidth);
+        int corWidth = SizeUtils.dp2px(getContext(), scanCodeModel.getFrameWith() == 0 ? DEFALUTE_WITH : scanCodeModel.getFrameWith());
+        int corLength = SizeUtils.dp2px(getContext(), scanCodeModel.getFrameLenth() == 0 ? DEFAULTE_LENGTH : scanCodeModel.getFrameLenth());
+        int radius = SizeUtils.dp2px(getContext(), scanCodeModel.getFrameRaduis());
 
         // 左上角
         canvas.drawRoundRect(frame.left - corWidth, frame.top - corWidth, frame.left, frame.top
@@ -122,8 +142,6 @@ public class ScanQQView extends BaseScanView {
                 + corWidth, frame.bottom + corWidth, radius, radius, paint);
         canvas.drawRoundRect(frame.right - corLength, frame.bottom, frame.right
                 + corWidth, frame.bottom + corWidth, radius, radius, paint);
-
-        canvas.clipRect(interceptiRect);
     }
 
     @Override

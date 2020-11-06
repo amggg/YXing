@@ -2,19 +2,15 @@ package com.yxing.view;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.View;
 import android.view.animation.LinearInterpolator;
 import androidx.annotation.Nullable;
 import com.example.yxing.R;
-import com.yxing.utils.SizeUtils;
 import com.yxing.view.base.BaseScanView;
 
 public class ScanWechatView extends BaseScanView {
@@ -31,6 +27,8 @@ public class ScanWechatView extends BaseScanView {
     private int scanLineTop;
     //透明度
     private int alpha = 100;
+
+    private int bitmapHigh;
 
     public ScanWechatView(Context context) {
         super(context);
@@ -52,6 +50,8 @@ public class ScanWechatView extends BaseScanView {
         scanLine = BitmapFactory.decodeResource(getResources(),
                 R.drawable.scan_wechatline);
 
+        bitmapHigh = scanLine.getHeight();
+
         scanRect = new Rect();
         lineRect = new Rect();
     }
@@ -69,7 +69,7 @@ public class ScanWechatView extends BaseScanView {
         scanRect.set(scanMaginWith, scanMaginheight, getWidth() - scanMaginWith, getHeight() - scanMaginheight);
         startAnim();
         paint.setAlpha(alpha);
-        lineRect.set(scanMaginWith, scanLineTop, getWidth() - scanMaginWith, scanLineTop + SizeUtils.dp2px(getContext(), 45));
+        lineRect.set(scanMaginWith, scanLineTop, getWidth() - scanMaginWith, scanLineTop + bitmapHigh);
         canvas.drawBitmap(scanLine, null, lineRect, paint);
     }
 

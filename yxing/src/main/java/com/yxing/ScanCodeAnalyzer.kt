@@ -12,9 +12,9 @@ import com.yxing.utils.AudioUtil
 import java.nio.ByteBuffer
 import java.util.*
 
-class ScanCodeAnalyzer(mActivity: Activity, val scanCodeModel: ScanCodeModel?, val onScancodeListenner: OnScancodeListenner) : ImageAnalysis.Analyzer  {
+class ScanCodeAnalyzer(mActivity: Activity, val scanCodeModel: ScanCodeModel, val onScancodeListenner: OnScancodeListenner) : ImageAnalysis.Analyzer  {
 
-    private val audioUtil : AudioUtil = AudioUtil(mActivity)
+    private val audioUtil : AudioUtil = AudioUtil(mActivity, scanCodeModel.audioId)
     private val reader: MultiFormatReader = initReader()
 
     /**

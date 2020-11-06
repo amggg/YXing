@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RadioGroup;
@@ -18,6 +19,7 @@ import com.tbruyelle.rxpermissions3.Permission;
 import com.tbruyelle.rxpermissions3.RxPermissions;
 import com.yxing.ScanCodeActivity;
 import com.yxing.ScanCodeConfig;
+import com.yxing.bean.ScanRect;
 import com.yxing.def.ScanStyle;
 
 import io.reactivex.rxjava3.annotations.NonNull;
@@ -30,7 +32,7 @@ import io.reactivex.rxjava3.disposables.Disposable;
 public class MainActivity extends AppCompatActivity {
 
     private RadioGroup rgParent;
-    private AppCompatButton btnScan, btnScanMystyle;
+    private AppCompatButton btnScan, btnTwoScan, btnScanMystyle;
     private AppCompatTextView tvCode;
     private AppCompatImageView ivCode;
     private AppCompatButton btnBuildCode, btnBuildLogoCode;
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         rgParent = findViewById(R.id.rg_parent);
         btnScan = findViewById(R.id.btn_scan);
+        btnTwoScan = findViewById(R.id.btn_scantwo);
         btnScanMystyle = findViewById(R.id.btn_scanmystyle);
         tvCode = findViewById(R.id.tv_code);
         ivCode = findViewById(R.id.ivcode);
@@ -51,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setListener() {
+        //预定义界面
         btnScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,23 +74,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        //生成二维码
-        btnBuildCode.setOnClickListener(new View.OnClickListener() {
+
+        // ScanStyle.CUSTOMIZE 配置界面
+        btnTwoScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bitmap bitmap = ScanCodeConfig.createQRCode("star");
-                ivCode.setImageBitmap(bitmap);
+                toCusomize();
             }
         });
 
-        //生成带logo二维码
-        btnBuildLogoCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bitmap bitmap = ScanCodeConfig.createQRcodeWithLogo("star", BitmapFactory.decodeResource(getResources(), R.mipmap.timg));
-                ivCode.setImageBitmap(bitmap);
-            }
-        });
+        //自定义界面
         btnScanMystyle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,6 +103,75 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        //生成二维码
+        btnBuildCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bitmap bitmap = ScanCodeConfig.createQRCode("star");
+                ivCode.setImageBitmap(bitmap);
+            }
+        });
+
+        //生成带logo二维码
+        btnBuildLogoCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bitmap bitmap = ScanCodeConfig.createQRcodeWithLogo("star", BitmapFactory.decodeResource(getResources(), R.mipmap.timg));
+                ivCode.setImageBitmap(bitmap);
+            }
+        });
+    }
+
+    private void toCusomize() {
+        new RxPermissions(this)
+                .requestEachCombined(Manifest.permission.CAMERA)
+                .subscribe(new Observer<Permission>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                    }
+                    @Override
+                    public void onNext(@NonNull Permission permission) {
+                        if(permission.granted){
+                            ScanCodeConfig.create(MainActivity.this)
+                                    //设置扫码页样式 ScanStyle.NONE：无  ScanStyle.QQ ：仿QQ样式   ScanStyle.WECHAT ：仿微信样式  ScanStyle.CUSTOMIZE ： 自定义样式
+                                    .setStyle(ScanStyle.CUSTOMIZE)
+                                    //扫码成功是否播放音效  true ： 播放   false ： 不播放
+                                    .setPlayAudio(true)
+                                    //设置音效音频
+                                    .setAudioId(R.raw.beep)
+                                    ////////////////////////////////////////////
+                                    //以下配置 在style为 ScanStyle.CUSTOMIZE 时生效
+                                    //设置扫码框位置  left ： 边框左边位置   top ： 边框上边位置   right ： 边框右边位置   bottom ： 边框下边位置   单位/dp
+                                    .setScanRect(new ScanRect(100, 100, 300, 300))
+                                    //是否显示边框上四个角标 true ： 显示  false ： 不显示
+                                    .setShowFrame(true)
+                                    //设置边框上四个角标颜色
+                                    .setFrameColor(R.color.whilte)
+                                    //设置边框上四个角标圆角
+                                    .setFrameRaduis(2)
+                                    //设置边框上四个角宽度 单位 /dp
+                                    .setFrameWith(4)
+                                    //设置边框上四个角长度 单位 /dp
+                                    .setFrameLenth(15)
+                                    //设置是否显示边框外部阴影 true ： 显示  false ： 不显示
+                                    .setShowShadow(true)
+                                    //设置边框外部阴影颜色
+                                    .setShaowColor(R.color.black_tran30)
+                                    //设置扫码条图片
+                                    .setScanBitmapId(R.mipmap.scan_wechatline)
+                                    .buidler()
+                                    //跳转扫码页   扫码页可自定义样式
+                                    .start(MyScanActivity.class);
+                        }
+                    }
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                    }
+                    @Override
+                    public void onComplete() {
+                    }
+                });
     }
 
     //开始扫描

@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="qqscan">#68b6fc</color>
+    <color name="black_tran30">#4D000000</color>
 </resources>
