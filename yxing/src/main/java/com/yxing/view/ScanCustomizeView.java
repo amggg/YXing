@@ -24,8 +24,6 @@ public class ScanCustomizeView extends BaseScanView {
     public static final int DEFALUTE_WITH = 4;
     //边框角默认长度
     public static final int DEFAULTE_LENGTH = 15;
-    //边框角默认圆角
-    public static final int DEFAULTE_RADUIS = 0;
 
     private Paint paint;
     private Bitmap scanLine;
@@ -87,11 +85,11 @@ public class ScanCustomizeView extends BaseScanView {
             if(scanCodeModel.isShowShadow()){
                 drawShadow(canvas, scanRect);
             }
-        }
-        if(scanLine != null){
-            startAnim();
-            lineRect.set(SizeUtils.dp2px(getContext(), sRect.getLeft()), scanLineTop, SizeUtils.dp2px(getContext(), sRect.getRight()), scanLineTop + bitmapHigh);
-            canvas.drawBitmap(scanLine, null, lineRect, paint);
+            if(scanLine != null){
+                startAnim();
+                lineRect.set(SizeUtils.dp2px(getContext(), sRect.getLeft()), scanLineTop, SizeUtils.dp2px(getContext(), sRect.getRight()), scanLineTop + bitmapHigh);
+                canvas.drawBitmap(scanLine, null, lineRect, paint);
+            }
         }
     }
 
