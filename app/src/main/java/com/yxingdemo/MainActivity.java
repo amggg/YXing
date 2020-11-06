@@ -160,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
                                     .setShaowColor(R.color.black_tran30)
                                     //设置扫码条图片
                                     .setScanBitmapId(R.mipmap.scan_wechatline)
+                                    //////////////////////////////////////////////
                                     .buidler()
                                     //跳转扫码页   扫码页可自定义样式
                                     .start(MyScanActivity.class);
