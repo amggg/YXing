@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                                     .setShowFrame(true)
                                     //设置边框上四个角标颜色
                                     .setFrameColor(R.color.whilte)
-                                    //设置边框上四个角标圆角
+                                    //设置边框上四个角标圆角  单位 /dp
                                     .setFrameRaduis(2)
                                     //设置边框上四个角宽度 单位 /dp
                                     .setFrameWith(4)
