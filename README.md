@@ -30,7 +30,7 @@
                                     //////////////////////////////////////////////
                                     .buidler()
                                     //跳转扫码页   扫码页可自定义样式
-                                    .start(MyScanActivity.class);
+                                    .start(ScanCodeActivity.class);
 ```
 
 接收扫码数据：
