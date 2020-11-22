@@ -1,3 +1,15 @@
+简单调用：
+```
+ ScanCodeConfig.create(MainActivity.this)
+                                    //设置扫码页样式 ScanStyle.NONE：无  ScanStyle.QQ ：仿QQ样式   ScanStyle.WECHAT ：仿微信样式  ScanStyle.CUSTOMIZE ： 自定义样式
+                                    .setStyle(ScanStyle.NONE)
+                                    //扫码成功是否播放音效  true ： 播放   false ： 不播放
+                                    .setPlayAudio(true)
+                                    .buidler()
+                                    //跳转扫码页   扫码页可自定义样式
+                                    .start(ScanCodeActivity.class);
+```
+
 全部参数：
 ```
  ScanCodeConfig.create(MainActivity.this)
