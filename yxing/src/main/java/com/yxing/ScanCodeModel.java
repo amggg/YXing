@@ -10,10 +10,12 @@ public class ScanCodeModel implements Parcelable {
 
     protected Activity mActivity;
     private int style;
+    private int scanMode;
     private boolean isPlayAudio;
     private int audioId;
     private boolean showFrame;
     private ScanRect scanRect;
+    private long scanDuration;
     private int frameColor;
     private boolean showShadow;
     private int shaowColor;
@@ -29,10 +31,12 @@ public class ScanCodeModel implements Parcelable {
 
     protected ScanCodeModel(Parcel in) {
         style = in.readInt();
+        scanMode = in.readInt();
         isPlayAudio = in.readByte() != 0;
         audioId = in.readInt();
         showFrame = in.readByte() != 0;
         scanRect = in.readParcelable(ScanRect.class.getClassLoader());
+        scanDuration = in.readLong();
         frameColor = in.readInt();
         showShadow = in.readByte() != 0;
         shaowColor = in.readInt();
@@ -45,10 +49,12 @@ public class ScanCodeModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(style);
+        dest.writeInt(scanMode);
         dest.writeByte((byte) (isPlayAudio ? 1 : 0));
         dest.writeInt(audioId);
         dest.writeByte((byte) (showFrame ? 1 : 0));
         dest.writeParcelable(scanRect, flags);
+        dest.writeLong(scanDuration);
         dest.writeInt(frameColor);
         dest.writeByte((byte) (showShadow ? 1 : 0));
         dest.writeInt(shaowColor);
@@ -74,6 +80,24 @@ public class ScanCodeModel implements Parcelable {
             return new ScanCodeModel[size];
         }
     };
+
+    public ScanCodeModel setScanDuration(long scanDuration) {
+        this.scanDuration = scanDuration;
+        return this;
+    }
+
+    public long getScanDuration() {
+        return scanDuration;
+    }
+
+    public ScanCodeModel setScanMode(int scanMode) {
+        this.scanMode = scanMode;
+        return this;
+    }
+
+    public int getScanMode() {
+        return scanMode;
+    }
 
     public int getStyle() {
         return style;

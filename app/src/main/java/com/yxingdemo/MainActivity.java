@@ -14,13 +14,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.content.ContextCompat;
 
 import com.tbruyelle.rxpermissions3.Permission;
 import com.tbruyelle.rxpermissions3.RxPermissions;
 import com.yxing.ScanCodeActivity;
 import com.yxing.ScanCodeConfig;
 import com.yxing.bean.ScanRect;
+import com.yxing.def.ScanMode;
 import com.yxing.def.ScanStyle;
+import com.yxing.utils.SizeUtils;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observer;
@@ -35,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private AppCompatButton btnScan, btnTwoScan, btnScanMystyle;
     private AppCompatTextView tvCode;
     private AppCompatImageView ivCode;
-    private AppCompatButton btnBuildCode, btnBuildLogoCode;
+    private AppCompatButton btnBuildCode, btnBuildLogoCode, btnBuildStorkLogoCode;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         ivCode = findViewById(R.id.ivcode);
         btnBuildCode = findViewById(R.id.btn_buildcode);
         btnBuildLogoCode = findViewById(R.id.btn_buildlogocode);
+        btnBuildStorkLogoCode = findViewById(R.id.btn_buildstorklogocode);
 
         setListener();
     }
@@ -117,7 +121,16 @@ public class MainActivity extends AppCompatActivity {
         btnBuildLogoCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bitmap bitmap = ScanCodeConfig.createQRcodeWithLogo("star", BitmapFactory.decodeResource(getResources(), R.mipmap.timg));
+                Bitmap bitmap = ScanCodeConfig.createQRcodeWithLogo("star", SizeUtils.dp2px(getApplicationContext(), 200), BitmapFactory.decodeResource(getResources(), R.mipmap.timg), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 10));
+                ivCode.setImageBitmap(bitmap);
+            }
+        });
+
+        //生成带描边logo二维码
+        btnBuildStorkLogoCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bitmap bitmap = ScanCodeConfig.createQRcodeWithStrokLogo("star", SizeUtils.dp2px(getApplicationContext(), 200), BitmapFactory.decodeResource(getResources(), R.mipmap.timg), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 2), ContextCompat.getColor(MainActivity.this, R.color.colorAccent));
                 ivCode.setImageBitmap(bitmap);
             }
         });
@@ -158,6 +171,10 @@ public class MainActivity extends AppCompatActivity {
                                     .setShowShadow(true)
                                     //设置边框外部阴影颜色
                                     .setShaowColor(R.color.black_tran30)
+                                    //设置扫码条运动方式   ScanMode.REVERSE : 往复运动   ScanMode.RESTART ：重复运动    默认ScanMode.RESTART
+                                    .setScanMode(ScanMode.REVERSE)
+                                    //设置扫码条扫一次时间  单位/ms  默认3000
+                                    .setScanDuration(3000)
                                     //设置扫码条图片
                                     .setScanBitmapId(R.mipmap.scan_wechatline)
                                     //////////////////////////////////////////////

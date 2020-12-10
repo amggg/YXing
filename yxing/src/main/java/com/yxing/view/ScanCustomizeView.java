@@ -24,6 +24,8 @@ public class ScanCustomizeView extends BaseScanView {
     public static final int DEFALUTE_WITH = 4;
     //边框角默认长度
     public static final int DEFAULTE_LENGTH = 15;
+    //默认扫描速度
+    public static final long DEFAULTE_SPEED = 3000;
 
     private Paint paint;
     private Bitmap scanLine;
@@ -147,8 +149,8 @@ public class ScanCustomizeView extends BaseScanView {
         if(valueAnimator == null) {
             valueAnimator = ValueAnimator.ofInt(scanRect.top - bitmapHigh, scanRect.bottom - bitmapHigh);
             valueAnimator.setRepeatCount(ValueAnimator.INFINITE);
-            valueAnimator.setRepeatMode(ValueAnimator.RESTART);
-            valueAnimator.setDuration(3000);
+            valueAnimator.setRepeatMode(scanCodeModel.getScanMode() == 0 ? ValueAnimator.RESTART : scanCodeModel.getScanMode());
+            valueAnimator.setDuration(scanCodeModel.getScanDuration() == 0 ? DEFAULTE_SPEED : scanCodeModel.getScanDuration());
             valueAnimator.setInterpolator(new LinearInterpolator());
             valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override

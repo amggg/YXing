@@ -46,6 +46,10 @@ public class ScanCodeConfig {
         return QrCodeUtil.createQRcodeWithLogo(text, size, logo, logoWith, logoHigh, logoRaduisX, logoRaduisY);
     }
 
+    public static Bitmap createQRcodeWithStrokLogo(String text, int size, Bitmap logo, int logoWith, int logoHigh, float logoRaduisX, float logoRaduisY, int storkWith, int storkColor){
+        return QrCodeUtil.createQRcodeWithStrokLogo(text, size, logo, logoWith, logoHigh, logoRaduisX, logoRaduisY, storkWith, storkColor);
+    }
+
     public static String scanningImage(Activity mActivity, Uri uri) {
         return QrCodeUtil.scanningImage(mActivity, uri);
     }

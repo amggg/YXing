@@ -85,6 +85,13 @@
         android:text="生成带logo二维码（大小 圆角可配置）"
         />
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_buildstorklogocode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="生成带描边logo二维码（logo、描边 大小，圆角可配置）"
+        />
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivcode"
         android:layout_width="match_parent"
