@@ -37,10 +37,12 @@
                                     .setShowShadow(true)
                                     //设置边框外部阴影颜色
                                     .setShaowColor(R.color.black_tran30)
+                                    //设置扫码条运动方式   ScanMode.REVERSE : 往复运动   ScanMode.RESTART ：重复运动    默认ScanMode.RESTART
+                                    .setScanMode(ScanMode.REVERSE)
+                                    //设置扫码条扫一次时间  单位/ms  默认3000
+                                    .setScanDuration(3000)
                                     //设置扫码条图片
                                     .setScanBitmapId(R.mipmap.scan_wechatline)
-                                    //////////////////////////////////////////////
-                                    .buidler()
                                     //跳转扫码页   扫码页可自定义样式
                                     .start(ScanCodeActivity.class);
 ```
