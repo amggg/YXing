@@ -165,7 +165,9 @@ public class MainActivity extends AppCompatActivity {
                                     ////////////////////////////////////////////
                                     //以下配置 在style为 ScanStyle.CUSTOMIZE 时生效
                                     //设置扫码框位置  left ： 边框左边位置   top ： 边框上边位置   right ： 边框右边位置   bottom ： 边框下边位置   单位/dp
-                                    .setScanRect(new ScanRect(50, 200, 300, 450), false)
+                                    .setScanRect(new ScanRect(50, 200, 300, 450))
+                                    // isUsePx : 是否使用px单位   默认dp
+//                                    .setScanRect(new ScanRect(50, 200, 300, 450), false)
                                     //是否显示边框上四个角标 true ： 显示  false ： 不显示
                                     .setShowFrame(true)
                                     //设置边框上四个角标颜色

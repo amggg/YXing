@@ -39,11 +39,11 @@ public class QrCodeUtil {
     private static final Pattern CHINESEPATTERN = Pattern.compile("[\u4E00-\u9FA5|\\！|\\，|\\。|\\（|\\）|\\《|\\》|\\“|\\”|\\？|\\：|\\；|\\【|\\】]");
 
     /**
-     * 绘制条形码
+     * 生成条形码
      * @param content 要生成条形码包含的内容
      * @param widthPix 条形码的宽度
      * @param heightPix 条形码的高度
-     * @param isShowContent  否则显示条形码包含的内容
+     * @param isShowContent  是否显示条形码包含的内容
      * @return 返回生成条形的位图
      */
     public static Bitmap createBarcode(String content, int widthPix, int heightPix, boolean isShowContent) {
