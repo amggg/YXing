@@ -1,4 +1,4 @@
-怎么集成：
+怎么集成:
 1.在根目录的build.gradle中添加jitpack依赖：
 ```
 allprojects {
