@@ -2,21 +2,17 @@ package com.yxing.utils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-
-import androidx.core.content.ContextCompat;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
@@ -26,12 +22,10 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.HybridBinarizer;
-import com.google.zxing.common.StringUtils;
 import com.google.zxing.qrcode.QRCodeReader;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -40,9 +34,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class QrCodeUtil {
-    public static final Pattern chinesePattern = Pattern.compile("[\u4E00-\u9FA5|\\！|\\，|\\。|\\（|\\）|\\《|\\》|\\“|\\”|\\？|\\：|\\；|\\【|\\】]");
+    private static final int DEFAULTE_SIZE = 500;
 
-    public static final int DEFAULTE_SIZE = 500;
+    private static final Pattern CHINESEPATTERN = Pattern.compile("[\u4E00-\u9FA5|\\！|\\，|\\。|\\（|\\）|\\《|\\》|\\“|\\”|\\？|\\：|\\；|\\【|\\】]");
 
     /**
      * 绘制条形码
@@ -62,22 +56,18 @@ public class QrCodeUtil {
         //配置参数
         Map<EncodeHintType,Object> hints = new HashMap<>();
         hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
-        // 容错级别 这里选择最高H级别
         hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
         MultiFormatWriter writer = new MultiFormatWriter();
-
         try {
             // 图像数据转换，使用了矩阵转换 参数顺序分别为：编码内容，编码类型，生成图片宽度，生成图片高度，设置参数
             BitMatrix bitMatrix = writer.encode(content, BarcodeFormat.CODE_128, widthPix, heightPix, hints);
             int[] pixels = new int[widthPix * heightPix];
-//             下面这里按照二维码的算法，逐个生成二维码的图片，
-            // 两个for循环是图片横列扫描的结果
             for (int y = 0; y < heightPix; y++) {
                 for (int x = 0; x < widthPix; x++) {
                     if (bitMatrix.get(x, y)) {
-                        pixels[y * widthPix + x] = 0xff000000; // 黑色
+                        pixels[y * widthPix + x] = 0xff000000;
                     } else {
-                        pixels[y * widthPix + x] = 0xffffffff;// 白色
+                        pixels[y * widthPix + x] = 0xffffffff;
                     }
                 }
             }
@@ -97,7 +87,7 @@ public class QrCodeUtil {
      * 显示条形的内容
      * @param bCBitmap 已生成的条形码的位图
      * @param content  条形码包含的内容
-     * @return 返回生成的新位图,它是 方法{@link #(String, int, int, Bitmap)}返回的位图与新绘制文本content的组合
+     * @return 返回生成的新位图
      */
     private static Bitmap showContent(Bitmap bCBitmap , String content) {
         if (TextUtils.isEmpty(content) || null == bCBitmap) {
@@ -106,7 +96,7 @@ public class QrCodeUtil {
         Paint paint = new Paint();
         paint.setColor(Color.BLACK);
         paint.setAntiAlias(true);
-        paint.setStyle(Paint.Style.FILL);//设置填充样式
+        paint.setStyle(Paint.Style.FILL);
         paint.setTextSize(20);
         //测量字符串的宽度
         int textWidth = (int) paint.measureText(content);
@@ -119,12 +109,11 @@ public class QrCodeUtil {
         //绘制文本的基线
         int baseLine = bCBitmap.getHeight() + textHeight;
         //创建一个图层，然后在这个图层上绘制bCBitmap、content
-        Bitmap bitmap = Bitmap.createBitmap(bCBitmap.getWidth(), bCBitmap.getHeight() + 2 * textHeight, Bitmap.Config.ARGB_4444);
-        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(bCBitmap.getWidth(), (int) (bCBitmap.getHeight() + 1.5 * textHeight), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
         canvas.drawColor(Color.WHITE);
-        canvas.setBitmap(bitmap);
         canvas.drawBitmap(bCBitmap, 0, 0, null);
-        canvas.drawText(content, bCBitmap.getWidth() / 10, baseLine, paint);
+        canvas.drawText(content, (bCBitmap.getWidth() >> 1) - ((int) (textWidth * scaleRateX) >> 1), baseLine, paint);
         canvas.save();
         canvas.restore();
         return bitmap;
@@ -141,11 +130,8 @@ public class QrCodeUtil {
         if ("".equals(str) || str == null) {
             throw new RuntimeException("sms context is empty!");
         }
-        Matcher m = chinesePattern.matcher(str);
-        if (m.find()) {
-            return true;
-        }
-        return false;
+        Matcher m = CHINESEPATTERN.matcher(str);
+        return m.find();
     }
 
     /**

@@ -4,9 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.RadioGroup;
 
@@ -24,7 +22,6 @@ import com.yxing.ScanCodeConfig;
 import com.yxing.bean.ScanRect;
 import com.yxing.def.ScanMode;
 import com.yxing.def.ScanStyle;
-import com.yxing.utils.QrCodeUtil;
 import com.yxing.utils.SizeUtils;
 
 import io.reactivex.rxjava3.annotations.NonNull;
@@ -142,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         btnBuildBarCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bitmap barCode = QrCodeUtil.createBarcode("23423423523", 500, 200, true);
+                Bitmap barCode = ScanCodeConfig.createBarcode("234323423423", 500, 200, false);
                 ivCode.setImageBitmap(barCode);
             }
         });
