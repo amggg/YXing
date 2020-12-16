@@ -1,5 +1,6 @@
 怎么集成:
-1.在根目录的build.gradle中添加jitpack依赖：
+
+1、在根目录的build.gradle中添加jitpack依赖：
 ```
 allprojects {
     repositories {
@@ -7,7 +8,7 @@ allprojects {
     }
 }
 ```
-2.在project的build.gradle中添加YXing依赖：
+2、在project的build.gradle中添加YXing依赖：
 ```
   implementation 'com.github.amggg:YXing:releaseVersion'
 ```
