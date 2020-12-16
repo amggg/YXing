@@ -15,6 +15,7 @@ public class ScanCodeModel implements Parcelable {
     private int audioId;
     private boolean showFrame;
     private ScanRect scanRect;
+    private boolean usePx;
     private long scanDuration;
     private int frameColor;
     private boolean showShadow;
@@ -28,7 +29,6 @@ public class ScanCodeModel implements Parcelable {
         this.mActivity = mActivity;
     }
 
-
     protected ScanCodeModel(Parcel in) {
         style = in.readInt();
         scanMode = in.readInt();
@@ -36,6 +36,7 @@ public class ScanCodeModel implements Parcelable {
         audioId = in.readInt();
         showFrame = in.readByte() != 0;
         scanRect = in.readParcelable(ScanRect.class.getClassLoader());
+        usePx = in.readByte() != 0;
         scanDuration = in.readLong();
         frameColor = in.readInt();
         showShadow = in.readByte() != 0;
@@ -54,6 +55,7 @@ public class ScanCodeModel implements Parcelable {
         dest.writeInt(audioId);
         dest.writeByte((byte) (showFrame ? 1 : 0));
         dest.writeParcelable(scanRect, flags);
+        dest.writeByte((byte) (usePx ? 1 : 0));
         dest.writeLong(scanDuration);
         dest.writeInt(frameColor);
         dest.writeByte((byte) (showShadow ? 1 : 0));
@@ -142,6 +144,20 @@ public class ScanCodeModel implements Parcelable {
     public ScanCodeModel setScanRect(ScanRect scanRect) {
         this.scanRect = scanRect;
         return this;
+    }
+
+    public ScanCodeModel setScanRect(ScanRect scanRect, boolean isUsePx){
+        this.scanRect = scanRect;
+        this.usePx = isUsePx;
+        return this;
+    }
+
+    public boolean isUsePx() {
+        return usePx;
+    }
+
+    public void setUsePx(boolean usePx) {
+        this.usePx = usePx;
     }
 
     public int getFrameColor() {

@@ -80,7 +80,11 @@ public class ScanCustomizeView extends BaseScanView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if(sRect != null){
-            scanRect.set(SizeUtils.dp2px(getContext(), sRect.getLeft()), SizeUtils.dp2px(getContext(), sRect.getTop()), SizeUtils.dp2px(getContext(), sRect.getRight()), SizeUtils.dp2px(getContext(), sRect.getBottom()));
+            if(scanCodeModel.isUsePx()){
+                scanRect.set(sRect.getLeft(), sRect.getTop(), sRect.getRight(), sRect.getBottom());
+            }else{
+                scanRect.set(SizeUtils.dp2px(getContext(), sRect.getLeft()), SizeUtils.dp2px(getContext(), sRect.getTop()), SizeUtils.dp2px(getContext(), sRect.getRight()), SizeUtils.dp2px(getContext(), sRect.getBottom()));
+            }
             if(scanCodeModel.isShowFrame()){
                 drawFrameBounds(canvas, scanRect);
             }
@@ -89,7 +93,7 @@ public class ScanCustomizeView extends BaseScanView {
             }
             if(scanLine != null){
                 startAnim();
-                lineRect.set(SizeUtils.dp2px(getContext(), sRect.getLeft()), scanLineTop, SizeUtils.dp2px(getContext(), sRect.getRight()), scanLineTop + bitmapHigh);
+                lineRect.set(scanRect.left, scanLineTop, scanRect.right, scanLineTop + bitmapHigh);
                 canvas.drawBitmap(scanLine, null, lineRect, paint);
             }
         }

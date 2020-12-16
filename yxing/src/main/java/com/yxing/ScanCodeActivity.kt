@@ -17,35 +17,28 @@ import com.yxing.view.ScanQQView
 import com.yxing.view.ScanWechatView
 import com.yxing.view.base.BaseScanView
 import kotlinx.android.synthetic.main.activity_scancode.*
-import java.io.File
 import java.lang.Math.*
-import java.text.SimpleDateFormat
-import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 open class ScanCodeActivity : BaseScanActivity() {
 
     private var lensFacing : Int = CameraSelector.LENS_FACING_BACK
-    private var camera : Camera? = null
-    private var preview : Preview? = null
-    private var imageAnalyzer : ImageAnalysis? = null
+    private lateinit var mImageCapture: ImageCapture
+    private lateinit var camera : Camera
+    private lateinit var preview : Preview
+    private lateinit var imageAnalyzer : ImageAnalysis
+    private lateinit var cameraControl : CameraControl
+    private lateinit var mCameraInfo : CameraInfo
     private lateinit var cameraExecutor : ExecutorService
     private var baseScanView : BaseScanView? = null
     private var rlParentContent : RelativeLayout? = null
     private lateinit var scModel : ScanCodeModel
 
     companion object {
-        private const val TAG = "CameraXBasic"
-        private const val FILENAME = "yyyy-MM-dd-HH-mm-ss-SSS"
-        private const val PHOTO_EXTENSION = ".jpg"
+        private const val TAG = "YXing"
         private const val RATIO_4_3_VALUE = 4.0 / 3.0
         private const val RATIO_16_9_VALUE = 16.0 / 9.0
-
-        /** Helper function used to create a timestamped file */
-        private fun createFile(baseFolder: File, format: String, extension: String) =
-            File(baseFolder, SimpleDateFormat(format, Locale.US)
-                .format(System.currentTimeMillis()) + extension)
     }
 
     override fun getLayoutId() : Int = R.layout.activity_scancode
@@ -55,7 +48,6 @@ open class ScanCodeActivity : BaseScanActivity() {
         addScanView(scModel.style)
         // Initialize our background executor
         cameraExecutor = Executors.newSingleThreadExecutor()
-        //权限申请
         // surface准备监听
         pvCamera.post {
             //设置需要实现的用例（预览，拍照，图片数据解析等等）
@@ -109,6 +101,14 @@ open class ScanCodeActivity : BaseScanActivity() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener(Runnable {
             val cameraProvider = cameraProviderFuture.get()
+
+            //图像捕获用例
+            mImageCapture = ImageCapture.Builder()
+                .setFlashMode(ImageCapture.FLASH_MODE_AUTO)
+                .setTargetAspectRatio(AspectRatio.RATIO_16_9)
+                .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                .build()
+
             // 预览用例
             preview = Preview.Builder()
                 .setTargetResolution(size)
@@ -136,15 +136,30 @@ open class ScanCodeActivity : BaseScanActivity() {
             try {
                 //获取相机实例
                 camera = cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageAnalyzer)
-
+                    this, cameraSelector, preview, mImageCapture, imageAnalyzer)
                 //设置预览的view
-                preview?.setSurfaceProvider(pvCamera.surfaceProvider)
+                preview.setSurfaceProvider(pvCamera.surfaceProvider)
+                cameraControl = camera.cameraControl
+                mCameraInfo = camera.cameraInfo
+                bindTouchListenner()
             } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
             }
 
         }, ContextCompat.getMainExecutor(this))
+    }
+
+    private fun bindTouchListenner() {
+        val zoomState = mCameraInfo.zoomState
+        val cameraXPreviewViewTouchListener =
+            PreviewTouchListener(this)
+        cameraXPreviewViewTouchListener.setCustomTouchListener { delta ->
+            zoomState.value?.let {
+                val currentZoomRatio = it.zoomRatio
+                cameraControl.setZoomRatio(currentZoomRatio * delta)
+            }
+        }
+        pvCamera.setOnTouchListener(cameraXPreviewViewTouchListener)
     }
 
     /**
@@ -160,7 +175,7 @@ open class ScanCodeActivity : BaseScanActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        cameraExecutor.shutdown()
+        cameraExecutor.shutdownNow()
         baseScanView?.cancelAnim()
     }
 }

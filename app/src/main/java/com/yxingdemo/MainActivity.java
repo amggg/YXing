@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.RadioGroup;
 
@@ -23,6 +24,7 @@ import com.yxing.ScanCodeConfig;
 import com.yxing.bean.ScanRect;
 import com.yxing.def.ScanMode;
 import com.yxing.def.ScanStyle;
+import com.yxing.utils.QrCodeUtil;
 import com.yxing.utils.SizeUtils;
 
 import io.reactivex.rxjava3.annotations.NonNull;
@@ -38,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private AppCompatButton btnScan, btnTwoScan, btnScanMystyle;
     private AppCompatTextView tvCode;
     private AppCompatImageView ivCode;
-    private AppCompatButton btnBuildCode, btnBuildLogoCode, btnBuildStorkLogoCode;
+    private AppCompatButton btnBuildCode, btnBuildLogoCode, btnBuildStorkLogoCode, btnBuildBarCode;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         btnBuildCode = findViewById(R.id.btn_buildcode);
         btnBuildLogoCode = findViewById(R.id.btn_buildlogocode);
         btnBuildStorkLogoCode = findViewById(R.id.btn_buildstorklogocode);
+        btnBuildBarCode = findViewById(R.id.btn_buildbarcode);
 
         setListener();
     }
@@ -134,6 +137,15 @@ public class MainActivity extends AppCompatActivity {
                 ivCode.setImageBitmap(bitmap);
             }
         });
+
+        //生成条形码
+        btnBuildBarCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bitmap barCode = QrCodeUtil.createBarcode("23423423523", 500, 200, true);
+                ivCode.setImageBitmap(barCode);
+            }
+        });
     }
 
     private void toCusomize() {
@@ -156,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
                                     ////////////////////////////////////////////
                                     //以下配置 在style为 ScanStyle.CUSTOMIZE 时生效
                                     //设置扫码框位置  left ： 边框左边位置   top ： 边框上边位置   right ： 边框右边位置   bottom ： 边框下边位置   单位/dp
-                                    .setScanRect(new ScanRect(50, 200, 300, 450))
+                                    .setScanRect(new ScanRect(50, 200, 300, 450), false)
                                     //是否显示边框上四个角标 true ： 显示  false ： 不显示
                                     .setShowFrame(true)
                                     //设置边框上四个角标颜色
