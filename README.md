@@ -82,6 +82,7 @@ ScanCodeConfig.create(MainActivity.this)
     }
 ```
 
+更多功能请查看使用文档。
 
 使用文档：https://www.jianshu.com/p/c549f91cb9c5
 
