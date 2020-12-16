@@ -1,3 +1,17 @@
+怎么集成：
+1.在根目录的build.gradle中添加jitpack依赖：
+```
+allprojects {
+    repositories {
+        maven { url "https://jitpack.io" }
+    }
+}
+```
+2.在project的build.gradle中添加YXing依赖：
+```
+  implementation 'com.github.amggg:YXing:releaseVersion'
+```
+
 简单调用：
 ```
  ScanCodeConfig.create(MainActivity.this)
@@ -65,6 +79,5 @@
 
 
 使用文档：https://www.jianshu.com/p/c549f91cb9c5
-
 
 APP下载链接：https://www.pgyer.com/FMi9
