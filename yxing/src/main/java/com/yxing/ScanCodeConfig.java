@@ -64,6 +64,10 @@ public class ScanCodeConfig {
         return QrCodeUtil.createQRcodeWithStrokLogo(text, size, logo, logoWith, logoHigh, logoRaduisX, logoRaduisY, storkWith, storkColor);
     }
 
+    public static Bitmap createBarcode(String content, int widthPix, int heightPix, boolean isShowContent){
+        return QrCodeUtil.createBarcode(content, widthPix, heightPix, isShowContent);
+    }
+
     public static String scanningImage(Activity mActivity, Uri uri) {
         return QrCodeUtil.scanningImage(mActivity, uri);
     }
