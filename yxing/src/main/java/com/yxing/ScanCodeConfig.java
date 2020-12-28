@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
+import androidx.fragment.app.Fragment;
+
 import com.yxing.utils.QrCodeUtil;
 
 public class ScanCodeConfig {
@@ -12,11 +14,13 @@ public class ScanCodeConfig {
     public static final String CODE_KEY = "code";
     public static final String MODEL_KEY = "model";
 
-    private  Activity mActivity;
+    private Activity mActivity;
+    private Fragment mFragment;
     private ScanCodeModel model;
 
     public ScanCodeConfig (ScanCodeModel model){
         this.mActivity = model.mActivity;
+        this.mFragment = model.mFragment;
         this.model = model;
     }
 
@@ -24,10 +28,20 @@ public class ScanCodeConfig {
         return new ScanCodeModel(mActivity);
     }
 
+    public static ScanCodeModel create(Activity mActivity, Fragment mFragment){
+        return new ScanCodeModel(mActivity, mFragment);
+    }
+
     public void start(Class mClass){
-        Intent intent = new Intent(mActivity, mClass);
-        intent.putExtra(MODEL_KEY, model);
-        mActivity.startActivityForResult(intent, QUESTCODE);
+        if(mFragment != null){
+            Intent intent = new Intent(mActivity, mClass);
+            intent.putExtra(MODEL_KEY, model);
+            mFragment.startActivityForResult(intent, QUESTCODE);
+        }else{
+            Intent intent = new Intent(mActivity, mClass);
+            intent.putExtra(MODEL_KEY, model);
+            mActivity.startActivityForResult(intent, QUESTCODE);
+        }
     }
 
     public static Bitmap createQRCode(String text){

@@ -4,17 +4,26 @@ import android.app.Activity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.fragment.app.Fragment;
+
 import com.yxing.bean.ScanRect;
 
+/**
+ * @author apple
+ */
 public class ScanCodeModel implements Parcelable {
 
     protected Activity mActivity;
+    protected Fragment mFragment;
     private int style;
     private int scanMode;
     private boolean isPlayAudio;
     private int audioId;
     private boolean showFrame;
     private ScanRect scanRect;
+    private int scanSize;
+    private int offsetX;
+    private int offsetY;
     private boolean usePx;
     private long scanDuration;
     private int frameColor;
@@ -29,6 +38,11 @@ public class ScanCodeModel implements Parcelable {
         this.mActivity = mActivity;
     }
 
+    public ScanCodeModel(Activity mActivity, Fragment mFragment){
+        this.mActivity = mActivity;
+        this.mFragment = mFragment;
+    }
+
     protected ScanCodeModel(Parcel in) {
         style = in.readInt();
         scanMode = in.readInt();
@@ -36,6 +50,9 @@ public class ScanCodeModel implements Parcelable {
         audioId = in.readInt();
         showFrame = in.readByte() != 0;
         scanRect = in.readParcelable(ScanRect.class.getClassLoader());
+        scanSize = in.readInt();
+        offsetX = in.readInt();
+        offsetY = in.readInt();
         usePx = in.readByte() != 0;
         scanDuration = in.readLong();
         frameColor = in.readInt();
@@ -55,6 +72,9 @@ public class ScanCodeModel implements Parcelable {
         dest.writeInt(audioId);
         dest.writeByte((byte) (showFrame ? 1 : 0));
         dest.writeParcelable(scanRect, flags);
+        dest.writeInt(scanSize);
+        dest.writeInt(offsetX);
+        dest.writeInt(offsetY);
         dest.writeByte((byte) (usePx ? 1 : 0));
         dest.writeLong(scanDuration);
         dest.writeInt(frameColor);
@@ -141,8 +161,38 @@ public class ScanCodeModel implements Parcelable {
         return scanRect;
     }
 
+    @Deprecated
     public ScanCodeModel setScanRect(ScanRect scanRect) {
         this.scanRect = scanRect;
+        return this;
+    }
+
+    public int getScanSize() {
+        return scanSize;
+    }
+
+    public ScanCodeModel setScanSize(int scanSize, int offsetX, int offsetY) {
+        this.scanSize = scanSize;
+        this.offsetX = offsetX;
+        this.offsetY = offsetY;
+        return this;
+    }
+
+    public int getOffsetX() {
+        return offsetX;
+    }
+
+    public ScanCodeModel setOffsetX(int offsetX) {
+        this.offsetX = offsetX;
+        return this;
+    }
+
+    public int getOffsetY() {
+        return offsetY;
+    }
+
+    public ScanCodeModel setOffsetY(int offsetY) {
+        this.offsetY = offsetY;
         return this;
     }
 

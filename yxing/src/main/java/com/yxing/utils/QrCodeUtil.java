@@ -285,9 +285,9 @@ public class QrCodeUtil {
             Canvas canvas = new Canvas(bitmap);
             canvas.drawBitmap(src, 0, 0, null);
             paint.setColor(storkColor == 0 ? Color.WHITE : storkColor);
-            canvas.drawRoundRect(new RectF((srcWidth >> 1) - (logoWith >> 1), (srcHeight >> 1) - (logoHigh >> 1), (srcWidth >> 1) + (logoWith >> 1), (srcHeight >> 1) + (logoHigh >> 1)), logoRaduisX, logoRaduisY, paint);
+            canvas.drawRoundRect(new RectF((srcWidth >> 1) - (logoWith >> 1) - storkWith, (srcHeight >> 1) - (logoHigh >> 1) - storkWith, (srcWidth >> 1) + (logoWith >> 1) + storkWith, (srcHeight >> 1) + (logoHigh >> 1) + storkWith), logoRaduisX, logoRaduisY, paint);
             paint.setShader(bitmapShader);
-            canvas.drawRoundRect(new RectF(((srcWidth >> 1) - (logoWith >> 1)) + storkWith, ((srcHeight >> 1) - (logoHigh >> 1)) + storkWith, ((srcWidth >> 1) + (logoWith >> 1)) - storkWith, ((srcHeight >> 1) + (logoHigh >> 1)) - storkWith), logoRaduisX, logoRaduisY, paint);
+            canvas.drawRoundRect(new RectF(((srcWidth >> 1) - (logoWith >> 1)), ((srcHeight >> 1) - (logoHigh >> 1)), ((srcWidth >> 1) + (logoWith >> 1)), ((srcHeight >> 1) + (logoHigh >> 1))), logoRaduisX, logoRaduisY, paint);
         } catch (Exception e) {
             bitmap = null;
             e.getStackTrace();

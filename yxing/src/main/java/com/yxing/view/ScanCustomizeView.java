@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.Nullable;
@@ -79,23 +80,25 @@ public class ScanCustomizeView extends BaseScanView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if(sRect != null){
+        if(scanCodeModel.getScanSize() != 0){
+            scanRect.set((getWidth() >> 1) - (scanCodeModel.getScanSize() >> 1) + scanCodeModel.getOffsetX(), (getHeight() >> 1) - (scanCodeModel.getScanSize() >> 1) + scanCodeModel.getOffsetY(), (getWidth() >> 1) + (scanCodeModel.getScanSize() >> 1) + scanCodeModel.getOffsetX(), (getHeight() >> 1) + (scanCodeModel.getScanSize() >> 1) + scanCodeModel.getOffsetY());
+        }else if(sRect != null){
             if(scanCodeModel.isUsePx()){
                 scanRect.set(sRect.getLeft(), sRect.getTop(), sRect.getRight(), sRect.getBottom());
             }else{
                 scanRect.set(SizeUtils.dp2px(getContext(), sRect.getLeft()), SizeUtils.dp2px(getContext(), sRect.getTop()), SizeUtils.dp2px(getContext(), sRect.getRight()), SizeUtils.dp2px(getContext(), sRect.getBottom()));
             }
-            if(scanCodeModel.isShowFrame()){
-                drawFrameBounds(canvas, scanRect);
-            }
-            if(scanCodeModel.isShowShadow()){
-                drawShadow(canvas, scanRect);
-            }
-            if(scanLine != null){
-                startAnim();
-                lineRect.set(scanRect.left, scanLineTop, scanRect.right, scanLineTop + bitmapHigh);
-                canvas.drawBitmap(scanLine, null, lineRect, paint);
-            }
+        }
+        if(scanCodeModel.isShowFrame()){
+            drawFrameBounds(canvas, scanRect);
+        }
+        if(scanCodeModel.isShowShadow()){
+            drawShadow(canvas, scanRect);
+        }
+        if(scanLine != null){
+            startAnim();
+            lineRect.set(scanRect.left, scanLineTop, scanRect.right, scanLineTop + bitmapHigh);
+            canvas.drawBitmap(scanLine, null, lineRect, paint);
         }
     }
 
