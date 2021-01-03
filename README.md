@@ -14,12 +14,24 @@ allprojects {
 ```
 
 简单调用：
+Activity中启动：
 ```
- ScanCodeConfig.create(MainActivity.this)
-                                    //设置扫码页样式 ScanStyle.NONE：无  ScanStyle.QQ ：仿QQ样式   ScanStyle.WECHAT ：仿微信样式  ScanStyle.CUSTOMIZE ： 自定义样式
-                                    .setStyle(ScanStyle.NONE)
+  ScanCodeConfig.create(MainActivity.this)
+                                    //设置扫码页样式 ScanStyle.NONE：无  ScanStyle.QQ ：仿QQ样式   ScanStyle.WECHAT ：仿微信样式    ScanStyle.CUSTOMIZE ： 自定义样式
+                                    .setStyle(style)
                                     //扫码成功是否播放音效  true ： 播放   false ： 不播放
-                                    .setPlayAudio(true)
+                                    .setPlayAudio(false)
+                                    .buidler()
+                                    //跳转扫码页   扫码页可自定义样式
+                                    .start(ScanCodeActivity.class);
+```
+Fragment中启动：
+```
+  ScanCodeConfig.create(MainActivity.this, mFragment)
+                                    //设置扫码页样式 ScanStyle.NONE：无  ScanStyle.QQ ：仿QQ样式   ScanStyle.WECHAT ：仿微信样式    ScanStyle.CUSTOMIZE ： 自定义样式
+                                    .setStyle(style)
+                                    //扫码成功是否播放音效  true ： 播放   false ： 不播放
+                                    .setPlayAudio(false)
                                     .buidler()
                                     //跳转扫码页   扫码页可自定义样式
                                     .start(ScanCodeActivity.class);
