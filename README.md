@@ -14,6 +14,7 @@ allprojects {
 ```
 
 简单调用：
+
 Activity中启动：
 ```
   ScanCodeConfig.create(MainActivity.this)
