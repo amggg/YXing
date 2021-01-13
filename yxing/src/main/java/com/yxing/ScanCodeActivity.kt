@@ -55,6 +55,10 @@ open class ScanCodeActivity : BaseScanActivity() {
         }
     }
 
+    fun setFlashStatus(isOpenFlash : Boolean){
+        cameraControl.enableTorch(isOpenFlash)
+    }
+
     private fun addScanView(style: Int?) {
         rlParentContent = findViewById(R.id.rlparent)
         val lp : RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
@@ -141,6 +145,7 @@ open class ScanCodeActivity : BaseScanActivity() {
                 preview.setSurfaceProvider(pvCamera.surfaceProvider)
                 cameraControl = camera.cameraControl
                 mCameraInfo = camera.cameraInfo
+
                 bindTouchListenner()
             } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)

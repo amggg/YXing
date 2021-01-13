@@ -13,6 +13,8 @@ public class MyScanActivity extends ScanCodeActivity {
 
     private AppCompatButton btnOpenFlash;
 
+    private boolean isOpenFlash;
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_myscan;
@@ -26,7 +28,9 @@ public class MyScanActivity extends ScanCodeActivity {
         btnOpenFlash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MyScanActivity.this, "打开闪光灯", Toast.LENGTH_SHORT).show();
+                isOpenFlash = !isOpenFlash;
+                setFlashStatus(isOpenFlash);
+                btnOpenFlash.setText(isOpenFlash ? "关闭闪光灯" : "打开闪光灯");
             }
         });
     }
