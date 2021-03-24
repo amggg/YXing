@@ -71,4 +71,8 @@ public class ScanCodeConfig {
     public static String scanningImage(Activity mActivity, Uri uri) {
         return QrCodeUtil.scanningImage(mActivity, uri);
     }
+
+    public static String scanningImageByBitmap(Bitmap bitmap){
+        return QrCodeUtil.scanningImageByBitmap(bitmap);
+    }
 }

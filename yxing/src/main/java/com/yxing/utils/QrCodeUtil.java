@@ -16,20 +16,28 @@ import android.text.TextUtils;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
+import com.google.zxing.ChecksumException;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.EncodeHintType;
+import com.google.zxing.FormatException;
 import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.RGBLuminanceSource;
+import com.google.zxing.Result;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.common.GlobalHistogramBinarizer;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import java.io.IOException;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -392,27 +400,63 @@ public class QrCodeUtil {
      * @return
      */
     public static String scanningImage(Activity mActivity, Uri uri) {
-        Bitmap scanBitmap = null;
-        if (uri == null) {
-            return null;
+        Hashtable<DecodeHintType, Object> hints = new Hashtable<>(2);
+        Vector<BarcodeFormat> decodeFormats = new Vector<>();
+        if (decodeFormats.isEmpty()) {
+            decodeFormats.addAll(EnumSet.of(BarcodeFormat.QR_CODE));
         }
-        Hashtable<DecodeHintType, String> hints = new Hashtable<>();
-        //设置二维码内容的编码
-        hints.put(DecodeHintType.CHARACTER_SET, "UTF8");
-        scanBitmap = getBitmapByUri(mActivity, uri);
-        RGBLuminanceSource source;
-        if (scanBitmap != null) {
-            source = new RGBLuminanceSource(scanBitmap);
-        } else {
-            return null;
-        }
-        BinaryBitmap bitmap1 = new BinaryBitmap(new HybridBinarizer(source));
+        hints.put(DecodeHintType.POSSIBLE_FORMATS, decodeFormats);
+        hints.put(DecodeHintType.CHARACTER_SET, "UTF-8");
+        Result result = null;
+        Bitmap srcBitmap = getBitmapByUri(mActivity, uri);
+        int width = srcBitmap.getWidth();
+        int height = srcBitmap.getHeight();
+        int[] pixels = new int[width * height];
+        srcBitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+        com.google.zxing.RGBLuminanceSource source = new RGBLuminanceSource(width, height, pixels);
+        BinaryBitmap binaryBitmap = new BinaryBitmap(new GlobalHistogramBinarizer(source));
         QRCodeReader reader = new QRCodeReader();
         try {
-            return reader.decode(bitmap1, hints).getText();
-        } catch (Exception e) {
-            return null;
+            result = reader.decode(binaryBitmap, hints);
+        } catch (NotFoundException | ChecksumException | FormatException e) {
+            e.printStackTrace();
         }
+        if (result != null) {
+            return result.getText();
+        }
+        return null;
+    }
+
+
+    /**
+     * 解码bitmap二维码图片
+     * @return
+     */
+    public static String scanningImageByBitmap(Bitmap srcBitmap) {
+        Hashtable<DecodeHintType, Object> hints = new Hashtable<>(2);
+        Vector<BarcodeFormat> decodeFormats = new Vector<>();
+        if (decodeFormats.isEmpty()) {
+            decodeFormats.addAll(EnumSet.of(BarcodeFormat.QR_CODE));
+        }
+        hints.put(DecodeHintType.POSSIBLE_FORMATS, decodeFormats);
+        hints.put(DecodeHintType.CHARACTER_SET, "UTF-8");
+        Result result = null;
+        int width = srcBitmap.getWidth();
+        int height = srcBitmap.getHeight();
+        int[] pixels = new int[width * height];
+        srcBitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+        com.google.zxing.RGBLuminanceSource source = new RGBLuminanceSource(width, height, pixels);
+        BinaryBitmap binaryBitmap = new BinaryBitmap(new GlobalHistogramBinarizer(source));
+        QRCodeReader reader = new QRCodeReader();
+        try {
+            result = reader.decode(binaryBitmap, hints);
+        } catch (NotFoundException | ChecksumException | FormatException e) {
+            e.printStackTrace();
+        }
+        if (result != null) {
+            return result.getText();
+        }
+        return null;
     }
 
 
