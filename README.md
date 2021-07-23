@@ -41,7 +41,7 @@ Fragment中启动：
 全部参数：
 ```
 
-ScanCodeConfig.create(MainActivity.this)
+  ScanCodeConfig.create(MainActivity.this)
                                     //设置扫码页样式 ScanStyle.NONE：无  ScanStyle.QQ ：仿QQ样式   ScanStyle.WECHAT ：仿微信样式  ScanStyle.CUSTOMIZE ： 自定义样式
                                     .setStyle(ScanStyle.CUSTOMIZE)
                                     //扫码成功是否播放音效  true ： 播放   false ： 不播放
@@ -50,10 +50,12 @@ ScanCodeConfig.create(MainActivity.this)
                                     .setAudioId(R.raw.beep)
                                     ////////////////////////////////////////////
                                     //以下配置 在style为 ScanStyle.CUSTOMIZE 时生效
-                                   //设置扫码框位置 scanSize : 扫码框大小  宽高 1:1     offsetX ： x轴偏移量    offsetY ：y轴偏移量   单位 /px
-                                    .setScanSize(800, 0, -200)
-                                    //设置扫码框位置  left ： 边框左边位置   top ： 边框上边位置   right ： 边框右边位置   bottom ： 边框下边位置   isUsePx : 是否使用px单位   true : 使用(px)  fase : 不使用(dp)   默认false
+                                    //设置扫码框位置  left ： 边框左边位置   top ： 边框上边位置   right ： 边框右边位置   bottom ： 边框下边位置   单位/dp
 //                                    .setScanRect(new ScanRect(50, 200, 300, 450), false)
+                                    //是否限制识别区域为设定扫码框大小  true:限制  false：不限制   默认false：识别区域为整个屏幕
+                                    .setLimitRect(true)
+                                    //设置扫码框位置 scanSize : 扫码框大小   offsetX ： x轴偏移量    offsetY ：y轴偏移量   单位 /px
+                                    .setScanSize(800, 0, -200)
                                     //是否显示边框上四个角标 true ： 显示  false ： 不显示
                                     .setShowFrame(true)
                                     //设置边框上四个角标颜色
@@ -77,7 +79,8 @@ ScanCodeConfig.create(MainActivity.this)
                                     //////////////////////////////////////////////
                                     .buidler()
                                     //跳转扫码页   扫码页可自定义样式
-                                    .start(ScanCodeActivity.class);
+                                    .start(MyScanActivity.class);
+
 ```
 
 接收扫码数据：
