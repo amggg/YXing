@@ -2,6 +2,7 @@ package com.yxing
 
 import android.app.Activity
 import android.graphics.ImageFormat
+import android.graphics.Rect
 import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy

@@ -20,10 +20,12 @@ import kotlinx.android.synthetic.main.activity_scancode.*
 import java.lang.Math.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
-open class ScanCodeActivity : BaseScanActivity() {
+open class ScanCodeActivity : BaseScanActivity(){
 
     private var lensFacing : Int = CameraSelector.LENS_FACING_BACK
+    private lateinit var scanSize : Size
     private lateinit var mImageCapture: ImageCapture
     private lateinit var camera : Camera
     private lateinit var preview : Preview
@@ -95,7 +97,7 @@ open class ScanCodeActivity : BaseScanActivity() {
         } else {
             (width * RATIO_4_3_VALUE).toInt()
         }
-        val size = Size(width, height)
+        scanSize = Size(width, height)
 
         //获取旋转角度
         val rotation = pvCamera.display.rotation
@@ -115,13 +117,13 @@ open class ScanCodeActivity : BaseScanActivity() {
 
             // 预览用例
             preview = Preview.Builder()
-                .setTargetResolution(size)
+                .setTargetResolution(scanSize)
                 .setTargetRotation(rotation)
                 .build()
 
             // 图像分析用例
             imageAnalyzer = ImageAnalysis.Builder()
-                .setTargetResolution(size)
+                .setTargetResolution(scanSize)
                 .setTargetRotation(rotation)
                 .build()
                 .apply {
@@ -158,13 +160,33 @@ open class ScanCodeActivity : BaseScanActivity() {
         val zoomState = mCameraInfo.zoomState
         val cameraXPreviewViewTouchListener =
             PreviewTouchListener(this)
-        cameraXPreviewViewTouchListener.setCustomTouchListener { delta ->
-            zoomState.value?.let {
-                val currentZoomRatio = it.zoomRatio
-                cameraControl.setZoomRatio(currentZoomRatio * delta)
+        cameraXPreviewViewTouchListener.setCustomTouchListener(object : PreviewTouchListener.CustomTouchListener{
+            override fun zoom(delta: Float) {
+                zoomState.value?.let {
+                    val currentZoomRatio = it.zoomRatio
+                    cameraControl.setZoomRatio(currentZoomRatio * delta)
+                }
             }
-        }
+
+            override fun focus(pointX: Float, pointY: Float) {
+                cameraFocus(pointX, pointY)
+            }
+        })
         pvCamera.setOnTouchListener(cameraXPreviewViewTouchListener)
+    }
+
+    private fun cameraFocus(pointX: Float, pointY: Float) {
+        val factory = SurfaceOrientedMeteringPointFactory(
+            scanSize.width.toFloat(),
+            scanSize.height.toFloat()
+        )
+        val point = factory.createPoint(pointX, pointY)
+        val action = FocusMeteringAction.Builder(point, FocusMeteringAction.FLAG_AF)
+            // auto calling cancelFocusAndMetering in 4 seconds
+            .setAutoCancelDuration(4, TimeUnit.SECONDS)
+            .build()
+
+        cameraControl.startFocusAndMetering(action)
     }
 
     /**

@@ -1,13 +1,13 @@
 package com.yxingdemo;
 
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatButton;
 
 import com.yxing.ScanCodeActivity;
 
 /**
+ * @author am
  */
 public class MyScanActivity extends ScanCodeActivity {
 

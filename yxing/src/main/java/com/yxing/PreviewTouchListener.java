@@ -12,22 +12,9 @@ public class PreviewTouchListener implements View.OnTouchListener {
 
     public PreviewTouchListener(Context context) {
         mScaleGestureDetector = new ScaleGestureDetector(context, onScaleGestureListener);
+        mGestureDetector = new GestureDetector(context, this);
+        mGestureDetector.setOnDoubleTapListener(onDoubleTapListener);
     }
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        mScaleGestureDetector.onTouchEvent(event);
-        return true;
-    }
-
-    public interface CustomTouchListener {
-        /**
-         * 放大
-         */
-        void zoom(float delta);
-    }
-
-    private CustomTouchListener mCustomTouchListener;
 
     public void setCustomTouchListener(CustomTouchListener customTouchListener) {
         mCustomTouchListener = customTouchListener;
@@ -46,4 +33,77 @@ public class PreviewTouchListener implements View.OnTouchListener {
             return true;
         }
     };
+
+
+    /**
+     * 单击监听
+     */
+    GestureDetector.OnDoubleTapListener onDoubleTapListener = new GestureDetector.OnDoubleTapListener() {
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent motionEvent) {
+            if (mCustomTouchListener != null) {
+                mCustomTouchListener.focus(motionEvent.getX(), motionEvent.getY());
+            }
+            return true;
+        }
+
+        @Override
+        public boolean onDoubleTap(MotionEvent motionEvent) {
+            return true;
+        }
+
+        @Override
+        public boolean onDoubleTapEvent(MotionEvent motionEvent) {
+            return true;
+        }
+    };
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        return mScaleGestureDetector.onTouchEvent(event) | mGestureDetector.onTouchEvent(event);
+    }
+
+    @Override
+    public boolean onDown(MotionEvent motionEvent) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent motionEvent) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+        return false;
+    }
+
+    public interface CustomTouchListener {
+        /**
+         * 放大
+         */
+        void zoom(float delta);
+
+        /** 对焦
+         * @param pointX 点击x坐标
+         * @param pointY 点击y坐标
+         */
+        void focus(float pointX, float pointY);
+    }
+
 }
