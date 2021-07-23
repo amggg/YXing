@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
             Bundle extras = data.getExtras();
             if(extras != null){
                 String code = extras.getString(ScanCodeConfig.CODE_KEY);
-                tvCode.setText(String.format("%s%s", "结果： " , code));
+                tvCode.setText(String.format("扫码结果： %s", code));
             }
         }
     }
