@@ -2,12 +2,13 @@ package com.yxing.view.base;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 
-public class BaseScanView extends View {
+public abstract class BaseScanView extends View {
 
     protected ValueAnimator valueAnimator;
 
@@ -22,6 +23,8 @@ public class BaseScanView extends View {
     public BaseScanView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
+
+    public abstract Rect getScanRect();
 
     public void startAnim(){}
 

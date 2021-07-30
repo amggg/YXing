@@ -127,7 +127,7 @@ open class ScanCodeActivity : BaseScanActivity(){
                 .setTargetRotation(rotation)
                 .build()
                 .apply {
-                    setAnalyzer(cameraExecutor, ScanCodeAnalyzer(this@ScanCodeActivity, scModel, object : OnScancodeListenner{
+                    setAnalyzer(cameraExecutor, ScanCodeAnalyzer(this@ScanCodeActivity, scModel, baseScanView?.scanRect, object : OnScancodeListenner{
                         override fun onBackCode(code: String) {
                             val intent = Intent()
                             intent.putExtra(ScanCodeConfig.CODE_KEY, code)

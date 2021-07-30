@@ -13,7 +13,7 @@ import com.yxing.utils.AudioUtil
 import java.nio.ByteBuffer
 import java.util.*
 
-class ScanCodeAnalyzer(mActivity: Activity, val scanCodeModel: ScanCodeModel, val onScancodeListenner: OnScancodeListenner) : ImageAnalysis.Analyzer  {
+class ScanCodeAnalyzer(mActivity: Activity, val scanCodeModel: ScanCodeModel, val scanRect : Rect?, val onScancodeListenner: OnScancodeListenner) : ImageAnalysis.Analyzer  {
 
     private val audioUtil : AudioUtil = AudioUtil(mActivity, scanCodeModel.audioId)
     private val reader: MultiFormatReader = initReader()
@@ -54,11 +54,21 @@ class ScanCodeAnalyzer(mActivity: Activity, val scanCodeModel: ScanCodeModel, va
                 rotationData[j] = data[k]
             }
         }
-        val source = PlanarYUVLuminanceSource(rotationData, height, width, 0, 0, height, width, false)
+        var scanLeft = 0
+        var scanTop = 0
+        var scanWidth = height
+        var scanHeight = width
+        if (scanCodeModel.isLimitRect && scanRect != null){
+            scanLeft = scanRect.left
+            scanTop = scanRect.top
+            scanWidth = scanRect.height()
+            scanHeight = scanRect.width()
+        }
+        val source = PlanarYUVLuminanceSource(rotationData, height, width, scanLeft, scanTop, scanWidth, scanHeight, false)
         val bitmap = BinaryBitmap(HybridBinarizer(source))
         try {
             val result = reader.decode(bitmap)
-            if (scanCodeModel?.isPlayAudio!!)   audioUtil.playBeepSoundAndVibrate()
+            if (scanCodeModel.isPlayAudio)   audioUtil.playBeepSoundAndVibrate()
             onScancodeListenner.onBackCode(result.text)
         } catch (e: Exception) {
             image.close()

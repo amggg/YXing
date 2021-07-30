@@ -8,7 +8,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.Nullable;
@@ -55,6 +54,11 @@ public class ScanCustomizeView extends BaseScanView {
     public ScanCustomizeView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
+    }
+
+    @Override
+    public Rect getScanRect() {
+        return scanRect;
     }
 
     public void setScanCodeModel(ScanCodeModel scanCodeModel) {

@@ -21,7 +21,9 @@ import com.google.zxing.BarcodeFormat;
 import java.util.EnumSet;
 import java.util.Set;
 
-//用于存放解码类型分类
+/**
+ * @author am
+ */
 public final class DecodeFormatManager {
 
     public static final Set<BarcodeFormat> PRODUCT_FORMATS;

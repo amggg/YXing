@@ -4,9 +4,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.BitmapShader;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -16,7 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.example.yxing.R;
-import com.yxing.ScanCodeModel;
 import com.yxing.utils.SizeUtils;
 import com.yxing.view.base.BaseScanView;
 
@@ -51,6 +48,11 @@ public class ScanQQView extends BaseScanView {
     public ScanQQView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
+    }
+
+    @Override
+    public Rect getScanRect() {
+        return scanRect;
     }
 
     private void init() {

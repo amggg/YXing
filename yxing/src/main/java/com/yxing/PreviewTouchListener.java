@@ -6,9 +6,14 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 
-public class PreviewTouchListener implements View.OnTouchListener {
+/**
+ * @author am
+ */
+public class PreviewTouchListener implements View.OnTouchListener,GestureDetector.OnGestureListener {
 
-    private ScaleGestureDetector mScaleGestureDetector;
+    private final ScaleGestureDetector mScaleGestureDetector;
+    private GestureDetector mGestureDetector;
+    private CustomTouchListener mCustomTouchListener;
 
     public PreviewTouchListener(Context context) {
         mScaleGestureDetector = new ScaleGestureDetector(context, onScaleGestureListener);

@@ -9,14 +9,17 @@ import androidx.fragment.app.Fragment;
 
 import com.yxing.utils.QrCodeUtil;
 
+/**
+ * @author am
+ */
 public class ScanCodeConfig {
     public static final int QUESTCODE = 0x001;
     public static final String CODE_KEY = "code";
     public static final String MODEL_KEY = "model";
 
-    private Activity mActivity;
-    private Fragment mFragment;
-    private ScanCodeModel model;
+    private final Activity mActivity;
+    private final Fragment mFragment;
+    private final ScanCodeModel model;
 
     public ScanCodeConfig (ScanCodeModel model){
         this.mActivity = model.mActivity;

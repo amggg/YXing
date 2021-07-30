@@ -45,6 +45,11 @@ public class ScanWechatView extends BaseScanView {
         init();
     }
 
+    @Override
+    public Rect getScanRect() {
+        return scanRect;
+    }
+
     private void init() {
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         scanLine = BitmapFactory.decodeResource(getResources(),

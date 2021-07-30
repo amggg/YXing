@@ -20,6 +20,7 @@ public class ScanCodeModel implements Parcelable {
     private boolean isPlayAudio;
     private int audioId;
     private boolean showFrame;
+    private boolean isLimitRect;
     private ScanRect scanRect;
     private int scanSize;
     private int offsetX;
@@ -49,6 +50,7 @@ public class ScanCodeModel implements Parcelable {
         isPlayAudio = in.readByte() != 0;
         audioId = in.readInt();
         showFrame = in.readByte() != 0;
+        isLimitRect = in.readByte() != 0;
         scanRect = in.readParcelable(ScanRect.class.getClassLoader());
         scanSize = in.readInt();
         offsetX = in.readInt();
@@ -71,6 +73,7 @@ public class ScanCodeModel implements Parcelable {
         dest.writeByte((byte) (isPlayAudio ? 1 : 0));
         dest.writeInt(audioId);
         dest.writeByte((byte) (showFrame ? 1 : 0));
+        dest.writeByte((byte)(isLimitRect ? 1 : 0));
         dest.writeParcelable(scanRect, flags);
         dest.writeInt(scanSize);
         dest.writeInt(offsetX);
@@ -154,6 +157,15 @@ public class ScanCodeModel implements Parcelable {
 
     public ScanCodeModel setShowFrame(boolean showFrame) {
         this.showFrame = showFrame;
+        return this;
+    }
+
+    public boolean isLimitRect() {
+        return isLimitRect;
+    }
+
+    public ScanCodeModel setLimitRect(boolean limitRect) {
+        this.isLimitRect = limitRect;
         return this;
     }
 

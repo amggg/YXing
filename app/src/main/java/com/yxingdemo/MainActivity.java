@@ -4,9 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.RadioGroup;
 
@@ -21,7 +19,6 @@ import com.tbruyelle.rxpermissions3.Permission;
 import com.tbruyelle.rxpermissions3.RxPermissions;
 import com.yxing.ScanCodeActivity;
 import com.yxing.ScanCodeConfig;
-import com.yxing.bean.ScanRect;
 import com.yxing.def.ScanMode;
 import com.yxing.def.ScanStyle;
 import com.yxing.utils.QrCodeUtil;
@@ -169,6 +166,8 @@ public class MainActivity extends AppCompatActivity {
                                     //以下配置 在style为 ScanStyle.CUSTOMIZE 时生效
                                     //设置扫码框位置  left ： 边框左边位置   top ： 边框上边位置   right ： 边框右边位置   bottom ： 边框下边位置   单位/dp
 //                                    .setScanRect(new ScanRect(50, 200, 300, 450), false)
+                                    //是否限制识别区域为设定扫码框大小  true:限制  false：不限制   默认false：识别区域为整个屏幕
+                                    .setLimitRect(true)
                                     //设置扫码框位置 scanSize : 扫码框大小   offsetX ： x轴偏移量    offsetY ：y轴偏移量   单位 /px
                                     .setScanSize(800, 0, -200)
                                     //是否显示边框上四个角标 true ： 显示  false ： 不显示
