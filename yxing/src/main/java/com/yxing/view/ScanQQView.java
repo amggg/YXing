@@ -72,7 +72,7 @@ public class ScanQQView extends BaseScanView {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         scanMaginWith = getMeasuredWidth() / 10;
         scanMaginheight = getMeasuredHeight() >> 2;
-        scanWith = getMeasuredWidth() - 2*scanMaginWith;
+        scanWith = getMeasuredWidth() - 2 * scanMaginWith;
     }
 
     @Override
@@ -84,7 +84,6 @@ public class ScanQQView extends BaseScanView {
         lineRect.set(scanMaginWith, scanLineTop, getWidth() - scanMaginWith, scanLineTop + bitmapHigh);
         canvas.drawBitmap(scanLine, null, lineRect, paint);
     }
-
 
 
     /**
@@ -130,7 +129,7 @@ public class ScanQQView extends BaseScanView {
 
     @Override
     public void startAnim() {
-        if(valueAnimator == null) {
+        if (valueAnimator == null) {
             valueAnimator = ValueAnimator.ofInt(scanRect.top - bitmapHigh, scanRect.bottom - bitmapHigh);
             valueAnimator.setRepeatCount(ValueAnimator.INFINITE);
             valueAnimator.setRepeatMode(ValueAnimator.RESTART);
@@ -149,7 +148,7 @@ public class ScanQQView extends BaseScanView {
 
     @Override
     public void cancelAnim() {
-        if(valueAnimator != null){
+        if (valueAnimator != null) {
             valueAnimator.cancel();
         }
     }

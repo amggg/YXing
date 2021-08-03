@@ -1,108 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:orientation="vertical"
-    >
+    android:fillViewport="true">
 
-    <RadioGroup
-        android:id="@+id/rg_parent"
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <RadioButton
-            android:id="@+id/rb_none"
-            android:layout_width="wrap_content"
+        <RadioGroup
+            android:id="@+id/rg_parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/rb_none"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="无"
+                android:checked="true" />
+
+            <RadioButton
+                android:id="@+id/rb_qq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="QQ" />
+
+            <RadioButton
+                android:id="@+id/rb_wechat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="WeChat" />
+
+        </RadioGroup>
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_scan"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="无"
-            android:checked="true"
-            />
+            android:text="scan" />
 
-        <RadioButton
-            android:id="@+id/rb_qq"
-            android:layout_width="wrap_content"
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_scantwo"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="QQ"
-            />
+            android:text="配置 ScanStyle.CUSTOMIZE  scan"
+            android:textAllCaps="false" />
 
-        <RadioButton
-            android:id="@+id/rb_wechat"
-            android:layout_width="wrap_content"
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_scanmystyle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="WeChat"
-            />
-
-    </RadioGroup>
+            android:text="自定义界面scan" />
 
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_scan"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="scan"
-        />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_scantwo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="配置 ScanStyle.CUSTOMIZE  scan"
-        android:textAllCaps="false"
-        />
+        <RadioGroup
+            android:id="@+id/rg_codecolor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rb_black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="默认"
+                android:checked="true" />
+
+            <RadioButton
+                android:id="@+id/rb_green"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="绿码"
+                android:layout_marginStart="10dp" />
+
+            <RadioButton
+                android:id="@+id/rb_red"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="红码"
+                android:layout_marginStart="10dp" />
+
+        </RadioGroup>
 
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_scanmystyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="自定义界面scan"
-        />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_buildcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="生成单独二维码（大小 颜色可配置）" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_buildlogocode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="生成带logo二维码（大小 颜色 圆角可配置）" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_buildstorklogocode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="生成带描边logo二维码（logo 描边 大小 颜色 圆角可配置）" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_buildbarcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="生成条形码（大小 颜色 内容是否显示可配置）" />
 
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_code"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_buildcode"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="生成单独二维码（大小可配置）"
-        />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_buildlogocode"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="生成带logo二维码（大小 圆角可配置）"
-        />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_buildstorklogocode"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="生成带描边logo二维码（logo、描边 大小，圆角可配置）"
-        />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_buildbarcode"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="生成条形码（大小 内容是否显示可配置）"
-        />
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/ivcode"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-</androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.core.widget.NestedScrollView>

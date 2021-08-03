@@ -9,7 +9,7 @@ import android.view.View;
 /**
  * @author am
  */
-public class PreviewTouchListener implements View.OnTouchListener,GestureDetector.OnGestureListener {
+public class PreviewTouchListener implements View.OnTouchListener, GestureDetector.OnGestureListener {
 
     private final ScaleGestureDetector mScaleGestureDetector;
     private GestureDetector mGestureDetector;
@@ -104,7 +104,9 @@ public class PreviewTouchListener implements View.OnTouchListener,GestureDetecto
          */
         void zoom(float delta);
 
-        /** 对焦
+        /**
+         * 对焦
+         *
          * @param pointX 点击x坐标
          * @param pointY 点击y坐标
          */

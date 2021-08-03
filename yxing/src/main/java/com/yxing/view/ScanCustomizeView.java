@@ -84,29 +84,31 @@ public class ScanCustomizeView extends BaseScanView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if(scanCodeModel.getScanSize() != 0){
+        if (scanCodeModel.getScanSize() != 0) {
             scanRect.set((getWidth() >> 1) - (scanCodeModel.getScanSize() >> 1) + scanCodeModel.getOffsetX(), (getHeight() >> 1) - (scanCodeModel.getScanSize() >> 1) + scanCodeModel.getOffsetY(), (getWidth() >> 1) + (scanCodeModel.getScanSize() >> 1) + scanCodeModel.getOffsetX(), (getHeight() >> 1) + (scanCodeModel.getScanSize() >> 1) + scanCodeModel.getOffsetY());
-        }else if(sRect != null){
-            if(scanCodeModel.isUsePx()){
+        } else if (sRect != null) {
+            if (scanCodeModel.isUsePx()) {
                 scanRect.set(sRect.getLeft(), sRect.getTop(), sRect.getRight(), sRect.getBottom());
-            }else{
+            } else {
                 scanRect.set(SizeUtils.dp2px(getContext(), sRect.getLeft()), SizeUtils.dp2px(getContext(), sRect.getTop()), SizeUtils.dp2px(getContext(), sRect.getRight()), SizeUtils.dp2px(getContext(), sRect.getBottom()));
             }
         }
-        if(scanCodeModel.isShowFrame()){
+        if (scanCodeModel.isShowFrame()) {
             drawFrameBounds(canvas, scanRect);
         }
-        if(scanCodeModel.isShowShadow()){
+        if (scanCodeModel.isShowShadow()) {
             drawShadow(canvas, scanRect);
         }
-        if(scanLine != null){
+        if (scanLine != null) {
             startAnim();
             lineRect.set(scanRect.left, scanLineTop, scanRect.right, scanLineTop + bitmapHigh);
             canvas.drawBitmap(scanLine, null, lineRect, paint);
         }
     }
 
-    /** 绘制阴影
+    /**
+     * 绘制阴影
+     *
      * @param canvas
      * @param frame
      */
@@ -157,7 +159,7 @@ public class ScanCustomizeView extends BaseScanView {
 
     @Override
     public void startAnim() {
-        if(valueAnimator == null) {
+        if (valueAnimator == null) {
             valueAnimator = ValueAnimator.ofInt(scanRect.top - bitmapHigh, scanRect.bottom - bitmapHigh);
             valueAnimator.setRepeatCount(ValueAnimator.INFINITE);
             valueAnimator.setRepeatMode(scanCodeModel.getScanMode() == 0 ? ValueAnimator.RESTART : scanCodeModel.getScanMode());
@@ -176,7 +178,7 @@ public class ScanCustomizeView extends BaseScanView {
 
     @Override
     public void cancelAnim() {
-        if(valueAnimator != null){
+        if (valueAnimator != null) {
             valueAnimator.cancel();
         }
     }

@@ -22,20 +22,20 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-open class ScanCodeActivity : BaseScanActivity(){
+open class ScanCodeActivity : BaseScanActivity() {
 
-    private var lensFacing : Int = CameraSelector.LENS_FACING_BACK
-    private lateinit var scanSize : Size
+    private var lensFacing: Int = CameraSelector.LENS_FACING_BACK
+    private lateinit var scanSize: Size
     private lateinit var mImageCapture: ImageCapture
-    private lateinit var camera : Camera
-    private lateinit var preview : Preview
-    private lateinit var imageAnalyzer : ImageAnalysis
-    private lateinit var cameraControl : CameraControl
-    private lateinit var mCameraInfo : CameraInfo
-    private lateinit var cameraExecutor : ExecutorService
-    private var baseScanView : BaseScanView? = null
-    private var rlParentContent : RelativeLayout? = null
-    private lateinit var scModel : ScanCodeModel
+    private lateinit var camera: Camera
+    private lateinit var preview: Preview
+    private lateinit var imageAnalyzer: ImageAnalysis
+    private lateinit var cameraControl: CameraControl
+    private lateinit var mCameraInfo: CameraInfo
+    private lateinit var cameraExecutor: ExecutorService
+    private var baseScanView: BaseScanView? = null
+    private var rlParentContent: RelativeLayout? = null
+    private lateinit var scModel: ScanCodeModel
 
     companion object {
         private const val TAG = "YXing"
@@ -43,7 +43,7 @@ open class ScanCodeActivity : BaseScanActivity(){
         private const val RATIO_16_9_VALUE = 16.0 / 9.0
     }
 
-    override fun getLayoutId() : Int = R.layout.activity_scancode
+    override fun getLayoutId(): Int = R.layout.activity_scancode
 
     override fun initData() {
         scModel = intent?.extras?.getParcelable(ScanCodeConfig.MODEL_KEY)!!
@@ -57,14 +57,17 @@ open class ScanCodeActivity : BaseScanActivity(){
         }
     }
 
-    fun setFlashStatus(isOpenFlash : Boolean){
+    fun setFlashStatus(isOpenFlash: Boolean) {
         cameraControl.enableTorch(isOpenFlash)
     }
 
     private fun addScanView(style: Int?) {
         rlParentContent = findViewById(R.id.rlparent)
-        val lp : RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
-        when (style){
+        val lp: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(
+            RelativeLayout.LayoutParams.MATCH_PARENT,
+            RelativeLayout.LayoutParams.MATCH_PARENT
+        )
+        when (style) {
             ScanStyle.QQ -> {
                 baseScanView = ScanQQView(this)
             }
@@ -127,14 +130,21 @@ open class ScanCodeActivity : BaseScanActivity(){
                 .setTargetRotation(rotation)
                 .build()
                 .apply {
-                    setAnalyzer(cameraExecutor, ScanCodeAnalyzer(this@ScanCodeActivity, scModel, baseScanView?.scanRect, object : OnScancodeListenner{
-                        override fun onBackCode(code: String) {
-                            val intent = Intent()
-                            intent.putExtra(ScanCodeConfig.CODE_KEY, code)
-                            setResult(Activity.RESULT_OK, intent)
-                            finish()
-                        }
-                    }))
+                    setAnalyzer(
+                        cameraExecutor,
+                        ScanCodeAnalyzer(
+                            this@ScanCodeActivity,
+                            scModel,
+                            baseScanView?.scanRect,
+                            object : OnScancodeListenner {
+                                override fun onBackCode(code: String) {
+                                    val intent = Intent()
+                                    intent.putExtra(ScanCodeConfig.CODE_KEY, code)
+                                    setResult(Activity.RESULT_OK, intent)
+                                    finish()
+                                }
+                            })
+                    )
                 }
 
             // 必须在重新绑定用例之前取消之前绑定
@@ -142,7 +152,8 @@ open class ScanCodeActivity : BaseScanActivity(){
             try {
                 //获取相机实例
                 camera = cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, mImageCapture, imageAnalyzer)
+                    this, cameraSelector, preview, mImageCapture, imageAnalyzer
+                )
                 //设置预览的view
                 preview.setSurfaceProvider(pvCamera.surfaceProvider)
                 cameraControl = camera.cameraControl
@@ -160,7 +171,8 @@ open class ScanCodeActivity : BaseScanActivity(){
         val zoomState = mCameraInfo.zoomState
         val cameraXPreviewViewTouchListener =
             PreviewTouchListener(this)
-        cameraXPreviewViewTouchListener.setCustomTouchListener(object : PreviewTouchListener.CustomTouchListener{
+        cameraXPreviewViewTouchListener.setCustomTouchListener(object :
+            PreviewTouchListener.CustomTouchListener {
             override fun zoom(delta: Float) {
                 zoomState.value?.let {
                     val currentZoomRatio = it.zoomRatio

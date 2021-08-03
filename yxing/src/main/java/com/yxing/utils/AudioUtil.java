@@ -48,6 +48,7 @@ public class AudioUtil implements MediaPlayer.OnCompletionListener,
 
     /**
      * 创建MediaPlayer
+     *
      * @param activity
      * @return
      */

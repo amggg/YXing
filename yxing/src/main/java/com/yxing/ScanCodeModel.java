@@ -35,11 +35,11 @@ public class ScanCodeModel implements Parcelable {
     private int frameLenth;
     private int frameRaduis;
 
-    public ScanCodeModel(Activity mActivity){
+    public ScanCodeModel(Activity mActivity) {
         this.mActivity = mActivity;
     }
 
-    public ScanCodeModel(Activity mActivity, Fragment mFragment){
+    public ScanCodeModel(Activity mActivity, Fragment mFragment) {
         this.mActivity = mActivity;
         this.mFragment = mFragment;
     }
@@ -73,7 +73,7 @@ public class ScanCodeModel implements Parcelable {
         dest.writeByte((byte) (isPlayAudio ? 1 : 0));
         dest.writeInt(audioId);
         dest.writeByte((byte) (showFrame ? 1 : 0));
-        dest.writeByte((byte)(isLimitRect ? 1 : 0));
+        dest.writeByte((byte) (isLimitRect ? 1 : 0));
         dest.writeParcelable(scanRect, flags);
         dest.writeInt(scanSize);
         dest.writeInt(offsetX);
@@ -208,7 +208,7 @@ public class ScanCodeModel implements Parcelable {
         return this;
     }
 
-    public ScanCodeModel setScanRect(ScanRect scanRect, boolean isUsePx){
+    public ScanCodeModel setScanRect(ScanRect scanRect, boolean isUsePx) {
         this.scanRect = scanRect;
         this.usePx = isUsePx;
         return this;
@@ -286,7 +286,7 @@ public class ScanCodeModel implements Parcelable {
         return this;
     }
 
-    public ScanCodeConfig buidler(){
+    public ScanCodeConfig buidler() {
         return new ScanCodeConfig(this);
     }
 }

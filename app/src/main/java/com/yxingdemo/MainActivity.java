@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RadioGroup;
@@ -21,7 +22,6 @@ import com.yxing.ScanCodeActivity;
 import com.yxing.ScanCodeConfig;
 import com.yxing.def.ScanMode;
 import com.yxing.def.ScanStyle;
-import com.yxing.utils.QrCodeUtil;
 import com.yxing.utils.SizeUtils;
 
 import io.reactivex.rxjava3.annotations.NonNull;
@@ -33,7 +33,7 @@ import io.reactivex.rxjava3.disposables.Disposable;
  */
 public class MainActivity extends AppCompatActivity {
 
-    private RadioGroup rgParent;
+    private RadioGroup rgParent, rgCodeColor;
     private AppCompatButton btnScan, btnTwoScan, btnScanMystyle;
     private AppCompatTextView tvCode;
     private AppCompatImageView ivCode;
@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         rgParent = findViewById(R.id.rg_parent);
+        rgCodeColor = findViewById(R.id.rg_codecolor);
         btnScan = findViewById(R.id.btn_scan);
         btnTwoScan = findViewById(R.id.btn_scantwo);
         btnScanMystyle = findViewById(R.id.btn_scanmystyle);
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 int checkedRadioButtonId = rgParent.getCheckedRadioButtonId();
-                switch (checkedRadioButtonId){
+                switch (checkedRadioButtonId) {
                     case R.id.rb_none:
                         startScan(ScanStyle.NONE, ScanCodeActivity.class);
                         break;
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 int checkedRadioButtonId = rgParent.getCheckedRadioButtonId();
-                switch (checkedRadioButtonId){
+                switch (checkedRadioButtonId) {
                     case R.id.rb_none:
                         startScan(ScanStyle.NONE, MyScanActivity.class);
                         break;
@@ -112,7 +113,20 @@ public class MainActivity extends AppCompatActivity {
         btnBuildCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bitmap bitmap = ScanCodeConfig.createQRCode("star");
+                int checkedRadioButtonId = rgCodeColor.getCheckedRadioButtonId();
+                Bitmap bitmap = null;
+                switch (checkedRadioButtonId) {
+                    case R.id.rb_green:
+                        bitmap = ScanCodeConfig.createQRCode("star", 500, ContextCompat.getColor(MainActivity.this, R.color.green), Color.WHITE);
+                        break;
+                    case R.id.rb_red:
+                        bitmap = ScanCodeConfig.createQRCode("star", 500, Color.RED, Color.WHITE);
+                        break;
+                    case R.id.rb_black:
+                    default:
+                        bitmap = ScanCodeConfig.createQRCode("star", 500, Color.BLACK, Color.WHITE);
+                        break;
+                }
                 ivCode.setImageBitmap(bitmap);
             }
         });
@@ -121,7 +135,20 @@ public class MainActivity extends AppCompatActivity {
         btnBuildLogoCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bitmap bitmap = ScanCodeConfig.createQRcodeWithLogo("star", SizeUtils.dp2px(getApplicationContext(), 200), BitmapFactory.decodeResource(getResources(), R.mipmap.timg), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 10));
+                int checkedRadioButtonId = rgCodeColor.getCheckedRadioButtonId();
+                Bitmap bitmap = null;
+                switch (checkedRadioButtonId) {
+                    case R.id.rb_green:
+                        bitmap = ScanCodeConfig.createQRcodeWithLogo("star", SizeUtils.dp2px(getApplicationContext(), 200), ContextCompat.getColor(MainActivity.this, R.color.green), Color.WHITE, BitmapFactory.decodeResource(getResources(), R.mipmap.timg), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 10));
+                        break;
+                    case R.id.rb_red:
+                        bitmap = ScanCodeConfig.createQRcodeWithLogo("star", SizeUtils.dp2px(getApplicationContext(), 200), Color.RED, Color.WHITE, BitmapFactory.decodeResource(getResources(), R.mipmap.timg), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 10));
+                        break;
+                    case R.id.rb_black:
+                    default:
+                        bitmap = ScanCodeConfig.createQRcodeWithLogo("star", SizeUtils.dp2px(getApplicationContext(), 200), Color.BLACK, Color.WHITE, BitmapFactory.decodeResource(getResources(), R.mipmap.timg), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 10));
+                        break;
+                }
                 ivCode.setImageBitmap(bitmap);
             }
         });
@@ -130,7 +157,20 @@ public class MainActivity extends AppCompatActivity {
         btnBuildStorkLogoCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bitmap bitmap = ScanCodeConfig.createQRcodeWithStrokLogo("star", SizeUtils.dp2px(getApplicationContext(), 200), BitmapFactory.decodeResource(getResources(), R.mipmap.timg), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 2), ContextCompat.getColor(MainActivity.this, R.color.colorAccent));
+                int checkedRadioButtonId = rgCodeColor.getCheckedRadioButtonId();
+                Bitmap bitmap = null;
+                switch (checkedRadioButtonId) {
+                    case R.id.rb_green:
+                        bitmap = ScanCodeConfig.createQRcodeWithStrokLogo("star", SizeUtils.dp2px(getApplicationContext(), 200), ContextCompat.getColor(MainActivity.this, R.color.green), Color.WHITE, BitmapFactory.decodeResource(getResources(), R.mipmap.timg), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 2), ContextCompat.getColor(MainActivity.this, R.color.colorAccent));
+                        break;
+                    case R.id.rb_red:
+                        bitmap = ScanCodeConfig.createQRcodeWithStrokLogo("star", SizeUtils.dp2px(getApplicationContext(), 200), Color.RED, Color.WHITE, BitmapFactory.decodeResource(getResources(), R.mipmap.timg), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 2), ContextCompat.getColor(MainActivity.this, R.color.colorAccent));
+                        break;
+                    case R.id.rb_black:
+                    default:
+                        bitmap = ScanCodeConfig.createQRcodeWithStrokLogo("star", SizeUtils.dp2px(getApplicationContext(), 200), Color.BLACK, Color.WHITE, BitmapFactory.decodeResource(getResources(), R.mipmap.timg), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 2), ContextCompat.getColor(MainActivity.this, R.color.colorAccent));
+                        break;
+                }
                 ivCode.setImageBitmap(bitmap);
             }
         });
@@ -139,8 +179,21 @@ public class MainActivity extends AppCompatActivity {
         btnBuildBarCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bitmap barCode = QrCodeUtil.createBarcode("23423423523", 500, 200, true);
-                ivCode.setImageBitmap(barCode);
+                int checkedRadioButtonId = rgCodeColor.getCheckedRadioButtonId();
+                Bitmap bitmap = null;
+                switch (checkedRadioButtonId) {
+                    case R.id.rb_green:
+                        bitmap = ScanCodeConfig.createBarcode("23423423523", 500, 200, ContextCompat.getColor(MainActivity.this, R.color.green), Color.WHITE, Color.BLACK, true);
+                        break;
+                    case R.id.rb_red:
+                        bitmap = ScanCodeConfig.createBarcode("23423423523", 500, 200, Color.RED, Color.WHITE, Color.BLACK, true);
+                        break;
+                    case R.id.rb_black:
+                    default:
+                        bitmap = ScanCodeConfig.createBarcode("23423423523", 500, 200, Color.BLACK, Color.WHITE, Color.BLACK, true);
+                        break;
+                }
+                ivCode.setImageBitmap(bitmap);
             }
         });
     }
@@ -152,9 +205,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {
                     }
+
                     @Override
                     public void onNext(@NonNull Permission permission) {
-                        if(permission.granted){
+                        if (permission.granted) {
                             ScanCodeConfig.create(MainActivity.this)
                                     //设置扫码页样式 ScanStyle.NONE：无  ScanStyle.QQ ：仿QQ样式   ScanStyle.WECHAT ：仿微信样式  ScanStyle.CUSTOMIZE ： 自定义样式
                                     .setStyle(ScanStyle.CUSTOMIZE)
@@ -196,9 +250,11 @@ public class MainActivity extends AppCompatActivity {
                                     .start(MyScanActivity.class);
                         }
                     }
+
                     @Override
                     public void onError(@NonNull Throwable e) {
                     }
+
                     @Override
                     public void onComplete() {
                     }
@@ -213,9 +269,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {
                     }
+
                     @Override
                     public void onNext(@NonNull Permission permission) {
-                        if(permission.granted){
+                        if (permission.granted) {
                             ScanCodeConfig.create(MainActivity.this)
                                     //设置扫码页样式 ScanStyle.NONE：无  ScanStyle.QQ ：仿QQ样式   ScanStyle.WECHAT ：仿微信样式
                                     .setStyle(style)
@@ -226,9 +283,11 @@ public class MainActivity extends AppCompatActivity {
                                     .start(mClass);
                         }
                     }
+
                     @Override
                     public void onError(@NonNull Throwable e) {
                     }
+
                     @Override
                     public void onComplete() {
                     }
@@ -240,9 +299,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //接收扫码结果
-        if(resultCode == RESULT_OK && requestCode == ScanCodeConfig.QUESTCODE && data != null){
+        if (resultCode == RESULT_OK && requestCode == ScanCodeConfig.QUESTCODE && data != null) {
             Bundle extras = data.getExtras();
-            if(extras != null){
+            if (extras != null) {
                 String code = extras.getString(ScanCodeConfig.CODE_KEY);
                 tvCode.setText(String.format("扫码结果： %s", code));
             }

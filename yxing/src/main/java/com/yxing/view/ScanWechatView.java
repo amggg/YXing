@@ -9,7 +9,9 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.animation.LinearInterpolator;
+
 import androidx.annotation.Nullable;
+
 import com.example.yxing.R;
 import com.yxing.view.base.BaseScanView;
 
@@ -80,7 +82,7 @@ public class ScanWechatView extends BaseScanView {
 
     @Override
     public void startAnim() {
-        if(valueAnimator == null) {
+        if (valueAnimator == null) {
             valueAnimator = ValueAnimator.ofInt(scanRect.top, scanRect.bottom);
             valueAnimator.setRepeatCount(ValueAnimator.INFINITE);
             valueAnimator.setRepeatMode(ValueAnimator.RESTART);
@@ -101,7 +103,7 @@ public class ScanWechatView extends BaseScanView {
 
     @Override
     public void cancelAnim() {
-        if(valueAnimator != null){
+        if (valueAnimator != null) {
             valueAnimator.cancel();
         }
     }

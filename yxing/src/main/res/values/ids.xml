@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="rlparent" type="id"/>
+    <item name="rlparent" type="id" />
 </resources>

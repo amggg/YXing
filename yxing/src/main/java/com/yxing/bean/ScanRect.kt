@@ -3,7 +3,7 @@ package com.yxing.bean
 import android.os.Parcel
 import android.os.Parcelable
 
-class ScanRect(val left : Int, val top : Int, val right : Int, val bottom : Int) : Parcelable{
+class ScanRect(val left: Int, val top: Int, val right: Int, val bottom: Int) : Parcelable {
 
     constructor(parcel: Parcel) : this(
         parcel.readInt(),

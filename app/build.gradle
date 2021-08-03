@@ -39,7 +39,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    implementation project(path : ":yxing")
+    implementation project(path: ":yxing")
     def rxandroidVersion = '3.0.7'
     //rxpermissions
     implementation 'com.github.tbruyelle:rxpermissions:0.12'
