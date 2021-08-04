@@ -41,7 +41,7 @@ Fragment中启动：
 全部参数：
 ```
 
-  ScanCodeConfig.create(MainActivity.this)
+   ScanCodeConfig.create(MainActivity.this)
                                     //设置扫码页样式 ScanStyle.NONE：无  ScanStyle.QQ ：仿QQ样式   ScanStyle.WECHAT ：仿微信样式  ScanStyle.CUSTOMIZE ： 自定义样式
                                     .setStyle(ScanStyle.CUSTOMIZE)
                                     //扫码成功是否播放音效  true ： 播放   false ： 不播放
