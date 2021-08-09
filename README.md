@@ -101,7 +101,7 @@ Fragment中启动：
 
 更多功能请查看使用文档。
 
-使用文档: http://18390826440.3vkj.net/#/integraedpage
+使用文档：http://18390826440.3vkj.net/#/integraedpage
 
 简书：https://www.jianshu.com/p/c549f91cb9c5
 
