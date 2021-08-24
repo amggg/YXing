@@ -82,7 +82,7 @@ open class ScanCodeActivity : BaseScanActivity() {
                 RelativeLayout.LayoutParams.MATCH_PARENT
             )
             it.layoutParams = lp
-            rlParentContent?.addView(it)
+            rlParentContent?.addView(it, 1)
         }
     }
 
