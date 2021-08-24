@@ -8,6 +8,7 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
+import com.google.zxing.multi.GenericMultipleBarcodeReader
 import com.yxing.iface.OnScancodeListenner
 import com.yxing.utils.AudioUtil
 import java.nio.ByteBuffer
@@ -21,7 +22,15 @@ class ScanCodeAnalyzer(
 ) : ImageAnalysis.Analyzer {
 
     private val audioUtil: AudioUtil = AudioUtil(mActivity, scanCodeModel.audioId)
-    private val reader: MultiFormatReader = initReader()
+    private val reader: GenericMultipleBarcodeReader = initReader()
+    private var isAnalyze = true
+
+    /**
+     * 是否解析图像
+     */
+    fun setAnalyze(isAnalyze : Boolean){
+        this.isAnalyze = isAnalyze
+    }
 
     /**
      * 将buffer写入数组
@@ -35,63 +44,64 @@ class ScanCodeAnalyzer(
 
     //图片分析
     override fun analyze(image: ImageProxy) {
-        if (ImageFormat.YUV_420_888 != image.format) {
-            Log.e("BarcodeAnalyzer", "expect YUV_420_888, now = ${image.format}")
-            image.close()
-            return
-        }
-
-        //将buffer数据写入数组
-        val data = image.planes[0].buffer.toByteArray()
-
-        //图片宽高
-        val height = image.height
-        val width = image.width
-
-        //将图片旋转
-        val rotationData = ByteArray(data.size)
-        var j: Int
-        var k: Int
-        for (y in 0 until height) {
-            for (x in 0 until width) {
-                j = x * height + height - y - 1
-                k = x + y * width
-                rotationData[j] = data[k]
+        if (isAnalyze){
+            if (ImageFormat.YUV_420_888 != image.format) {
+                Log.e("BarcodeAnalyzer", "expect YUV_420_888, now = ${image.format}")
+                image.close()
+                return
             }
-        }
-        var scanLeft = 0
-        var scanTop = 0
-        var scanWidth = height
-        var scanHeight = width
-        if (scanCodeModel.isLimitRect && scanRect != null) {
-            scanLeft = scanRect.left
-            scanTop = scanRect.top
-            scanWidth = scanRect.height()
-            scanHeight = scanRect.width()
-        }
-        val source = PlanarYUVLuminanceSource(
-            rotationData,
-            height,
-            width,
-            scanLeft,
-            scanTop,
-            scanWidth,
-            scanHeight,
-            false
-        )
-        val bitmap = BinaryBitmap(HybridBinarizer(source))
-        try {
-            val result = reader.decode(bitmap)
-            if (scanCodeModel.isPlayAudio) audioUtil.playBeepSoundAndVibrate()
-            onScancodeListenner.onBackCode(result.text)
-        } catch (e: Exception) {
-            image.close()
-        } finally {
-            image.close()
+            //将buffer数据写入数组
+            val data = image.planes[0].buffer.toByteArray()
+
+            //图片宽高
+            val height = image.height
+            val width = image.width
+
+            //将图片旋转
+            val rotationData = ByteArray(data.size)
+            var j: Int
+            var k: Int
+            for (y in 0 until height) {
+                for (x in 0 until width) {
+                    j = x * height + height - y - 1
+                    k = x + y * width
+                    rotationData[j] = data[k]
+                }
+            }
+            var scanLeft = 0
+            var scanTop = 0
+            var scanWidth = height
+            var scanHeight = width
+            if (scanCodeModel.isLimitRect && scanRect != null) {
+                scanLeft = scanRect.left
+                scanTop = scanRect.top
+                scanWidth = scanRect.height()
+                scanHeight = scanRect.width()
+            }
+            val source = PlanarYUVLuminanceSource(
+                rotationData,
+                height,
+                width,
+                scanLeft,
+                scanTop,
+                scanWidth,
+                scanHeight,
+                false
+            )
+            val bitmap = BinaryBitmap(HybridBinarizer(source))
+            try {
+                val result = reader.decodeMultiple(bitmap)
+                if (scanCodeModel.isPlayAudio) audioUtil.playBeepSoundAndVibrate()
+                onScancodeListenner.onBackCode(result[0].text)
+            } catch (e: Exception) {
+                image.close()
+            } finally {
+                image.close()
+            }
         }
     }
 
-    private fun initReader(): MultiFormatReader {
+    private fun initReader(): GenericMultipleBarcodeReader {
         val formatReader = MultiFormatReader()
         val hints = Hashtable<DecodeHintType, Any>()
         val decodeFormats = Vector<BarcodeFormat>()
@@ -102,6 +112,6 @@ class ScanCodeAnalyzer(
         hints[DecodeHintType.POSSIBLE_FORMATS] = decodeFormats
         hints[DecodeHintType.CHARACTER_SET] = "UTF-8"
         formatReader.setHints(hints)
-        return formatReader
+        return GenericMultipleBarcodeReader(formatReader)
     }
 }

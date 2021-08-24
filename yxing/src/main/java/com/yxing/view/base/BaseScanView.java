@@ -26,7 +26,13 @@ public abstract class BaseScanView extends View {
 
     public abstract Rect getScanRect();
 
-    public void startAnim() {
+    public void initAnim() {
+    }
+
+    public void startAnim(){
+    }
+
+    public void pauseAnim(){
     }
 
     public void cancelAnim() {

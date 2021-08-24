@@ -100,7 +100,7 @@ public class ScanCustomizeView extends BaseScanView {
             drawShadow(canvas, scanRect);
         }
         if (scanLine != null) {
-            startAnim();
+            initAnim();
             lineRect.set(scanRect.left, scanLineTop, scanRect.right, scanLineTop + bitmapHigh);
             canvas.drawBitmap(scanLine, null, lineRect, paint);
         }
@@ -158,7 +158,7 @@ public class ScanCustomizeView extends BaseScanView {
     }
 
     @Override
-    public void startAnim() {
+    public void initAnim() {
         if (valueAnimator == null) {
             valueAnimator = ValueAnimator.ofInt(scanRect.top - bitmapHigh, scanRect.bottom - bitmapHigh);
             valueAnimator.setRepeatCount(ValueAnimator.INFINITE);
@@ -173,6 +173,20 @@ public class ScanCustomizeView extends BaseScanView {
                 }
             });
             valueAnimator.start();
+        }
+    }
+
+    @Override
+    public void startAnim() {
+        if (valueAnimator != null){
+            valueAnimator.start();
+        }
+    }
+
+    @Override
+    public void pauseAnim() {
+        if (valueAnimator != null){
+            valueAnimator.pause();
         }
     }
 

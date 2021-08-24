@@ -63,10 +63,6 @@ open class ScanCodeActivity : BaseScanActivity() {
 
     private fun addScanView(style: Int?) {
         rlParentContent = findViewById(R.id.rlparent)
-        val lp: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(
-            RelativeLayout.LayoutParams.MATCH_PARENT,
-            RelativeLayout.LayoutParams.MATCH_PARENT
-        )
         when (style) {
             ScanStyle.QQ -> {
                 baseScanView = ScanQQView(this)
@@ -81,6 +77,10 @@ open class ScanCodeActivity : BaseScanActivity() {
             }
         }
         baseScanView?.let {
+            val lp: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.MATCH_PARENT
+            )
             it.layoutParams = lp
             rlParentContent?.addView(it)
         }

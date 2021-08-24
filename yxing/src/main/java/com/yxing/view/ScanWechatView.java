@@ -28,7 +28,7 @@ public class ScanWechatView extends BaseScanView {
     //扫描线位置
     private int scanLineTop;
     //透明度
-    private int alpha = 100;
+    private int alpha = 255;
 
     private int bitmapHigh;
 
@@ -74,14 +74,14 @@ public class ScanWechatView extends BaseScanView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         scanRect.set(scanMaginWith, scanMaginheight, getWidth() - scanMaginWith, getHeight() - scanMaginheight);
-        startAnim();
         paint.setAlpha(alpha);
         lineRect.set(scanMaginWith, scanLineTop, getWidth() - scanMaginWith, scanLineTop + bitmapHigh);
         canvas.drawBitmap(scanLine, null, lineRect, paint);
+        initAnim();
     }
 
     @Override
-    public void startAnim() {
+    public void initAnim() {
         if (valueAnimator == null) {
             valueAnimator = ValueAnimator.ofInt(scanRect.top, scanRect.bottom);
             valueAnimator.setRepeatCount(ValueAnimator.INFINITE);
@@ -93,13 +93,28 @@ public class ScanWechatView extends BaseScanView {
                 public void onAnimationUpdate(ValueAnimator animation) {
                     scanLineTop = (int) animation.getAnimatedValue();
                     int startHideHeight = (scanRect.bottom - scanRect.top) / 6;
-                    alpha = scanRect.bottom - scanLineTop <= startHideHeight ? (int) (((double) (scanRect.bottom - scanLineTop) / startHideHeight) * 100) : 100;
+                    alpha = scanRect.bottom - scanLineTop <= startHideHeight ? (int) (((double) (scanRect.bottom - scanLineTop) / startHideHeight) * 255) : 255;
                     postInvalidate();
                 }
             });
             valueAnimator.start();
         }
     }
+
+    @Override
+    public void startAnim() {
+        if (valueAnimator != null){
+            valueAnimator.start();
+        }
+    }
+
+    @Override
+    public void pauseAnim() {
+        if (valueAnimator != null){
+            valueAnimator.pause();
+        }
+    }
+
 
     @Override
     public void cancelAnim() {
