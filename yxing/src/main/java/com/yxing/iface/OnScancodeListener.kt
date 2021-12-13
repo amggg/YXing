@@ -1,5 +1,5 @@
 package com.yxing.iface
 
-interface OnScancodeListenner {
+interface OnScancodeListener {
     fun onBackCode(code: String)
 }

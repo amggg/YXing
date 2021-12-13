@@ -10,8 +10,7 @@ class ScanRect(val left: Int, val top: Int, val right: Int, val bottom: Int) : P
         parcel.readInt(),
         parcel.readInt(),
         parcel.readInt()
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(left)

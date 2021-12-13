@@ -8,16 +8,16 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
-import com.yxing.iface.OnScancodeListenner
+import com.yxing.iface.OnScancodeListener
 import com.yxing.utils.AudioUtil
 import java.nio.ByteBuffer
 import java.util.*
 
 class ScanCodeAnalyzer(
     mActivity: Activity,
-    val scanCodeModel: ScanCodeModel,
-    val scanRect: Rect?,
-    val onScancodeListenner: OnScancodeListenner
+    private val scanCodeModel: ScanCodeModel,
+    private val scanRect: Rect?,
+    private val onScancodeListener: OnScancodeListener
 ) : ImageAnalysis.Analyzer {
 
     private val audioUtil: AudioUtil = AudioUtil(mActivity, scanCodeModel.audioId)
@@ -83,7 +83,7 @@ class ScanCodeAnalyzer(
         try {
             val result = reader.decode(bitmap)
             if (scanCodeModel.isPlayAudio) audioUtil.playBeepSoundAndVibrate()
-            onScancodeListenner.onBackCode(result.text)
+            onScancodeListener.onBackCode(result.text)
         } catch (e: Exception) {
             image.close()
         } finally {

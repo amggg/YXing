@@ -11,7 +11,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.example.yxing.R
 import com.yxing.def.ScanStyle
-import com.yxing.iface.OnScancodeListenner
+import com.yxing.iface.OnScancodeListener
 import com.yxing.view.ScanCustomizeView
 import com.yxing.view.ScanQQView
 import com.yxing.view.ScanWechatView
@@ -24,9 +24,9 @@ import java.util.concurrent.TimeUnit
 
 open class ScanCodeActivity : BaseScanActivity() {
 
-    private var lensFacing: Int = CameraSelector.LENS_FACING_BACK
+    //设置所选相机
+    private val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
     private lateinit var scanSize: Size
-    private lateinit var mImageCapture: ImageCapture
     private lateinit var camera: Camera
     private lateinit var preview: Preview
     private lateinit var imageAnalyzer: ImageAnalysis
@@ -87,7 +87,6 @@ open class ScanCodeActivity : BaseScanActivity() {
     }
 
     private fun bindCameraUseCases() {
-
         // 获取用于设置全屏分辨率相机的屏幕值
         val metrics = DisplayMetrics().also { pvCamera.display.getRealMetrics(it) }
 
@@ -95,64 +94,37 @@ open class ScanCodeActivity : BaseScanActivity() {
         val screenAspectRatio = aspectRatio(metrics.widthPixels / 2, metrics.heightPixels / 2)
 
         val width = pvCamera.measuredWidth
+
         val height = if (screenAspectRatio == AspectRatio.RATIO_16_9) {
             (width * RATIO_16_9_VALUE).toInt()
         } else {
             (width * RATIO_4_3_VALUE).toInt()
         }
+
         scanSize = Size(width, height)
 
         //获取旋转角度
         val rotation = pvCamera.display.rotation
 
         //生命周期绑定
-        val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()//设置所选相机
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
-        cameraProviderFuture.addListener(Runnable {
+
+        cameraProviderFuture.addListener({
+
             val cameraProvider = cameraProviderFuture.get()
 
-            //图像捕获用例
-            mImageCapture = ImageCapture.Builder()
-                .setFlashMode(ImageCapture.FLASH_MODE_AUTO)
-                .setTargetAspectRatio(AspectRatio.RATIO_16_9)
-                .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
-                .build()
-
             // 预览用例
-            preview = Preview.Builder()
-                .setTargetResolution(scanSize)
-                .setTargetRotation(rotation)
-                .build()
+            preview = getCameraPreView(rotation)
 
             // 图像分析用例
-            imageAnalyzer = ImageAnalysis.Builder()
-                .setTargetResolution(scanSize)
-                .setTargetRotation(rotation)
-                .build()
-                .apply {
-                    setAnalyzer(
-                        cameraExecutor,
-                        ScanCodeAnalyzer(
-                            this@ScanCodeActivity,
-                            scModel,
-                            baseScanView?.scanRect,
-                            object : OnScancodeListenner {
-                                override fun onBackCode(code: String) {
-                                    val intent = Intent()
-                                    intent.putExtra(ScanCodeConfig.CODE_KEY, code)
-                                    setResult(Activity.RESULT_OK, intent)
-                                    finish()
-                                }
-                            })
-                    )
-                }
+            imageAnalyzer = getCameraAnalyzer(rotation)
 
             // 必须在重新绑定用例之前取消之前绑定
             cameraProvider.unbindAll()
+
             try {
                 //获取相机实例
-                camera = cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, mImageCapture, imageAnalyzer
+                camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalyzer
                 )
                 //设置预览的view
                 preview.setSurfaceProvider(pvCamera.surfaceProvider)
@@ -165,6 +137,45 @@ open class ScanCodeActivity : BaseScanActivity() {
             }
 
         }, ContextCompat.getMainExecutor(this))
+    }
+
+
+    /**
+     * 获取相机预览用例
+     */
+    private fun getCameraPreView(rotation: Int): Preview {
+        return Preview.Builder()
+            .setTargetResolution(scanSize)
+            .setTargetRotation(rotation)
+            .build()
+    }
+
+
+    /**
+     * 获取相机分析用例
+     */
+    private fun getCameraAnalyzer(rotation: Int): ImageAnalysis {
+        return ImageAnalysis.Builder()
+            .setTargetResolution(scanSize)
+            .setTargetRotation(rotation)
+            .build()
+            .apply {
+                setAnalyzer(
+                    cameraExecutor,
+                    ScanCodeAnalyzer(
+                        this@ScanCodeActivity,
+                        scModel,
+                        baseScanView?.scanRect,
+                        object : OnScancodeListener {
+                            override fun onBackCode(code: String) {
+                                val intent = Intent()
+                                intent.putExtra(ScanCodeConfig.CODE_KEY, code)
+                                setResult(Activity.RESULT_OK, intent)
+                                finish()
+                            }
+                        })
+                )
+            }
     }
 
     private fun bindTouchListenner() {

@@ -112,5 +112,4 @@ public class PreviewTouchListener implements View.OnTouchListener, GestureDetect
          */
         void focus(float pointX, float pointY);
     }
-
 }
