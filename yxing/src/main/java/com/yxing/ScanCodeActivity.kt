@@ -131,14 +131,13 @@ open class ScanCodeActivity : BaseScanActivity() {
                 cameraControl = camera.cameraControl
                 mCameraInfo = camera.cameraInfo
 
-                bindTouchListenner()
+                bindTouchListener()
             } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
             }
 
         }, ContextCompat.getMainExecutor(this))
     }
-
 
     /**
      * 获取相机预览用例
@@ -149,7 +148,6 @@ open class ScanCodeActivity : BaseScanActivity() {
             .setTargetRotation(rotation)
             .build()
     }
-
 
     /**
      * 获取相机分析用例
@@ -178,7 +176,10 @@ open class ScanCodeActivity : BaseScanActivity() {
             }
     }
 
-    private fun bindTouchListenner() {
+    /**
+     * 触摸事件监听（方大、缩小、对焦）
+     */
+    private fun bindTouchListener() {
         val zoomState = mCameraInfo.zoomState
         val cameraXPreviewViewTouchListener =
             PreviewTouchListener(this)
@@ -198,6 +199,9 @@ open class ScanCodeActivity : BaseScanActivity() {
         pvCamera.setOnTouchListener(cameraXPreviewViewTouchListener)
     }
 
+    /**
+     * 对焦
+     */
     private fun cameraFocus(pointX: Float, pointY: Float) {
         val factory = SurfaceOrientedMeteringPointFactory(
             scanSize.width.toFloat(),

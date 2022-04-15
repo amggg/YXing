@@ -19,7 +19,11 @@ import com.yxing.bean.ScanRect;
 import com.yxing.utils.SizeUtils;
 import com.yxing.view.base.BaseScanView;
 
+/**
+ * @author am
+ */
 public class ScanCustomizeView extends BaseScanView {
+
     //边框角默认宽度
     public static final int DEFALUTE_WITH = 4;
     //边框角默认长度

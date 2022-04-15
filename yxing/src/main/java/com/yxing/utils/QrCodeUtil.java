@@ -41,9 +41,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class QrCodeUtil {
-    private static final int DEFAULTE_SIZE = 500;
 
-    private static final Pattern CHINESEPATTERN = Pattern.compile("[\u4E00-\u9FA5|\\！|\\，|\\。|\\（|\\）|\\《|\\》|\\“|\\”|\\？|\\：|\\；|\\【|\\】]");
+    private static final int DEFAULT_SIZE = 500;
+    private static final Pattern CHINESE_PATTERN = Pattern.compile("[\u4E00-\u9FA5|\\！|\\，|\\。|\\（|\\）|\\《|\\》|\\“|\\”|\\？|\\：|\\；|\\【|\\】]");
 
     /**
      * 生成条形码
@@ -190,7 +190,7 @@ public class QrCodeUtil {
         if ("".equals(str) || str == null) {
             throw new RuntimeException("content is empty!");
         }
-        Matcher m = CHINESEPATTERN.matcher(str);
+        Matcher m = CHINESE_PATTERN.matcher(str);
         return m.find();
     }
 
@@ -201,7 +201,7 @@ public class QrCodeUtil {
      * @return bitmap
      */
     public static Bitmap createQRCode(String text) {
-        return createQRCode(text, DEFAULTE_SIZE);
+        return createQRCode(text, DEFAULT_SIZE);
     }
 
     /**
@@ -439,7 +439,7 @@ public class QrCodeUtil {
      * @return
      */
     public static Bitmap createQRcodeWithLogo(String text, Bitmap logo) {
-        return createQRcodeWithLogo(text, DEFAULTE_SIZE, logo, DEFAULTE_SIZE / 5, DEFAULTE_SIZE / 5, 0, 0);
+        return createQRcodeWithLogo(text, DEFAULT_SIZE, logo, DEFAULT_SIZE / 5, DEFAULT_SIZE / 5, 0, 0);
     }
 
 

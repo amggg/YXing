@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.RadioGroup;
 
@@ -33,11 +34,13 @@ import io.reactivex.rxjava3.disposables.Disposable;
  */
 public class MainActivity extends AppCompatActivity {
 
+    private static final int ALBUM_QUEST_CODE = 0x010;
+
     private RadioGroup rgParent, rgCodeColor;
     private AppCompatButton btnScan, btnTwoScan, btnScanMystyle;
     private AppCompatTextView tvCode;
     private AppCompatImageView ivCode;
-    private AppCompatButton btnBuildCode, btnBuildLogoCode, btnBuildStorkLogoCode, btnBuildBarCode;
+    private AppCompatButton btnBuildCode, btnBuildLogoCode, btnBuildStorkLogoCode, btnBuildBarCode, btnScanAlbum;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         btnBuildLogoCode = findViewById(R.id.btn_buildlogocode);
         btnBuildStorkLogoCode = findViewById(R.id.btn_buildstorklogocode);
         btnBuildBarCode = findViewById(R.id.btn_buildbarcode);
+        btnScanAlbum = findViewById(R.id.btn_scan_album);
 
         setListener();
     }
@@ -106,6 +110,14 @@ public class MainActivity extends AppCompatActivity {
                     default:
                         break;
                 }
+            }
+        });
+
+        //识别相册内二维码
+        btnScanAlbum.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toAlbum();
             }
         });
 
@@ -196,6 +208,33 @@ public class MainActivity extends AppCompatActivity {
                 ivCode.setImageBitmap(bitmap);
             }
         });
+    }
+
+    private void toAlbum() {
+        new RxPermissions(this)
+                .requestEachCombined(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe(new Observer<Permission>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                    }
+
+                    @Override
+                    public void onNext(@NonNull Permission permission) {
+                        if (permission.granted) {
+                            Intent albumIntent = new Intent(Intent.ACTION_PICK, null);
+                            albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                            startActivityForResult(albumIntent, ALBUM_QUEST_CODE);
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                });
     }
 
     private void toCusomize() {
@@ -298,12 +337,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //接收扫码结果
-        if (resultCode == RESULT_OK && requestCode == ScanCodeConfig.QUESTCODE && data != null) {
-            Bundle extras = data.getExtras();
-            if (extras != null) {
-                String code = extras.getString(ScanCodeConfig.CODE_KEY);
-                tvCode.setText(String.format("扫码结果： %s", code));
+        if (resultCode == RESULT_OK && data != null){
+            switch (requestCode){
+                case ScanCodeConfig.QUESTCODE:
+                    //接收扫码结果
+                    Bundle extras = data.getExtras();
+                    if (extras != null) {
+                        String code = extras.getString(ScanCodeConfig.CODE_KEY);
+                        tvCode.setText(String.format("扫码结果： %s", code));
+                    }
+                    break;
+                case ALBUM_QUEST_CODE:
+                    //接收图片识别结果
+                    String code = ScanCodeConfig.scanningImage(this, data.getData());
+                    tvCode.setText(String.format("识别结果： %s", code));
+                    break;
+                default:
+                    break;
             }
         }
     }

@@ -13,10 +13,10 @@ abstract class BaseScanActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(getLayoutId())
         initData()
-        initImmersionbar()
+        initImmersionBar()
     }
 
-    private fun initImmersionbar() {
+    private fun initImmersionBar() {
         ImmersionBar.with(this).init()
     }
 }

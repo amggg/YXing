@@ -11,6 +11,9 @@ import com.example.yxing.R;
 import java.io.Closeable;
 import java.io.IOException;
 
+/**
+ * @author am
+ */
 public class AudioUtil implements MediaPlayer.OnCompletionListener,
         MediaPlayer.OnErrorListener, Closeable {
 
@@ -19,7 +22,6 @@ public class AudioUtil implements MediaPlayer.OnCompletionListener,
 
     private final Activity activity;
     private MediaPlayer mediaPlayer;
-
     private int audioId;
 
     public AudioUtil(Activity activity, int audioId) {
@@ -48,7 +50,6 @@ public class AudioUtil implements MediaPlayer.OnCompletionListener,
 
     /**
      * 创建MediaPlayer
-     *
      * @param activity
      * @return
      */
@@ -60,13 +61,10 @@ public class AudioUtil implements MediaPlayer.OnCompletionListener,
         mediaPlayer.setOnErrorListener(this);
         // 配置播放资源
         try {
-            AssetFileDescriptor file = activity.getResources()
-                    .openRawResourceFd(audioId == 0 ? R.raw.beep : audioId);
-            try {
+            try (AssetFileDescriptor file = activity.getResources()
+                    .openRawResourceFd(audioId == 0 ? R.raw.beep : audioId)) {
                 mediaPlayer.setDataSource(file.getFileDescriptor(),
                         file.getStartOffset(), file.getLength());
-            } finally {
-                file.close();
             }
             // 设置音量
             mediaPlayer.setVolume(BEEP_VOLUME, BEEP_VOLUME);

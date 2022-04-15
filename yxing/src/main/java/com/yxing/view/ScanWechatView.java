@@ -15,21 +15,25 @@ import androidx.annotation.Nullable;
 import com.example.yxing.R;
 import com.yxing.view.base.BaseScanView;
 
+/**
+ * @author am
+ */
 public class ScanWechatView extends BaseScanView {
-
-    private int scanMaginWith;
-    private int scanMaginheight;
 
     private Paint paint;
     private Bitmap scanLine;
     private Rect scanRect;
     private Rect lineRect;
-
-    //扫描线位置
+    private int scanMarginWith;
+    private int scanMarginHeight;
+    /**
+     * 扫描线位置
+     */
     private int scanLineTop;
-    //透明度
+    /**
+     * 透明度
+     */
     private int alpha = 255;
-
     private int bitmapHigh;
 
     public ScanWechatView(Context context) {
@@ -66,16 +70,16 @@ public class ScanWechatView extends BaseScanView {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        scanMaginWith = getMeasuredWidth() / 10;
-        scanMaginheight = getMeasuredHeight() >> 2;
+        scanMarginWith = getMeasuredWidth() / 10;
+        scanMarginHeight = getMeasuredHeight() >> 2;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        scanRect.set(scanMaginWith, scanMaginheight, getWidth() - scanMaginWith, getHeight() - scanMaginheight);
+        scanRect.set(scanMarginWith, scanMarginHeight, getWidth() - scanMarginWith, getHeight() - scanMarginHeight);
         paint.setAlpha(alpha);
-        lineRect.set(scanMaginWith, scanLineTop, getWidth() - scanMaginWith, scanLineTop + bitmapHigh);
+        lineRect.set(scanMarginWith, scanLineTop, getWidth() - scanMarginWith, scanLineTop + bitmapHigh);
         canvas.drawBitmap(scanLine, null, lineRect, paint);
         initAnim();
     }

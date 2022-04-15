@@ -19,15 +19,15 @@ import com.yxing.view.base.BaseScanView;
 
 public class ScanQQView extends BaseScanView {
 
-    private int scanMaginWith;
-    private int scanMaginheight;
+    private int scanMarginWith;
+    private int scanMarginheight;
 
     private Paint paint;
     private Bitmap scanLine;
     private Rect scanRect;
     private Rect lineRect;
     //画布截取
-    private Rect interceptiRect;
+    private Rect interceptRect;
     //扫描线位置
     private int scanLineTop;
     //扫描框大小
@@ -62,7 +62,7 @@ public class ScanQQView extends BaseScanView {
 
         bitmapHigh = scanLine.getHeight();
 
-        interceptiRect = new Rect();
+        interceptRect = new Rect();
         scanRect = new Rect();
         lineRect = new Rect();
     }
@@ -70,17 +70,17 @@ public class ScanQQView extends BaseScanView {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        scanMaginWith = getMeasuredWidth() / 10;
-        scanMaginheight = getMeasuredHeight() >> 2;
-        scanWith = getMeasuredWidth() - 2 * scanMaginWith;
+        scanMarginWith = getMeasuredWidth() / 10;
+        scanMarginheight = getMeasuredHeight() >> 2;
+        scanWith = getMeasuredWidth() - 2 * scanMarginWith;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        scanRect.set(scanMaginWith, scanMaginheight, getWidth() - scanMaginWith, scanMaginheight + scanWith);
+        scanRect.set(scanMarginWith, scanMarginheight, getWidth() - scanMarginWith, scanMarginheight + scanWith);
         drawFrameBounds(canvas, scanRect);
-        lineRect.set(scanMaginWith, scanLineTop, getWidth() - scanMaginWith, scanLineTop + bitmapHigh);
+        lineRect.set(scanMarginWith, scanLineTop, getWidth() - scanMarginWith, scanLineTop + bitmapHigh);
         canvas.drawBitmap(scanLine, null, lineRect, paint);
         initAnim();
     }
@@ -101,7 +101,7 @@ public class ScanQQView extends BaseScanView {
         int corLength = SizeUtils.dp2px(getContext(), 15);
         int radius = SizeUtils.dp2px(getContext(), 2);
 
-        interceptiRect.set(scanRect.left - corWidth, scanRect.top - corWidth, scanRect.right + corWidth, scanRect.bottom + corWidth);
+        interceptRect.set(scanRect.left - corWidth, scanRect.top - corWidth, scanRect.right + corWidth, scanRect.bottom + corWidth);
 
         // 左上角
         canvas.drawRoundRect(frame.left - corWidth, frame.top - corWidth, frame.left, frame.top
@@ -124,7 +124,7 @@ public class ScanQQView extends BaseScanView {
         canvas.drawRoundRect(frame.right - corLength, frame.bottom, frame.right
                 + corWidth, frame.bottom + corWidth, radius, radius, paint);
 
-        canvas.clipRect(interceptiRect);
+        canvas.clipRect(interceptRect);
     }
 
     @Override

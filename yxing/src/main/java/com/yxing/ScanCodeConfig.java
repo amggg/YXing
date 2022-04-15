@@ -35,7 +35,7 @@ public class ScanCodeConfig {
         return new ScanCodeModel(mActivity, mFragment);
     }
 
-    public void start(Class mClass) {
+    public void start(Class<?> mClass) {
         if (mFragment != null) {
             Intent intent = new Intent(mActivity, mClass);
             intent.putExtra(MODEL_KEY, model);

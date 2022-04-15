@@ -59,6 +59,11 @@
             android:layout_height="wrap_content"
             android:text="自定义界面scan" />
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_scan_album"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="识别相册内二维码" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_code"
