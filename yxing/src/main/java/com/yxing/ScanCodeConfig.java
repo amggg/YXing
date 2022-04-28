@@ -15,6 +15,7 @@ import com.yxing.utils.QrCodeUtil;
 public class ScanCodeConfig {
     public static final int QUESTCODE = 0x001;
     public static final String CODE_KEY = "code";
+    public static final String CODE_TYPE = "code_type";
     public static final String MODEL_KEY = "model";
 
     private final Activity mActivity;

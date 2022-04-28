@@ -10,8 +10,10 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.example.yxing.R
+import com.google.zxing.BarcodeFormat
 import com.google.zxing.Result
 import com.yxing.def.ScanStyle
+import com.yxing.def.ScanType
 import com.yxing.iface.OnScancodeListener
 import com.yxing.view.ScanCustomizeView
 import com.yxing.view.ScanQqView
@@ -169,7 +171,10 @@ open class ScanCodeActivity : BaseScanActivity() {
                         object : OnScancodeListener {
                             override fun onBackCode(result: Result) {
                                 val intent = Intent()
-                                Log.e("am", "code type ===> ${result.barcodeFormat}")
+                                intent.putExtra(
+                                    ScanCodeConfig.CODE_TYPE,
+                                    getCodeType(result.barcodeFormat)
+                                )
                                 intent.putExtra(ScanCodeConfig.CODE_KEY, result.text)
                                 setResult(Activity.RESULT_OK, intent)
                                 finish()
@@ -228,6 +233,19 @@ open class ScanCodeActivity : BaseScanActivity() {
             return AspectRatio.RATIO_4_3
         }
         return AspectRatio.RATIO_16_9
+    }
+
+    /**
+     * 获取码类型
+     */
+    private fun getCodeType(barcodeFormat: BarcodeFormat): Int {
+        if (DecodeFormatManager.TWO_CODE.contains(barcodeFormat)) {
+            return ScanType.CODE_TWO
+        }
+        if (DecodeFormatManager.ONE_CODE.contains(barcodeFormat)) {
+            return ScanType.CODE_ONE
+        }
+        return ScanType.UN_KNOW
     }
 
     override fun onDestroy() {

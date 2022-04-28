@@ -333,7 +333,6 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -343,8 +342,12 @@ public class MainActivity extends AppCompatActivity {
                     //接收扫码结果
                     Bundle extras = data.getExtras();
                     if (extras != null) {
+                        int codeType = extras.getInt(ScanCodeConfig.CODE_TYPE);
                         String code = extras.getString(ScanCodeConfig.CODE_KEY);
-                        tvCode.setText(String.format("扫码结果： %s", code));
+                        tvCode.setText(String.format(
+                                "扫码结果：\n" +
+                                        "码类型: %s  \n" +
+                                        "码值  : %s", codeType == 0 ? "一维码" : "二维码", code));
                     }
                     break;
                 case ALBUM_QUEST_CODE:

@@ -26,10 +26,8 @@ class ScanCodeAnalyzer(
         val formatReader = MultiFormatReader()
         val hints = Hashtable<DecodeHintType, Any>()
         val decodeFormats = Vector<BarcodeFormat>()
-
-        decodeFormats.addAll(DecodeFormatManager.ONE_D_FORMATS)
-        decodeFormats.addAll(DecodeFormatManager.DATA_MATRIX_FORMATS)
-        decodeFormats.addAll(DecodeFormatManager.QR_CODE_FORMATS)
+        decodeFormats.addAll(DecodeFormatManager.ONE_CODE)
+        decodeFormats.addAll(DecodeFormatManager.TWO_CODE)
         hints[DecodeHintType.POSSIBLE_FORMATS] = decodeFormats
         hints[DecodeHintType.CHARACTER_SET] = "UTF-8"
         formatReader.setHints(hints)
