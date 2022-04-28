@@ -8,6 +8,9 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
+/**
+ * @author windows
+ */
 public abstract class BaseScanView extends View {
 
     protected ValueAnimator valueAnimator;

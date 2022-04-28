@@ -14,7 +14,7 @@ import com.google.zxing.Result
 import com.yxing.def.ScanStyle
 import com.yxing.iface.OnScancodeListener
 import com.yxing.view.ScanCustomizeView
-import com.yxing.view.ScanQQView
+import com.yxing.view.ScanQqView
 import com.yxing.view.ScanWechatView
 import com.yxing.view.base.BaseScanView
 import kotlinx.android.synthetic.main.activity_scancode.*
@@ -66,7 +66,7 @@ open class ScanCodeActivity : BaseScanActivity() {
         rlParentContent = findViewById(R.id.rlparent)
         when (style) {
             ScanStyle.QQ -> {
-                baseScanView = ScanQQView(this)
+                baseScanView = ScanQqView(this)
             }
             ScanStyle.WECHAT -> {
                 baseScanView = ScanWechatView(this)

@@ -17,10 +17,10 @@ import com.example.yxing.R;
 import com.yxing.utils.SizeUtils;
 import com.yxing.view.base.BaseScanView;
 
-public class ScanQQView extends BaseScanView {
+public class ScanQqView extends BaseScanView {
 
     private int scanMarginWith;
-    private int scanMarginheight;
+    private int scanMarginHeight;
 
     private Paint paint;
     private Bitmap scanLine;
@@ -35,17 +35,17 @@ public class ScanQQView extends BaseScanView {
 
     private int bitmapHigh;
 
-    public ScanQQView(Context context) {
+    public ScanQqView(Context context) {
         super(context);
         init();
     }
 
-    public ScanQQView(Context context, @Nullable AttributeSet attrs) {
+    public ScanQqView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public ScanQQView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ScanQqView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
@@ -71,14 +71,14 @@ public class ScanQQView extends BaseScanView {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         scanMarginWith = getMeasuredWidth() / 10;
-        scanMarginheight = getMeasuredHeight() >> 2;
+        scanMarginHeight = getMeasuredHeight() >> 2;
         scanWith = getMeasuredWidth() - 2 * scanMarginWith;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        scanRect.set(scanMarginWith, scanMarginheight, getWidth() - scanMarginWith, scanMarginheight + scanWith);
+        scanRect.set(scanMarginWith, scanMarginHeight, getWidth() - scanMarginWith, scanMarginHeight + scanWith);
         drawFrameBounds(canvas, scanRect);
         lineRect.set(scanMarginWith, scanLineTop, getWidth() - scanMarginWith, scanLineTop + bitmapHigh);
         canvas.drawBitmap(scanLine, null, lineRect, paint);

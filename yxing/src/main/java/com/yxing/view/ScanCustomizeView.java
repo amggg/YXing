@@ -25,11 +25,11 @@ import com.yxing.view.base.BaseScanView;
 public class ScanCustomizeView extends BaseScanView {
 
     //边框角默认宽度
-    public static final int DEFALUTE_WITH = 4;
+    public static final int DEFAULT_WITH = 4;
     //边框角默认长度
-    public static final int DEFAULTE_LENGTH = 15;
+    public static final int DEFAULT_LENGTH = 15;
     //默认扫描速度
-    public static final long DEFAULTE_SPEED = 3000;
+    public static final long DEFAULT_SPEED = 3000;
 
     private Paint paint;
     private Bitmap scanLine;
@@ -118,7 +118,7 @@ public class ScanCustomizeView extends BaseScanView {
      */
     private void drawShadow(Canvas canvas, Rect frame) {
         paint.setColor(ContextCompat.getColor(getContext(), scanCodeModel.getShaowColor() == 0 ? R.color.black_tran30 : scanCodeModel.getShaowColor()));
-        int frameWith = SizeUtils.dp2px(getContext(), scanCodeModel.getFrameWith() == 0 ? DEFALUTE_WITH : scanCodeModel.getFrameWith());
+        int frameWith = SizeUtils.dp2px(getContext(), scanCodeModel.getFrameWith() == 0 ? DEFAULT_WITH : scanCodeModel.getFrameWith());
         canvas.drawRect(0, 0, getWidth(), frame.top - frameWith, paint);
         canvas.drawRect(0, frame.top - frameWith, frame.left - frameWith, frame.bottom + frameWith, paint);
         canvas.drawRect(frame.right + frameWith, frame.top - frameWith, getWidth(), frame.bottom + frameWith, paint);
@@ -135,8 +135,8 @@ public class ScanCustomizeView extends BaseScanView {
     private void drawFrameBounds(Canvas canvas, Rect frame) {
         paint.setColor(ContextCompat.getColor(getContext(), scanCodeModel.getFrameColor() == 0 ? R.color.qqscan : scanCodeModel.getFrameColor()));
 
-        int corWidth = SizeUtils.dp2px(getContext(), scanCodeModel.getFrameWith() == 0 ? DEFALUTE_WITH : scanCodeModel.getFrameWith());
-        int corLength = SizeUtils.dp2px(getContext(), scanCodeModel.getFrameLenth() == 0 ? DEFAULTE_LENGTH : scanCodeModel.getFrameLenth());
+        int corWidth = SizeUtils.dp2px(getContext(), scanCodeModel.getFrameWith() == 0 ? DEFAULT_WITH : scanCodeModel.getFrameWith());
+        int corLength = SizeUtils.dp2px(getContext(), scanCodeModel.getFrameLenth() == 0 ? DEFAULT_LENGTH : scanCodeModel.getFrameLenth());
         int radius = SizeUtils.dp2px(getContext(), scanCodeModel.getFrameRaduis());
 
         // 左上角
@@ -167,7 +167,7 @@ public class ScanCustomizeView extends BaseScanView {
             valueAnimator = ValueAnimator.ofInt(scanRect.top - bitmapHigh, scanRect.bottom - bitmapHigh);
             valueAnimator.setRepeatCount(ValueAnimator.INFINITE);
             valueAnimator.setRepeatMode(scanCodeModel.getScanMode() == 0 ? ValueAnimator.RESTART : scanCodeModel.getScanMode());
-            valueAnimator.setDuration(scanCodeModel.getScanDuration() == 0 ? DEFAULTE_SPEED : scanCodeModel.getScanDuration());
+            valueAnimator.setDuration(scanCodeModel.getScanDuration() == 0 ? DEFAULT_SPEED : scanCodeModel.getScanDuration());
             valueAnimator.setInterpolator(new LinearInterpolator());
             valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override

@@ -2,6 +2,9 @@ package com.yxing.utils;
 
 import android.content.Context;
 
+/**
+ * @author windows
+ */
 public class SizeUtils {
 
     /**
