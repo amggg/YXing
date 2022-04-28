@@ -10,6 +10,7 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.example.yxing.R
+import com.google.zxing.Result
 import com.yxing.def.ScanStyle
 import com.yxing.iface.OnScancodeListener
 import com.yxing.view.ScanCustomizeView
@@ -165,9 +166,10 @@ open class ScanCodeActivity : BaseScanActivity() {
                         scModel,
                         baseScanView?.scanRect,
                         object : OnScancodeListener {
-                            override fun onBackCode(code: String) {
+                            override fun onBackCode(result: Result) {
                                 val intent = Intent()
-                                intent.putExtra(ScanCodeConfig.CODE_KEY, code)
+                                Log.e("am", "code type ===> ${result.barcodeFormat}")
+                                intent.putExtra(ScanCodeConfig.CODE_KEY, result.text)
                                 setResult(Activity.RESULT_OK, intent)
                                 finish()
                             }

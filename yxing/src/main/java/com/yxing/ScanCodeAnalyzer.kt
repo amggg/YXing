@@ -3,14 +3,13 @@ package com.yxing
 import android.app.Activity
 import android.graphics.ImageFormat
 import android.graphics.Rect
-import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
 import com.yxing.iface.OnScancodeListener
 import com.yxing.utils.AudioUtil
-import java.nio.ByteBuffer
+import java.lang.RuntimeException
 import java.util.*
 
 class ScanCodeAnalyzer(
@@ -43,9 +42,8 @@ class ScanCodeAnalyzer(
      */
     override fun analyze(image: ImageProxy) {
         if (ImageFormat.YUV_420_888 != image.format) {
-            Log.e("ScanCodeAnalyzer", "expect YUV_420_888, now = ${image.format}")
             image.close()
-            return
+            throw Throwable("expect YUV_420_888, now = ${image.format}")
         }
 
         //将buffer数据写入数组
@@ -53,18 +51,22 @@ class ScanCodeAnalyzer(
         //图片宽高
         val width = image.width
         val height = image.height
+        val rotateByteArray = rotateImageByte(data, width, height)
 
-        mScanRect.set(0, 0, width, height)
+        mScanRect.set(0, 0, height, width)
 
         //限制区域
         if (scanCodeModel.isLimitRect && scanRect != null) {
-            mScanRect.set(scanRect.top, height - (scanRect.left + scanRect.width()), scanRect.bottom, height - scanRect.left)
+            if (scanRect.width() > height ||scanRect.height() > width){
+                throw RuntimeException("Limit Size Must be within the picture width and height")
+            }
+            mScanRect.set(scanRect.left, scanRect.top, scanRect.right, scanRect.bottom)
         }
 
         val source = PlanarYUVLuminanceSource(
-            data,
-            width,
+            rotateByteArray,
             height,
+            width,
             mScanRect.left,
             mScanRect.top,
             mScanRect.width(),
@@ -77,11 +79,29 @@ class ScanCodeAnalyzer(
         try {
             val result = reader.decode(bitmap)
             if (scanCodeModel.isPlayAudio) audioUtil.playBeepSoundAndVibrate()
-            onScancodeListener.onBackCode(result.text)
+            onScancodeListener.onBackCode(result)
         } catch (e: Exception) {
             image.close()
         } finally {
             image.close()
         }
+    }
+
+
+    /**
+     * 旋转图片
+     */
+    private fun rotateImageByte(oldByteData: ByteArray, width: Int, height: Int): ByteArray{
+        val rotationData = ByteArray(oldByteData.size)
+        var j: Int
+        var k: Int
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                j = x * height + height - y - 1
+                k = x + y * width
+                rotationData[j] = oldByteData[k]
+            }
+        }
+        return rotationData
     }
 }

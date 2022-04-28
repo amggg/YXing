@@ -262,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
                                     //是否限制识别区域为设定扫码框大小  true:限制  false：不限制   默认false：识别区域为整个屏幕
                                     .setLimitRect(true)
                                     //设置扫码框位置 scanSize : 扫码框大小   offsetX ： x轴偏移量    offsetY ：y轴偏移量   单位 /px
-                                    .setScanSize(800, 0, -200)
+                                    .setScanSize(600, 0, 0)
                                     //是否显示边框上四个角标 true ： 显示  false ： 不显示
                                     .setShowFrame(true)
                                     //设置边框上四个角标颜色

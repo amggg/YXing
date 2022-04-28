@@ -16,23 +16,21 @@ import android.text.TextUtils;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
-import com.google.zxing.ChecksumException;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.EncodeHintType;
-import com.google.zxing.FormatException;
+import com.google.zxing.MultiFormatReader;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.NotFoundException;
 import com.google.zxing.RGBLuminanceSource;
 import com.google.zxing.Result;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
-import com.google.zxing.common.GlobalHistogramBinarizer;
-import com.google.zxing.qrcode.QRCodeReader;
+import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import com.yxing.DecodeFormatManager;
 
 import java.io.IOException;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -593,31 +591,11 @@ public class QrCodeUtil {
      * @return
      */
     public static String scanningImage(Activity mActivity, Uri uri) {
-        Hashtable<DecodeHintType, Object> hints = new Hashtable<>(2);
-        Vector<BarcodeFormat> decodeFormats = new Vector<>();
-        if (decodeFormats.isEmpty()) {
-            decodeFormats.addAll(EnumSet.of(BarcodeFormat.QR_CODE));
-        }
-        hints.put(DecodeHintType.POSSIBLE_FORMATS, decodeFormats);
-        hints.put(DecodeHintType.CHARACTER_SET, "UTF-8");
-        Result result = null;
         Bitmap srcBitmap = getBitmapByUri(mActivity, uri);
-        int width = srcBitmap.getWidth();
-        int height = srcBitmap.getHeight();
-        int[] pixels = new int[width * height];
-        srcBitmap.getPixels(pixels, 0, width, 0, 0, width, height);
-        com.google.zxing.RGBLuminanceSource source = new RGBLuminanceSource(width, height, pixels);
-        BinaryBitmap binaryBitmap = new BinaryBitmap(new GlobalHistogramBinarizer(source));
-        QRCodeReader reader = new QRCodeReader();
-        try {
-            result = reader.decode(binaryBitmap, hints);
-        } catch (NotFoundException | ChecksumException | FormatException e) {
-            e.printStackTrace();
+        if (srcBitmap == null){
+            return null;
         }
-        if (result != null) {
-            return result.getText();
-        }
-        return null;
+        return scanningImageByBitmap(srcBitmap);
     }
 
 
@@ -627,24 +605,25 @@ public class QrCodeUtil {
      * @return
      */
     public static String scanningImageByBitmap(Bitmap srcBitmap) {
-        Hashtable<DecodeHintType, Object> hints = new Hashtable<>(2);
+        MultiFormatReader formatReader = new MultiFormatReader();
+        Hashtable<DecodeHintType, Object> hints = new Hashtable<>();
         Vector<BarcodeFormat> decodeFormats = new Vector<>();
-        if (decodeFormats.isEmpty()) {
-            decodeFormats.addAll(EnumSet.of(BarcodeFormat.QR_CODE));
-        }
+        decodeFormats.addAll(DecodeFormatManager.ONE_D_FORMATS);
+        decodeFormats.addAll(DecodeFormatManager.DATA_MATRIX_FORMATS);
+        decodeFormats.addAll(DecodeFormatManager.QR_CODE_FORMATS);
         hints.put(DecodeHintType.POSSIBLE_FORMATS, decodeFormats);
         hints.put(DecodeHintType.CHARACTER_SET, "UTF-8");
+        formatReader.setHints(hints);
         Result result = null;
         int width = srcBitmap.getWidth();
         int height = srcBitmap.getHeight();
         int[] pixels = new int[width * height];
         srcBitmap.getPixels(pixels, 0, width, 0, 0, width, height);
-        com.google.zxing.RGBLuminanceSource source = new RGBLuminanceSource(width, height, pixels);
-        BinaryBitmap binaryBitmap = new BinaryBitmap(new GlobalHistogramBinarizer(source));
-        QRCodeReader reader = new QRCodeReader();
+        RGBLuminanceSource source = new RGBLuminanceSource(width, height, pixels);
+        BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(source));
         try {
-            result = reader.decode(binaryBitmap, hints);
-        } catch (NotFoundException | ChecksumException | FormatException e) {
+            result = formatReader.decode(binaryBitmap);
+        } catch (NotFoundException e) {
             e.printStackTrace();
         }
         if (result != null) {
@@ -656,8 +635,7 @@ public class QrCodeUtil {
 
     private static Bitmap getBitmapByUri(Activity mActivity, Uri uri) {
         try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(mActivity.getContentResolver(), uri);
-            return bitmap;
+            return MediaStore.Images.Media.getBitmap(mActivity.getContentResolver(), uri);
         } catch (IOException e) {
             e.printStackTrace();
         }
