@@ -93,15 +93,30 @@ Fragment中启动：
 接收扫码数据：
 
 ```
- @Override
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //接收扫码结果
-        if(resultCode == RESULT_OK && requestCode == ScanCodeConfig.QUESTCODE && data != null){
-            Bundle extras = data.getExtras();
-            if(extras != null){
-                String code = extras.getString(ScanCodeConfig.CODE_KEY);
-                tvCode.setText(String.format("%s%s", "结果： " , code));
+        if (resultCode == RESULT_OK && data != null) {
+            switch (requestCode) {
+                case ScanCodeConfig.QUESTCODE:
+                    //接收扫码结果
+                    Bundle extras = data.getExtras();
+                    if (extras != null) {
+                        int codeType = extras.getInt(ScanCodeConfig.CODE_TYPE);
+                        String code = extras.getString(ScanCodeConfig.CODE_KEY);
+                        tvCode.setText(String.format(
+                                "扫码结果：\n" +
+                                        "码类型: %s  \n" +
+                                        "码值  : %s", codeType == 0 ? "一维码" : "二维码", code));
+                    }
+                    break;
+                case ALBUM_QUEST_CODE:
+                    //接收图片识别结果
+                    String code = ScanCodeConfig.scanningImage(this, data.getData());
+                    tvCode.setText(String.format("识别结果： %s", code));
+                    break;
+                default:
+                    break;
             }
         }
     }
