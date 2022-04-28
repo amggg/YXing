@@ -125,7 +125,8 @@ open class ScanCodeActivity : BaseScanActivity() {
 
             try {
                 //获取相机实例
-                camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalyzer
+                camera = cameraProvider.bindToLifecycle(
+                    this, cameraSelector, preview, imageAnalyzer
                 )
                 //设置预览的view
                 preview.setSurfaceProvider(pvCamera.surfaceProvider)

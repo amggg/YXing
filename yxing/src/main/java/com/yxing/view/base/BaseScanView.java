@@ -29,10 +29,10 @@ public abstract class BaseScanView extends View {
     public void initAnim() {
     }
 
-    public void startAnim(){
+    public void startAnim() {
     }
 
-    public void pauseAnim(){
+    public void pauseAnim() {
     }
 
     public void cancelAnim() {

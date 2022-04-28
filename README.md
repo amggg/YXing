@@ -1,6 +1,7 @@
 怎么集成:
 
 1、在根目录的build.gradle中添加jitpack依赖：
+
 ```
 allprojects {
     repositories {
@@ -8,7 +9,9 @@ allprojects {
     }
 }
 ```
+
 2、在project的build.gradle中添加YXing依赖：
+
 ```
   implementation 'com.github.amggg:YXing:releaseVersion'
 ```
@@ -16,6 +19,7 @@ allprojects {
 简单调用：
 
 Activity中启动：
+
 ```
   ScanCodeConfig.create(MainActivity.this)
                                     //设置扫码页样式 ScanStyle.NONE：无  ScanStyle.QQ ：仿QQ样式   ScanStyle.WECHAT ：仿微信样式    ScanStyle.CUSTOMIZE ： 自定义样式
@@ -26,7 +30,9 @@ Activity中启动：
                                     //跳转扫码页   扫码页可自定义样式
                                     .start(ScanCodeActivity.class);
 ```
+
 Fragment中启动：
+
 ```
   ScanCodeConfig.create(MainActivity.this, mFragment)
                                     //设置扫码页样式 ScanStyle.NONE：无  ScanStyle.QQ ：仿QQ样式   ScanStyle.WECHAT ：仿微信样式    ScanStyle.CUSTOMIZE ： 自定义样式
@@ -39,6 +45,7 @@ Fragment中启动：
 ```
 
 全部参数：
+
 ```
 
    ScanCodeConfig.create(MainActivity.this)
@@ -84,6 +91,7 @@ Fragment中启动：
 ```
 
 接收扫码数据：
+
 ```
  @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

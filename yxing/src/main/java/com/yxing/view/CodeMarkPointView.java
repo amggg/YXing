@@ -31,7 +31,7 @@ public class CodeMarkPointView extends View {
         init();
     }
 
-    private void init(){
+    private void init() {
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.GREEN);

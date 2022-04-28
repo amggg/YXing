@@ -592,7 +592,7 @@ public class QrCodeUtil {
      */
     public static String scanningImage(Activity mActivity, Uri uri) {
         Bitmap srcBitmap = getBitmapByUri(mActivity, uri);
-        if (srcBitmap == null){
+        if (srcBitmap == null) {
             return null;
         }
         return scanningImageByBitmap(srcBitmap);

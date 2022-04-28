@@ -107,14 +107,14 @@ public class ScanWechatView extends BaseScanView {
 
     @Override
     public void startAnim() {
-        if (valueAnimator != null){
+        if (valueAnimator != null) {
             valueAnimator.start();
         }
     }
 
     @Override
     public void pauseAnim() {
-        if (valueAnimator != null){
+        if (valueAnimator != null) {
             valueAnimator.pause();
         }
     }

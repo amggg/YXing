@@ -9,7 +9,6 @@ import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
 import com.yxing.iface.OnScancodeListener
 import com.yxing.utils.AudioUtil
-import java.lang.RuntimeException
 import java.util.*
 
 class ScanCodeAnalyzer(
@@ -57,7 +56,7 @@ class ScanCodeAnalyzer(
 
         //限制区域
         if (scanCodeModel.isLimitRect && scanRect != null) {
-            if (scanRect.width() > height ||scanRect.height() > width){
+            if (scanRect.width() > height || scanRect.height() > width) {
                 throw RuntimeException("Limit Size Must be within the picture width and height")
             }
             mScanRect.set(scanRect.left, scanRect.top, scanRect.right, scanRect.bottom)
@@ -91,7 +90,7 @@ class ScanCodeAnalyzer(
     /**
      * 旋转图片
      */
-    private fun rotateImageByte(oldByteData: ByteArray, width: Int, height: Int): ByteArray{
+    private fun rotateImageByte(oldByteData: ByteArray, width: Int, height: Int): ByteArray {
         val rotationData = ByteArray(oldByteData.size)
         var j: Int
         var k: Int
