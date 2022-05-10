@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int ALBUM_QUEST_CODE = 0x010;
 
     private RadioGroup rgParent, rgCodeColor;
-    private AppCompatButton btnScan, btnTwoScan, btnScanMystyle;
+    private AppCompatButton btnScan, btnTwoScan, btnScanMyStyle;
     private AppCompatTextView tvCode;
     private AppCompatImageView ivCode;
     private AppCompatButton btnBuildCode, btnBuildLogoCode, btnBuildStorkLogoCode, btnBuildBarCode, btnScanAlbum;
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         rgCodeColor = findViewById(R.id.rg_codecolor);
         btnScan = findViewById(R.id.btn_scan);
         btnTwoScan = findViewById(R.id.btn_scantwo);
-        btnScanMystyle = findViewById(R.id.btn_scanmystyle);
+        btnScanMyStyle = findViewById(R.id.btn_scanmystyle);
         tvCode = findViewById(R.id.tv_code);
         ivCode = findViewById(R.id.ivcode);
         btnBuildCode = findViewById(R.id.btn_buildcode);
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //自定义界面
-        btnScanMystyle.setOnClickListener(new View.OnClickListener() {
+        btnScanMyStyle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int checkedRadioButtonId = rgParent.getCheckedRadioButtonId();
