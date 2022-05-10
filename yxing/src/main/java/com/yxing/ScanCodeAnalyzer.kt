@@ -20,7 +20,7 @@ class ScanCodeAnalyzer(
 
     private val audioUtil: AudioUtil = AudioUtil(mActivity, scanCodeModel.audioId)
     private val reader: MultiFormatReader = initReader()
-    private var mScanRect = Rect()
+    private var mScanRect: Rect = Rect()
 
     private fun initReader(): MultiFormatReader {
         val formatReader = MultiFormatReader()
@@ -54,10 +54,9 @@ class ScanCodeAnalyzer(
 
         //限制区域
         if (scanCodeModel.isLimitRect && scanRect != null) {
-            if (scanRect.width() > height || scanRect.height() > width) {
-                throw RuntimeException("Limit Size Must be within the picture width and height")
+            if (scanRect.width() <= height && scanRect.height() <= width) {
+                mScanRect.set(scanRect.left, scanRect.top, scanRect.right, scanRect.bottom)
             }
-            mScanRect.set(scanRect.left, scanRect.top, scanRect.right, scanRect.bottom)
         }
 
         val source = PlanarYUVLuminanceSource(
