@@ -25,7 +25,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-open class ScanCodeActivity : BaseScanActivity() {
+open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
 
     //设置所选相机
     private val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
@@ -139,7 +139,6 @@ open class ScanCodeActivity : BaseScanActivity() {
             } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
             }
-
         }, ContextCompat.getMainExecutor(this))
     }
 
@@ -157,31 +156,20 @@ open class ScanCodeActivity : BaseScanActivity() {
      * 获取相机分析用例
      */
     private fun getCameraAnalyzer(rotation: Int): ImageAnalysis {
-        return ImageAnalysis.Builder()
+        val mImageAnalysis = ImageAnalysis.Builder()
             .setTargetResolution(scanSize)
             .setTargetRotation(rotation)
             .build()
-            .apply {
-                setAnalyzer(
-                    cameraExecutor,
-                    ScanCodeAnalyzer(
-                        this@ScanCodeActivity,
-                        scModel,
-                        baseScanView?.scanRect,
-                        object : OnScancodeListener {
-                            override fun onBackCode(result: Result) {
-                                val intent = Intent()
-                                intent.putExtra(
-                                    ScanCodeConfig.CODE_TYPE,
-                                    getCodeType(result.barcodeFormat)
-                                )
-                                intent.putExtra(ScanCodeConfig.CODE_KEY, result.text)
-                                setResult(Activity.RESULT_OK, intent)
-                                finish()
-                            }
-                        })
-                )
-            }
+        mImageAnalysis.setAnalyzer(
+            cameraExecutor,
+            ScanCodeAnalyzer(
+                this,
+                scModel,
+                baseScanView?.scanRect,
+                this
+            )
+        )
+        return mImageAnalysis
     }
 
     /**
@@ -252,5 +240,16 @@ open class ScanCodeActivity : BaseScanActivity() {
         super.onDestroy()
         cameraExecutor.shutdownNow()
         baseScanView?.cancelAnim()
+    }
+
+    override fun onBackCode(result: Result) {
+        val intent = Intent()
+        intent.putExtra(
+            ScanCodeConfig.CODE_TYPE,
+            getCodeType(result.barcodeFormat)
+        )
+        intent.putExtra(ScanCodeConfig.CODE_KEY, result.text)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 }

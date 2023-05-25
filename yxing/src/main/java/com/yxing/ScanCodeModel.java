@@ -29,11 +29,11 @@ public class ScanCodeModel implements Parcelable {
     private long scanDuration;
     private int frameColor;
     private boolean showShadow;
-    private int shaowColor;
+    private int shadeColor;
     private int scanBitmapId;
     private int frameWith;
-    private int frameLenth;
-    private int frameRaduis;
+    private int frameLength;
+    private int frameRadius;
 
     public ScanCodeModel(Activity mActivity) {
         this.mActivity = mActivity;
@@ -59,11 +59,11 @@ public class ScanCodeModel implements Parcelable {
         scanDuration = in.readLong();
         frameColor = in.readInt();
         showShadow = in.readByte() != 0;
-        shaowColor = in.readInt();
+        shadeColor = in.readInt();
         scanBitmapId = in.readInt();
         frameWith = in.readInt();
-        frameLenth = in.readInt();
-        frameRaduis = in.readInt();
+        frameLength = in.readInt();
+        frameRadius = in.readInt();
     }
 
     @Override
@@ -82,11 +82,11 @@ public class ScanCodeModel implements Parcelable {
         dest.writeLong(scanDuration);
         dest.writeInt(frameColor);
         dest.writeByte((byte) (showShadow ? 1 : 0));
-        dest.writeInt(shaowColor);
+        dest.writeInt(shadeColor);
         dest.writeInt(scanBitmapId);
         dest.writeInt(frameWith);
-        dest.writeInt(frameLenth);
-        dest.writeInt(frameRaduis);
+        dest.writeInt(frameLength);
+        dest.writeInt(frameRadius);
     }
 
     @Override
@@ -240,15 +240,14 @@ public class ScanCodeModel implements Parcelable {
         return this;
     }
 
-    public int getShaowColor() {
-        return shaowColor;
+    public int getShadeColor() {
+        return shadeColor;
     }
 
-    public ScanCodeModel setShaowColor(int shaowColor) {
-        this.shaowColor = shaowColor;
+    public ScanCodeModel setShadeColor(int shadeColor) {
+        this.shadeColor = shadeColor;
         return this;
     }
-
 
     public int getScanBitmapId() {
         return scanBitmapId;
@@ -268,21 +267,21 @@ public class ScanCodeModel implements Parcelable {
         return this;
     }
 
-    public int getFrameLenth() {
-        return frameLenth;
+    public int getFrameLength() {
+        return frameLength;
     }
 
-    public ScanCodeModel setFrameLenth(int frameLenth) {
-        this.frameLenth = frameLenth;
+    public ScanCodeModel setFrameLength(int frameLength) {
+        this.frameLength = frameLength;
         return this;
     }
 
-    public int getFrameRaduis() {
-        return frameRaduis;
+    public int getFrameRadius() {
+        return frameRadius;
     }
 
-    public ScanCodeModel setFrameRaduis(int frameRaduis) {
-        this.frameRaduis = frameRaduis;
+    public ScanCodeModel setFrameRadius(int frameRadius) {
+        this.frameRadius = frameRadius;
         return this;
     }
 

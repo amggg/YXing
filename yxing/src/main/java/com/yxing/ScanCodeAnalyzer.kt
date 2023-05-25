@@ -42,7 +42,6 @@ class ScanCodeAnalyzer(
             image.close()
             throw Throwable("expect YUV_420_888, now = ${image.format}")
         }
-
         //将buffer数据写入数组
         val data = image.planes[0].buffer.toByteArray()
         //图片宽高
@@ -74,7 +73,7 @@ class ScanCodeAnalyzer(
 
         try {
             val result = reader.decode(bitmap)
-            if (scanCodeModel.isPlayAudio) audioUtil.playBeepSoundAndVibrate()
+            if (scanCodeModel.isPlayAudio) audioUtil.playSound()
             onScancodeListener.onBackCode(result)
         } catch (e: Exception) {
             image.close()

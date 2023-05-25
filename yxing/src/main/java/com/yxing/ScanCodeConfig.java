@@ -16,7 +16,7 @@ public class ScanCodeConfig {
     public static final int QUESTCODE = 0x001;
     public static final String CODE_KEY = "code";
     public static final String CODE_TYPE = "code_type";
-    public static final String MODEL_KEY = "model";
+    protected static final String MODEL_KEY = "model";
 
     private final Activity mActivity;
     private final Fragment mFragment;
@@ -60,31 +60,31 @@ public class ScanCodeConfig {
         return QrCodeUtil.createQRCode(text, size, codeColor, backgroundColor);
     }
 
-    public static Bitmap createQRcodeWithLogo(String text, Bitmap logo) {
+    public static Bitmap createQRCodeWithLogo(String text, Bitmap logo) {
         return QrCodeUtil.createQRcodeWithLogo(text, logo);
     }
 
-    public static Bitmap createQRcodeWithLogo(String text, int size, Bitmap logo, int logoWith, int logoHigh, float logoRaduisX, float logoRaduisY) {
+    public static Bitmap createQRCodeWithLogo(String text, int size, Bitmap logo, int logoWith, int logoHigh, float logoRaduisX, float logoRaduisY) {
         return QrCodeUtil.createQRcodeWithLogo(text, size, logo, logoWith, logoHigh, logoRaduisX, logoRaduisY);
     }
 
-    public static Bitmap createQRcodeWithLogo(String text, int size, int codeColor, int backgroundColor, Bitmap logo, int logoWith, int logoHigh, float logoRaduisX, float logoRaduisY) {
+    public static Bitmap createQRCodeWithLogo(String text, int size, int codeColor, int backgroundColor, Bitmap logo, int logoWith, int logoHigh, float logoRaduisX, float logoRaduisY) {
         return QrCodeUtil.createQRcodeWithLogo(text, size, codeColor, backgroundColor, logo, logoWith, logoHigh, logoRaduisX, logoRaduisY);
     }
 
-    public static Bitmap createQRcodeWithStrokLogo(String text, int size, Bitmap logo, int logoWith, int logoHigh, float logoRaduisX, float logoRaduisY, int storkWith, int storkColor) {
+    public static Bitmap createQRCodeWithStrokeLogo(String text, int size, Bitmap logo, int logoWith, int logoHigh, float logoRaduisX, float logoRaduisY, int storkWith, int storkColor) {
         return QrCodeUtil.createQRcodeWithStrokLogo(text, size, logo, logoWith, logoHigh, logoRaduisX, logoRaduisY, storkWith, storkColor);
     }
 
-    public static Bitmap createQRcodeWithStrokLogo(String text, int size, int codeColor, int backgroundColor, Bitmap logo, int logoWith, int logoHigh, float logoRaduisX, float logoRaduisY, int storkWith, int storkColor) {
+    public static Bitmap createQRCodeWithStrokeLogo(String text, int size, int codeColor, int backgroundColor, Bitmap logo, int logoWith, int logoHigh, float logoRaduisX, float logoRaduisY, int storkWith, int storkColor) {
         return QrCodeUtil.createQRcodeWithStrokLogo(text, size, codeColor, backgroundColor, logo, logoWith, logoHigh, logoRaduisX, logoRaduisY, storkWith, storkColor);
     }
 
-    public static Bitmap createBarcode(String content, int widthPix, int heightPix, boolean isShowContent) {
+    public static Bitmap createBarCode(String content, int widthPix, int heightPix, boolean isShowContent) {
         return QrCodeUtil.createBarcode(content, widthPix, heightPix, isShowContent);
     }
 
-    public static Bitmap createBarcode(String content, int widthPix, int heightPix, int codeColor, int backgroundColor, int textColor, boolean isShowContent) {
+    public static Bitmap createBarCode(String content, int widthPix, int heightPix, int codeColor, int backgroundColor, int textColor, boolean isShowContent) {
         return QrCodeUtil.createBarcode(content, widthPix, heightPix, codeColor, backgroundColor, textColor, isShowContent);
     }
 

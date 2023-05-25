@@ -3,6 +3,7 @@ package com.yxing.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 
@@ -18,11 +19,13 @@ public class AudioUtil implements MediaPlayer.OnCompletionListener,
         MediaPlayer.OnErrorListener, Closeable {
 
     private static final float BEEP_VOLUME = 0.10f;
-    private static final long VIBRATE_DURATION = 200L;
+    private static final long PLAY_INTERVAL_TIME = 800L;
 
     private final Activity activity;
     private MediaPlayer mediaPlayer;
-    private int audioId;
+
+    private final int audioId;
+    private long lastPlayTime = 0;
 
     public AudioUtil(Activity activity, int audioId) {
         this.activity = activity;
@@ -40,23 +43,28 @@ public class AudioUtil implements MediaPlayer.OnCompletionListener,
     }
 
     /**
-     * 开启响铃和震动
+     * 播放
      */
-    public synchronized void playBeepSoundAndVibrate() {
+    public synchronized void playSound() {
+        if (System.currentTimeMillis() - lastPlayTime < PLAY_INTERVAL_TIME) {
+            return;
+        }
         if (mediaPlayer != null) {
             mediaPlayer.start();
+            lastPlayTime = System.currentTimeMillis();
         }
     }
 
     /**
      * 创建MediaPlayer
-     *
-     * @param activity
-     * @return
      */
     private MediaPlayer buildMediaPlayer(Context activity) {
         MediaPlayer mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build();
+        mediaPlayer.setAudioAttributes(audioAttributes);
         // 监听是否播放完成
         mediaPlayer.setOnCompletionListener(this);
         mediaPlayer.setOnErrorListener(this);

@@ -24,11 +24,17 @@ import com.yxing.view.base.BaseScanView;
  */
 public class ScanCustomizeView extends BaseScanView {
 
-    //边框角默认宽度
-    public static final int DEFAULT_WITH = 4;
-    //边框角默认长度
+    /**
+     * 边框角默认宽度
+     */
+    public static final int DEFAULT_WIDTH = 4;
+    /**
+     * 边框角默认长度
+     */
     public static final int DEFAULT_LENGTH = 15;
-    //默认扫描速度
+    /**
+     * 默认扫描速度
+     */
     public static final long DEFAULT_SPEED = 3000;
 
     private Paint paint;
@@ -36,7 +42,9 @@ public class ScanCustomizeView extends BaseScanView {
     private Rect scanRect;
     private Rect lineRect;
 
-    //扫描线位置
+    /**
+     * 扫描线位置
+     */
     private int scanLineTop;
 
     private int bitmapHigh;
@@ -117,8 +125,8 @@ public class ScanCustomizeView extends BaseScanView {
      * @param frame
      */
     private void drawShadow(Canvas canvas, Rect frame) {
-        paint.setColor(ContextCompat.getColor(getContext(), scanCodeModel.getShaowColor() == 0 ? R.color.black_tran30 : scanCodeModel.getShaowColor()));
-        int frameWith = SizeUtils.dp2px(getContext(), scanCodeModel.getFrameWith() == 0 ? DEFAULT_WITH : scanCodeModel.getFrameWith());
+        paint.setColor(ContextCompat.getColor(getContext(), scanCodeModel.getShadeColor() == 0 ? R.color.black_tran30 : scanCodeModel.getShadeColor()));
+        int frameWith = SizeUtils.dp2px(getContext(), scanCodeModel.getFrameWith() == 0 ? DEFAULT_WIDTH : scanCodeModel.getFrameWith());
         canvas.drawRect(0, 0, getWidth(), frame.top - frameWith, paint);
         canvas.drawRect(0, frame.top - frameWith, frame.left - frameWith, frame.bottom + frameWith, paint);
         canvas.drawRect(frame.right + frameWith, frame.top - frameWith, getWidth(), frame.bottom + frameWith, paint);
@@ -135,9 +143,9 @@ public class ScanCustomizeView extends BaseScanView {
     private void drawFrameBounds(Canvas canvas, Rect frame) {
         paint.setColor(ContextCompat.getColor(getContext(), scanCodeModel.getFrameColor() == 0 ? R.color.qqscan : scanCodeModel.getFrameColor()));
 
-        int corWidth = SizeUtils.dp2px(getContext(), scanCodeModel.getFrameWith() == 0 ? DEFAULT_WITH : scanCodeModel.getFrameWith());
-        int corLength = SizeUtils.dp2px(getContext(), scanCodeModel.getFrameLenth() == 0 ? DEFAULT_LENGTH : scanCodeModel.getFrameLenth());
-        int radius = SizeUtils.dp2px(getContext(), scanCodeModel.getFrameRaduis());
+        int corWidth = SizeUtils.dp2px(getContext(), scanCodeModel.getFrameWith() == 0 ? DEFAULT_WIDTH : scanCodeModel.getFrameWith());
+        int corLength = SizeUtils.dp2px(getContext(), scanCodeModel.getFrameLength() == 0 ? DEFAULT_LENGTH : scanCodeModel.getFrameLength());
+        int radius = SizeUtils.dp2px(getContext(), scanCodeModel.getFrameRadius());
 
         // 左上角
         canvas.drawRoundRect(frame.left - corWidth, frame.top - corWidth, frame.left, frame.top

@@ -17,6 +17,9 @@ import com.example.yxing.R;
 import com.yxing.utils.SizeUtils;
 import com.yxing.view.base.BaseScanView;
 
+/**
+ * @author admin
+ */
 public class ScanQqView extends BaseScanView {
 
     private int scanMarginWith;
@@ -26,14 +29,19 @@ public class ScanQqView extends BaseScanView {
     private Bitmap scanLine;
     private Rect scanRect;
     private Rect lineRect;
-    //画布截取
+    /**
+     * 画布截取
+     */
     private Rect interceptRect;
-    //扫描线位置
+    /**
+     * 扫描线位置
+     */
     private int scanLineTop;
-    //扫描框大小
-    private int scanWith;
-
-    private int bitmapHigh;
+    /**
+     * 扫描框大小
+     */
+    private int scanWidth;
+    private int bitmapHeight;
 
     public ScanQqView(Context context) {
         super(context);
@@ -60,7 +68,7 @@ public class ScanQqView extends BaseScanView {
         scanLine = BitmapFactory.decodeResource(getResources(),
                 R.drawable.scanqq);
 
-        bitmapHigh = scanLine.getHeight();
+        bitmapHeight = scanLine.getHeight();
 
         interceptRect = new Rect();
         scanRect = new Rect();
@@ -72,15 +80,15 @@ public class ScanQqView extends BaseScanView {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         scanMarginWith = getMeasuredWidth() / 10;
         scanMarginHeight = getMeasuredHeight() >> 2;
-        scanWith = getMeasuredWidth() - 2 * scanMarginWith;
+        scanWidth = getMeasuredWidth() - 2 * scanMarginWith;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        scanRect.set(scanMarginWith, scanMarginHeight, getWidth() - scanMarginWith, scanMarginHeight + scanWith);
+        scanRect.set(scanMarginWith, scanMarginHeight, getWidth() - scanMarginWith, scanMarginHeight + scanWidth);
         drawFrameBounds(canvas, scanRect);
-        lineRect.set(scanMarginWith, scanLineTop, getWidth() - scanMarginWith, scanLineTop + bitmapHigh);
+        lineRect.set(scanMarginWith, scanLineTop, getWidth() - scanMarginWith, scanLineTop + bitmapHeight);
         canvas.drawBitmap(scanLine, null, lineRect, paint);
         initAnim();
     }
@@ -130,7 +138,7 @@ public class ScanQqView extends BaseScanView {
     @Override
     public void initAnim() {
         if (valueAnimator == null) {
-            valueAnimator = ValueAnimator.ofInt(scanRect.top - bitmapHigh, scanRect.bottom - bitmapHigh);
+            valueAnimator = ValueAnimator.ofInt(scanRect.top - bitmapHeight, scanRect.bottom - bitmapHeight);
             valueAnimator.setRepeatCount(ValueAnimator.INFINITE);
             valueAnimator.setRepeatMode(ValueAnimator.RESTART);
             valueAnimator.setDuration(3000);

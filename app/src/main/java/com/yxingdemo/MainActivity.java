@@ -151,14 +151,14 @@ public class MainActivity extends AppCompatActivity {
                 Bitmap bitmap = null;
                 switch (checkedRadioButtonId) {
                     case R.id.rb_green:
-                        bitmap = ScanCodeConfig.createQRcodeWithLogo("star", SizeUtils.dp2px(getApplicationContext(), 200), ContextCompat.getColor(MainActivity.this, R.color.green), Color.WHITE, BitmapFactory.decodeResource(getResources(), R.mipmap.timg), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 10));
+                        bitmap = ScanCodeConfig.createQRCodeWithLogo("star", SizeUtils.dp2px(getApplicationContext(), 200), ContextCompat.getColor(MainActivity.this, R.color.green), Color.WHITE, BitmapFactory.decodeResource(getResources(), R.mipmap.timg), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 10));
                         break;
                     case R.id.rb_red:
-                        bitmap = ScanCodeConfig.createQRcodeWithLogo("star", SizeUtils.dp2px(getApplicationContext(), 200), Color.RED, Color.WHITE, BitmapFactory.decodeResource(getResources(), R.mipmap.timg), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 10));
+                        bitmap = ScanCodeConfig.createQRCodeWithLogo("star", SizeUtils.dp2px(getApplicationContext(), 200), Color.RED, Color.WHITE, BitmapFactory.decodeResource(getResources(), R.mipmap.timg), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 10));
                         break;
                     case R.id.rb_black:
                     default:
-                        bitmap = ScanCodeConfig.createQRcodeWithLogo("star", SizeUtils.dp2px(getApplicationContext(), 200), Color.BLACK, Color.WHITE, BitmapFactory.decodeResource(getResources(), R.mipmap.timg), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 10));
+                        bitmap = ScanCodeConfig.createQRCodeWithLogo("star", SizeUtils.dp2px(getApplicationContext(), 200), Color.BLACK, Color.WHITE, BitmapFactory.decodeResource(getResources(), R.mipmap.timg), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 10));
                         break;
                 }
                 ivCode.setImageBitmap(bitmap);
@@ -173,14 +173,14 @@ public class MainActivity extends AppCompatActivity {
                 Bitmap bitmap = null;
                 switch (checkedRadioButtonId) {
                     case R.id.rb_green:
-                        bitmap = ScanCodeConfig.createQRcodeWithStrokLogo("star", SizeUtils.dp2px(getApplicationContext(), 200), ContextCompat.getColor(MainActivity.this, R.color.green), Color.WHITE, BitmapFactory.decodeResource(getResources(), R.mipmap.timg), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 2), ContextCompat.getColor(MainActivity.this, R.color.colorAccent));
+                        bitmap = ScanCodeConfig.createQRCodeWithStrokeLogo("star", SizeUtils.dp2px(getApplicationContext(), 200), ContextCompat.getColor(MainActivity.this, R.color.green), Color.WHITE, BitmapFactory.decodeResource(getResources(), R.mipmap.timg), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 2), ContextCompat.getColor(MainActivity.this, R.color.colorAccent));
                         break;
                     case R.id.rb_red:
-                        bitmap = ScanCodeConfig.createQRcodeWithStrokLogo("star", SizeUtils.dp2px(getApplicationContext(), 200), Color.RED, Color.WHITE, BitmapFactory.decodeResource(getResources(), R.mipmap.timg), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 2), ContextCompat.getColor(MainActivity.this, R.color.colorAccent));
+                        bitmap = ScanCodeConfig.createQRCodeWithStrokeLogo("star", SizeUtils.dp2px(getApplicationContext(), 200), Color.RED, Color.WHITE, BitmapFactory.decodeResource(getResources(), R.mipmap.timg), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 2), ContextCompat.getColor(MainActivity.this, R.color.colorAccent));
                         break;
                     case R.id.rb_black:
                     default:
-                        bitmap = ScanCodeConfig.createQRcodeWithStrokLogo("star", SizeUtils.dp2px(getApplicationContext(), 200), Color.BLACK, Color.WHITE, BitmapFactory.decodeResource(getResources(), R.mipmap.timg), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 2), ContextCompat.getColor(MainActivity.this, R.color.colorAccent));
+                        bitmap = ScanCodeConfig.createQRCodeWithStrokeLogo("star", SizeUtils.dp2px(getApplicationContext(), 200), Color.BLACK, Color.WHITE, BitmapFactory.decodeResource(getResources(), R.mipmap.timg), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 60), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 10), SizeUtils.dp2px(getApplicationContext(), 2), ContextCompat.getColor(MainActivity.this, R.color.colorAccent));
                         break;
                 }
                 ivCode.setImageBitmap(bitmap);
@@ -195,14 +195,14 @@ public class MainActivity extends AppCompatActivity {
                 Bitmap bitmap = null;
                 switch (checkedRadioButtonId) {
                     case R.id.rb_green:
-                        bitmap = ScanCodeConfig.createBarcode("23423423523", 500, 200, ContextCompat.getColor(MainActivity.this, R.color.green), Color.WHITE, Color.BLACK, true);
+                        bitmap = ScanCodeConfig.createBarCode("23423423523", 500, 200, ContextCompat.getColor(MainActivity.this, R.color.green), Color.WHITE, ContextCompat.getColor(MainActivity.this, R.color.green), true);
                         break;
                     case R.id.rb_red:
-                        bitmap = ScanCodeConfig.createBarcode("23423423523", 500, 200, Color.RED, Color.WHITE, Color.BLACK, true);
+                        bitmap = ScanCodeConfig.createBarCode("23423423523", 500, 200, Color.RED, Color.WHITE, Color.RED, true);
                         break;
                     case R.id.rb_black:
                     default:
-                        bitmap = ScanCodeConfig.createBarcode("23423423523", 500, 200, Color.BLACK, Color.WHITE, Color.BLACK, true);
+                        bitmap = ScanCodeConfig.createBarCode("23423423523", 500, 200, Color.BLACK, Color.WHITE, Color.BLACK, true);
                         break;
                 }
                 ivCode.setImageBitmap(bitmap);
@@ -268,15 +268,15 @@ public class MainActivity extends AppCompatActivity {
                                     //设置边框上四个角标颜色
                                     .setFrameColor(R.color.whilte)
                                     //设置边框上四个角标圆角  单位 /dp
-                                    .setFrameRaduis(2)
+                                    .setFrameRadius(2)
                                     //设置边框上四个角宽度 单位 /dp
                                     .setFrameWith(4)
                                     //设置边框上四个角长度 单位 /dp
-                                    .setFrameLenth(15)
+                                    .setFrameLength(15)
                                     //设置是否显示边框外部阴影 true ： 显示  false ： 不显示
                                     .setShowShadow(true)
                                     //设置边框外部阴影颜色
-                                    .setShaowColor(R.color.black_tran30)
+                                    .setShadeColor(R.color.black_tran30)
                                     //设置扫码条运动方式   ScanMode.REVERSE : 往复运动   ScanMode.RESTART ：重复运动    默认ScanMode.RESTART
                                     .setScanMode(ScanMode.REVERSE)
                                     //设置扫码条扫一次时间  单位/ms  默认3000

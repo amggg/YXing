@@ -12,7 +12,7 @@ import android.view.View;
 public class PreviewTouchListener implements View.OnTouchListener, GestureDetector.OnGestureListener {
 
     private final ScaleGestureDetector mScaleGestureDetector;
-    private GestureDetector mGestureDetector;
+    private final GestureDetector mGestureDetector;
     private CustomTouchListener mCustomTouchListener;
 
     public PreviewTouchListener(Context context) {
