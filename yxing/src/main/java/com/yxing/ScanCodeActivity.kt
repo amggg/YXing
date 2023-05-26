@@ -2,10 +2,14 @@ package com.yxing
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Size
+import android.view.View
+import android.view.ViewGroup
 import android.widget.RelativeLayout
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
@@ -15,6 +19,8 @@ import com.google.zxing.Result
 import com.yxing.def.ScanStyle
 import com.yxing.def.ScanType
 import com.yxing.iface.OnScancodeListener
+import com.yxing.utils.SizeUtils
+import com.yxing.view.CodeHintDefaultDrawable
 import com.yxing.view.ScanCustomizeView
 import com.yxing.view.ScanQqView
 import com.yxing.view.ScanWechatView
@@ -26,6 +32,13 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
+
+    companion object {
+        private const val TAG = "YXing"
+        private const val TAG_CODE_HINT = "Yxing_CodeHintContainer"
+        private const val RATIO_4_3_VALUE = 4.0 / 3.0
+        private const val RATIO_16_9_VALUE = 16.0 / 9.0
+    }
 
     //设置所选相机
     private val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
@@ -40,23 +53,35 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
     private var rlParentContent: RelativeLayout? = null
     private lateinit var scModel: ScanCodeModel
 
-    companion object {
-        private const val TAG = "YXing"
-        private const val RATIO_4_3_VALUE = 4.0 / 3.0
-        private const val RATIO_16_9_VALUE = 16.0 / 9.0
-    }
+    private var rlCodeHintContainer: RelativeLayout? = null
+    private var mScanCodeAnalyzer: ScanCodeAnalyzer? = null
 
     override fun getLayoutId(): Int = R.layout.activity_scancode
 
     override fun initData() {
         scModel = intent?.extras?.getParcelable(ScanCodeConfig.MODEL_KEY)!!
+        initCodeHintContainer()
         addScanView(scModel.style)
         // Initialize our background executor
         cameraExecutor = Executors.newSingleThreadExecutor()
+        mScanCodeAnalyzer = ScanCodeAnalyzer(
+            this,
+            scModel,
+            baseScanView?.scanRect,
+            this
+        )
         // surface准备监听
         pvCamera.post {
             //设置需要实现的用例（预览，拍照，图片数据解析等等）
             bindCameraUseCases()
+        }
+    }
+
+    private fun initCodeHintContainer() {
+        rlCodeHintContainer = RelativeLayout(this).apply {
+            val lp = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
+            layoutParams = lp
+            tag = TAG_CODE_HINT
         }
     }
 
@@ -160,15 +185,12 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
             .setTargetResolution(scanSize)
             .setTargetRotation(rotation)
             .build()
-        mImageAnalysis.setAnalyzer(
-            cameraExecutor,
-            ScanCodeAnalyzer(
-                this,
-                scModel,
-                baseScanView?.scanRect,
+        mScanCodeAnalyzer?.apply {
+            mImageAnalysis.setAnalyzer(
+                cameraExecutor,
                 this
             )
-        )
+        }
         return mImageAnalysis
     }
 
@@ -236,13 +258,22 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
         return ScanType.UN_KNOW
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        cameraExecutor.shutdownNow()
-        baseScanView?.cancelAnim()
+    private fun createCodeHintView(offsetX: Int, offsetY: Int, result: Result): View {
+        val ivCodeHint = AppCompatImageView(this)
+        val hintDrawable = CodeHintDefaultDrawable(this)
+        hintDrawable.setBounds(0, 0, SizeUtils.dp2px(this, 40f), SizeUtils.dp2px(this, 40f))
+        val lp = RelativeLayout.LayoutParams(SizeUtils.dp2px(this, 40f), SizeUtils.dp2px(this, 40f))
+        lp.marginStart = offsetX
+        lp.topMargin = offsetY
+        ivCodeHint.layoutParams = lp
+        ivCodeHint.setImageDrawable(hintDrawable)
+        ivCodeHint.setOnClickListener {
+            callBackResult(result)
+        }
+        return ivCodeHint
     }
 
-    override fun onBackCode(result: Result) {
+    private fun callBackResult(result: Result) {
         val intent = Intent()
         intent.putExtra(
             ScanCodeConfig.CODE_TYPE,
@@ -251,5 +282,65 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
         intent.putExtra(ScanCodeConfig.CODE_KEY, result.text)
         setResult(Activity.RESULT_OK, intent)
         finish()
+    }
+
+    /**
+     * 清除二维码提示
+     */
+    private fun clearCodeHintContainer(): Boolean {
+        if (rlParentContent == null) {
+            return false
+        }
+        for (i in 0 until rlParentContent!!.childCount) {
+            val view = rlParentContent!!.getChildAt(i)
+            if (TAG_CODE_HINT == view.tag) {
+                (view as ViewGroup).removeAllViews()
+                rlParentContent!!.removeView(view)
+                return true
+            }
+        }
+        return false
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cameraExecutor.shutdownNow()
+        baseScanView?.cancelAnim()
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        if (clearCodeHintContainer()){
+            mScanCodeAnalyzer?.resumeMultiReader()
+            return
+        }
+        super.onBackPressed()
+    }
+
+    override fun onBackCode(result: Result) {
+        callBackResult(result)
+    }
+
+    override fun onBackMultiResultCode(resultBitMap: Bitmap, results: Array<Result>) {
+        runOnUiThread {
+            kotlin.Result.runCatching {
+                if (results.size == 1) {
+                    callBackResult(results[0])
+                    return@runCatching
+                }
+                results.forEach {
+                    val resultPointOne = it.resultPoints[0]
+                    val resultPointTwo = it.resultPoints[1]
+                    val resultPointThree = it.resultPoints[2]
+                    val offsetX = resultPointTwo.x + ((resultPointThree.x - resultPointTwo.x) / 4)
+                    val offsetY = resultPointOne.y
+                    val hintView = createCodeHintView(offsetX.toInt(), offsetY.toInt(), it)
+                    rlCodeHintContainer?.addView(hintView)
+                }
+                rlParentContent?.addView(rlCodeHintContainer)
+            }.onFailure {
+                mScanCodeAnalyzer?.resumeMultiReader()
+            }
+        }
     }
 }

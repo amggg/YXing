@@ -1,15 +1,22 @@
 package com.yxing
 
+import android.annotation.SuppressLint
 import android.app.Activity
-import android.graphics.ImageFormat
-import android.graphics.Rect
+import android.content.Context
+import android.graphics.*
+import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
+import com.google.zxing.multi.qrcode.QRCodeMultiReader
 import com.yxing.iface.OnScancodeListener
 import com.yxing.utils.AudioUtil
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.util.*
+
 
 class ScanCodeAnalyzer(
     mActivity: Activity,
@@ -20,7 +27,11 @@ class ScanCodeAnalyzer(
 
     private val audioUtil: AudioUtil = AudioUtil(mActivity, scanCodeModel.audioId)
     private val reader: MultiFormatReader = initReader()
+    private val mMultiResultReader: QRCodeMultiReader = QRCodeMultiReader()
+
     private var mScanRect: Rect = Rect()
+
+    private var pauseAnalyzer = false
 
     private fun initReader(): MultiFormatReader {
         val formatReader = MultiFormatReader()
@@ -35,9 +46,25 @@ class ScanCodeAnalyzer(
     }
 
     /**
+     * 恢复多二维码识别
+     */
+    fun resumeMultiReader() {
+        if (!scanCodeModel.isIdentifyMultiple) {
+            return
+        }
+        this.pauseAnalyzer = false
+    }
+
+
+    /**
      * 图片分析
      */
+    @SuppressLint("UnsafeOptInUsageError")
     override fun analyze(image: ImageProxy) {
+        if (pauseAnalyzer) {
+            image.close()
+            return
+        }
         if (ImageFormat.YUV_420_888 != image.format) {
             image.close()
             throw Throwable("expect YUV_420_888, now = ${image.format}")
@@ -72,13 +99,46 @@ class ScanCodeAnalyzer(
         val bitmap = BinaryBitmap(HybridBinarizer(source))
 
         try {
-            val result = reader.decode(bitmap)
-            if (scanCodeModel.isPlayAudio) audioUtil.playSound()
-            onScancodeListener.onBackCode(result)
+            if (scanCodeModel.isIdentifyMultiple) {
+                val results = mMultiResultReader.decodeMultiple(bitmap)
+                if (results.isEmpty()) {
+                    return
+                }
+                if (scanCodeModel.isPlayAudio) audioUtil.playSound()
+                val bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
+                onScancodeListener.onBackMultiResultCode(bitmap, results)
+                pauseAnalyzer = true
+            }else {
+                val result = reader.decode(bitmap)
+                if (scanCodeModel.isPlayAudio) audioUtil.playSound()
+                onScancodeListener.onBackCode(result)
+            }
         } catch (e: Exception) {
             image.close()
         } finally {
             image.close()
+        }
+    }
+
+    fun saveBitmapToFile(context: Context, bitmap: Bitmap, fileName: String) {
+        val directory = context.cacheDir.absolutePath
+        val file = File(directory, fileName)
+
+        var fos: FileOutputStream? = null
+        try {
+            if (file.exists()) {
+                file.delete()
+            }
+            fos = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+            fos.flush()
+            fos.close()
+            Log.e("am", "===> 保存成功")
+        } catch (e: IOException) {
+            Log.e("am", "===> 保存失败")
+            e.printStackTrace()
+        } finally {
+            fos?.close()
         }
     }
 

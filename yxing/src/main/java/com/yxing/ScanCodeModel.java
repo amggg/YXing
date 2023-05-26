@@ -34,6 +34,10 @@ public class ScanCodeModel implements Parcelable {
     private int frameWith;
     private int frameLength;
     private int frameRadius;
+    private boolean isIdentifyMultiple;
+    private int qrCodeHintDrawableId;
+    private int qrCodeHintDrawableWidth;
+    private int qrCodeHintDrawableHeight;
 
     public ScanCodeModel(Activity mActivity) {
         this.mActivity = mActivity;
@@ -64,6 +68,10 @@ public class ScanCodeModel implements Parcelable {
         frameWith = in.readInt();
         frameLength = in.readInt();
         frameRadius = in.readInt();
+        isIdentifyMultiple = in.readByte() != 0;
+        qrCodeHintDrawableId = in.readInt();
+        qrCodeHintDrawableWidth = in.readInt();
+        qrCodeHintDrawableHeight = in.readInt();
     }
 
     @Override
@@ -87,6 +95,10 @@ public class ScanCodeModel implements Parcelable {
         dest.writeInt(frameWith);
         dest.writeInt(frameLength);
         dest.writeInt(frameRadius);
+        dest.writeByte((byte) (isIdentifyMultiple ? 1 : 0));
+        dest.writeInt(qrCodeHintDrawableId);
+        dest.writeInt(qrCodeHintDrawableWidth);
+        dest.writeInt(qrCodeHintDrawableHeight);
     }
 
     @Override
@@ -282,6 +294,42 @@ public class ScanCodeModel implements Parcelable {
 
     public ScanCodeModel setFrameRadius(int frameRadius) {
         this.frameRadius = frameRadius;
+        return this;
+    }
+
+    public boolean isIdentifyMultiple() {
+        return isIdentifyMultiple;
+    }
+
+    public ScanCodeModel setIdentifyMultiple(boolean identifyMultiple) {
+        isIdentifyMultiple = identifyMultiple;
+        return this;
+    }
+
+    public int getQrCodeHintDrawableId() {
+        return qrCodeHintDrawableId;
+    }
+
+    public ScanCodeModel setQrCodeHintDrawableId(int qrCodeHintDrawableId) {
+        this.qrCodeHintDrawableId = qrCodeHintDrawableId;
+        return this;
+    }
+
+    public int getQrCodeHintDrawableWidth() {
+        return qrCodeHintDrawableWidth;
+    }
+
+    public ScanCodeModel setQrCodeHintDrawableWidth(int qrCodeHintDrawableWidth) {
+        this.qrCodeHintDrawableWidth = qrCodeHintDrawableWidth;
+        return this;
+    }
+
+    public int getQrCodeHintDrawableHeight() {
+        return qrCodeHintDrawableHeight;
+    }
+
+    public ScanCodeModel setQrCodeHintDrawableHeight(int qrCodeHintDrawableHeight) {
+        this.qrCodeHintDrawableHeight = qrCodeHintDrawableHeight;
         return this;
     }
 

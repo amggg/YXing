@@ -6,4 +6,6 @@
     <color name="qqscan">#68b6fc</color>
     <color name="black_tran30">#4D000000</color>
     <color name="black">#000000</color>
+    <color name="white">#ffffffff</color>
+    <color name="green">#24a524</color>
 </resources>

@@ -7,6 +7,7 @@ import com.gyf.immersionbar.ImmersionBar
 abstract class BaseScanActivity : AppCompatActivity() {
 
     abstract fun getLayoutId(): Int
+
     abstract fun initData()
 
     override fun onCreate(savedInstanceState: Bundle?) {
