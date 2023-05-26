@@ -258,13 +258,18 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
         return ScanType.UN_KNOW
     }
 
-    private fun createCodeHintView(offsetX: Int, offsetY: Int, result: Result): View {
+    private fun createCodeHintView(result: Result): View {
+        val resultPointOne = result.resultPoints[0]
+        val resultPointTwo = result.resultPoints[1]
+        val resultPointThree = result.resultPoints[2]
+        val offsetX = resultPointTwo.x + ((resultPointThree.x - resultPointTwo.x) / 4)
+        val offsetY = resultPointOne.y
         val ivCodeHint = AppCompatImageView(this)
         val hintDrawable = CodeHintDefaultDrawable(this)
         hintDrawable.setBounds(0, 0, SizeUtils.dp2px(this, 40f), SizeUtils.dp2px(this, 40f))
         val lp = RelativeLayout.LayoutParams(SizeUtils.dp2px(this, 40f), SizeUtils.dp2px(this, 40f))
-        lp.marginStart = offsetX
-        lp.topMargin = offsetY
+        lp.marginStart = offsetX.toInt()
+        lp.topMargin = offsetY.toInt()
         ivCodeHint.layoutParams = lp
         ivCodeHint.setImageDrawable(hintDrawable)
         ivCodeHint.setOnClickListener {
@@ -325,16 +330,12 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
         runOnUiThread {
             kotlin.Result.runCatching {
                 if (results.size == 1) {
-                    callBackResult(results[0])
+                    val result = results[0]
+                    callBackResult(result)
                     return@runCatching
                 }
                 results.forEach {
-                    val resultPointOne = it.resultPoints[0]
-                    val resultPointTwo = it.resultPoints[1]
-                    val resultPointThree = it.resultPoints[2]
-                    val offsetX = resultPointTwo.x + ((resultPointThree.x - resultPointTwo.x) / 4)
-                    val offsetY = resultPointOne.y
-                    val hintView = createCodeHintView(offsetX.toInt(), offsetY.toInt(), it)
+                    val hintView = createCodeHintView(it)
                     rlCodeHintContainer?.addView(hintView)
                 }
                 rlParentContent?.addView(rlCodeHintContainer)
