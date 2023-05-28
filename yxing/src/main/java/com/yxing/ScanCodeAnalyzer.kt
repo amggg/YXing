@@ -31,6 +31,8 @@ class ScanCodeAnalyzer(
 
     private var pauseAnalyzer = false
 
+    private var mLastMultiReaderCodeCount: Int = 0
+
     private fun initReader(): MultiFormatReader {
         val formatReader = MultiFormatReader()
         val hints = Hashtable<DecodeHintType, Any>()
@@ -102,6 +104,13 @@ class ScanCodeAnalyzer(
                 if (results.isEmpty()) {
                     return
                 }
+                if (results.size < 2) {
+                    mLastMultiReaderCodeCount ++
+                    if (mLastMultiReaderCodeCount <= Config.MULTI_READER_MIN_COUNT) {
+                        return
+                    }
+                }
+                mLastMultiReaderCodeCount = 0
                 if (scanCodeModel.isPlayAudio) audioUtil.playSound()
                 val snapshotBitmap = ImageUtil.nv21ToBitmap(rotateByteArray.first, rotateByteArray.second, rotateByteArray.third)
                 onScancodeListener.onBackMultiResultCode(snapshotBitmap, results)
