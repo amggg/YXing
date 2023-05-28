@@ -40,7 +40,12 @@ public class MainActivity extends AppCompatActivity {
     private AppCompatButton btnScan, btnTwoScan, btnScanMyStyle;
     private AppCompatTextView tvCode;
     private AppCompatImageView ivCode;
-    private AppCompatButton btnBuildCode, btnBuildLogoCode, btnBuildStorkLogoCode, btnBuildBarCode, btnScanAlbum;
+    private AppCompatButton btnBuildCode,
+            btnBuildLogoCode,
+            btnBuildStorkLogoCode,
+            btnBuildBarCode,
+            btnScanAlbum,
+            btnScanMultipleCode;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         btnBuildStorkLogoCode = findViewById(R.id.btn_buildstorklogocode);
         btnBuildBarCode = findViewById(R.id.btn_buildbarcode);
         btnScanAlbum = findViewById(R.id.btn_scan_album);
+        btnScanMultipleCode = findViewById(R.id.btn_scan_multiple_code);
 
         setListener();
     }
@@ -88,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         btnTwoScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toCusomize();
+                toCusomize(false);
             }
         });
 
@@ -110,6 +116,14 @@ public class MainActivity extends AppCompatActivity {
                     default:
                         break;
                 }
+            }
+        });
+
+        //识别多个二维码
+        btnScanMultipleCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toCusomize(true);
             }
         });
 
@@ -237,7 +251,10 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    private void toCusomize() {
+    /**
+     * @param isMultiple 是否开启识别多个二维码
+     */
+    private void toCusomize(boolean isMultiple) {
         new RxPermissions(this)
                 .requestEachCombined(Manifest.permission.CAMERA)
                 .subscribe(new Observer<Permission>() {
@@ -287,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
                                     //////////////////////////////////////////////
                                     //以下配置在 setIdentifyMultiple 为 true 时生效
                                     //设置是否开启识别多个二维码 true：开启 false：关闭   开启后识别到多个二维码会停留在扫码页 手动选择需要解析的二维码后返回结果
-                                    .setIdentifyMultiple(true)
+                                    .setIdentifyMultiple(isMultiple)
                                     //设置 二维码提示按钮的宽度 单位：px
                                     .setQrCodeHintDrawableWidth(120)
                                     //设置 二维码提示按钮的高度 单位：px

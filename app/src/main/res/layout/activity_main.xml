@@ -60,6 +60,12 @@
             android:text="自定义界面scan" />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_scan_multiple_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="识别多个二维码" />
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_scan_album"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -17,7 +17,7 @@ import java.util.*
 
 
 class ScanCodeAnalyzer(
-    private val mActivity: Activity,
+    mActivity: Activity,
     private val scanCodeModel: ScanCodeModel,
     private val scanRect: Rect?,
     private val onScancodeListener: OnScancodeListener
