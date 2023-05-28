@@ -1,13 +1,15 @@
 package com.yxing
 
+import android.animation.*
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
-import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Size
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.camera.core.*
@@ -19,7 +21,6 @@ import com.google.zxing.Result
 import com.yxing.def.ScanStyle
 import com.yxing.def.ScanType
 import com.yxing.iface.OnScancodeListener
-import com.yxing.utils.SizeUtils
 import com.yxing.view.CodeHintDefaultDrawable
 import com.yxing.view.ScanCustomizeView
 import com.yxing.view.ScanQqView
@@ -30,6 +31,7 @@ import java.lang.Math.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+
 
 open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
 
@@ -55,6 +57,7 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
 
     private var rlCodeHintContainer: RelativeLayout? = null
     private var mScanCodeAnalyzer: ScanCodeAnalyzer? = null
+    private var mCodeHintAnimeSet: AnimatorSet? = null
 
     override fun getLayoutId(): Int = R.layout.activity_scancode
 
@@ -81,6 +84,7 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
         rlCodeHintContainer = RelativeLayout(this).apply {
             val lp = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
             layoutParams = lp
+            translationZ = 99f
             tag = TAG_CODE_HINT
         }
     }
@@ -115,19 +119,8 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
     }
 
     private fun bindCameraUseCases() {
-        // 获取用于设置全屏分辨率相机的屏幕值
-        val metrics = DisplayMetrics().also { pvCamera.display.getRealMetrics(it) }
-
-        //获取使用的屏幕比例分辨率属性
-        val screenAspectRatio = aspectRatio(metrics.widthPixels / 2, metrics.heightPixels / 2)
-
         val width = pvCamera.measuredWidth
-
-        val height = if (screenAspectRatio == AspectRatio.RATIO_16_9) {
-            (width * RATIO_16_9_VALUE).toInt()
-        } else {
-            (width * RATIO_4_3_VALUE).toInt()
-        }
+        val height = pvCamera.measuredHeight
 
         scanSize = Size(width, height)
 
@@ -195,7 +188,7 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
     }
 
     /**
-     * 触摸事件监听（方大、缩小、对焦）
+     * 触摸事件监听（放大、缩小、对焦）
      */
     private fun bindTouchListener() {
         val zoomState = mCameraInfo.zoomState
@@ -263,19 +256,40 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
         val resultPointTwo = result.resultPoints[1]
         val resultPointThree = result.resultPoints[2]
         val offsetX = resultPointTwo.x + ((resultPointThree.x - resultPointTwo.x) / 4)
-        val offsetY = resultPointOne.y
+        val offsetY = resultPointTwo.y + ((resultPointOne.y - resultPointTwo.y) / 4)
         val ivCodeHint = AppCompatImageView(this)
         val hintDrawable = CodeHintDefaultDrawable(this)
-        hintDrawable.setBounds(0, 0, SizeUtils.dp2px(this, 40f), SizeUtils.dp2px(this, 40f))
-        val lp = RelativeLayout.LayoutParams(SizeUtils.dp2px(this, 40f), SizeUtils.dp2px(this, 40f))
+        val width = if (scModel.qrCodeHintDrawableWidth > 0 ) scModel.qrCodeHintDrawableWidth else Config.DEFAULT_CODE_HINT_SIZE.width
+        val height = if (scModel.qrCodeHintDrawableHeight > 0 ) scModel.qrCodeHintDrawableHeight else Config.DEFAULT_CODE_HINT_SIZE.height
+        hintDrawable.setBounds(0, 0, width, height)
+        val drawable = if (scModel.qrCodeHintDrawableResource > 0 ) ContextCompat.getDrawable(this, scModel.qrCodeHintDrawableResource) else hintDrawable
+        val lp = RelativeLayout.LayoutParams(width, height)
         lp.marginStart = offsetX.toInt()
         lp.topMargin = offsetY.toInt()
         ivCodeHint.layoutParams = lp
-        ivCodeHint.setImageDrawable(hintDrawable)
+        ivCodeHint.setImageDrawable(drawable)
         ivCodeHint.setOnClickListener {
             callBackResult(result)
         }
         return ivCodeHint
+    }
+
+    private fun createCodeSnapshotView(bitmap: Bitmap): View {
+        val ivCodeHint = AppCompatImageView(this)
+        val lp = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
+        ivCodeHint.layoutParams = lp
+        ivCodeHint.scaleType = ImageView.ScaleType.FIT_XY
+        ivCodeHint.setImageBitmap(bitmap)
+        return ivCodeHint
+    }
+
+    private fun createSmegmaView(): View {
+        val vSmegma = View(this)
+        val lp = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
+        vSmegma.layoutParams = lp
+        vSmegma.setBackgroundColor(ContextCompat.getColor(this, R.color.black))
+        vSmegma.alpha = scModel.qrCodeHintAlpha
+        return vSmegma
     }
 
     private fun callBackResult(result: Result) {
@@ -307,10 +321,54 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
         return false
     }
 
+    private fun createSmegma(resultBitmap: Bitmap, results: Array<Result>) {
+        rlCodeHintContainer?.addView(createCodeSnapshotView(resultBitmap))
+        rlCodeHintContainer?.addView(createSmegmaView())
+        results.forEach {
+            val hintView = createCodeHintView(it)
+            rlCodeHintContainer?.addView(hintView)
+            if (scModel.isStartCodeHintAnimation){
+                createCodeAnimeSet(hintView)
+            }
+        }
+        rlParentContent?.addView(rlCodeHintContainer)
+    }
+
+    private fun createCodeAnimeSet(view: View) {
+        val keyframe1 = Keyframe.ofFloat(0f, 1f)
+        val keyframe2 = Keyframe.ofFloat(0.7f, 1f)
+        val keyframe3 = Keyframe.ofFloat(0.85f, 0.7f)
+        val keyframe4 = Keyframe.ofFloat(1f, 1f)
+        val frameHolderX = PropertyValuesHolder.ofKeyframe("scaleX", keyframe1, keyframe2, keyframe3, keyframe4)
+
+        val animatorX = ObjectAnimator.ofPropertyValuesHolder(view, frameHolderX)
+        animatorX.duration = 2000
+        animatorX.repeatCount = ValueAnimator.INFINITE
+        animatorX.repeatMode = ValueAnimator.REVERSE
+
+        val frameHolderY =
+            PropertyValuesHolder.ofKeyframe("scaleY", keyframe1, keyframe2, keyframe3, keyframe4)
+
+        val animatorY = ObjectAnimator.ofPropertyValuesHolder(view, frameHolderY)
+        animatorY.duration = 2000
+        animatorY.repeatCount = ValueAnimator.INFINITE
+        animatorY.repeatMode = ValueAnimator.REVERSE
+
+        mCodeHintAnimeSet = AnimatorSet()
+        mCodeHintAnimeSet!!.playTogether(animatorX, animatorY)
+        // 设置插值器，使动画速度变化更加平滑
+        mCodeHintAnimeSet!!.interpolator = DecelerateInterpolator()
+        mCodeHintAnimeSet!!.start()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdownNow()
         baseScanView?.cancelAnim()
+        if (mCodeHintAnimeSet != null) {
+            mCodeHintAnimeSet!!.cancel()
+            mCodeHintAnimeSet = null
+        }
     }
 
     @Deprecated("Deprecated in Java")
@@ -326,7 +384,7 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
         callBackResult(result)
     }
 
-    override fun onBackMultiResultCode(resultBitMap: Bitmap, results: Array<Result>) {
+    override fun onBackMultiResultCode(resultBitmap: Bitmap, results: Array<Result>) {
         runOnUiThread {
             kotlin.Result.runCatching {
                 if (results.size == 1) {
@@ -334,11 +392,7 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
                     callBackResult(result)
                     return@runCatching
                 }
-                results.forEach {
-                    val hintView = createCodeHintView(it)
-                    rlCodeHintContainer?.addView(hintView)
-                }
-                rlParentContent?.addView(rlCodeHintContainer)
+                createSmegma(resultBitmap, results)
             }.onFailure {
                 mScanCodeAnalyzer?.resumeMultiReader()
             }

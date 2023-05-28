@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.FloatRange;
 import androidx.fragment.app.Fragment;
 
 import com.yxing.bean.ScanRect;
@@ -35,9 +36,11 @@ public class ScanCodeModel implements Parcelable {
     private int frameLength;
     private int frameRadius;
     private boolean isIdentifyMultiple;
-    private int qrCodeHintDrawableId;
+    private int qrCodeHintDrawableResource;
     private int qrCodeHintDrawableWidth;
     private int qrCodeHintDrawableHeight;
+    private float qrCodeHintAlpha;
+    private boolean isStartCodeHintAnimation;
 
     public ScanCodeModel(Activity mActivity) {
         this.mActivity = mActivity;
@@ -69,9 +72,11 @@ public class ScanCodeModel implements Parcelable {
         frameLength = in.readInt();
         frameRadius = in.readInt();
         isIdentifyMultiple = in.readByte() != 0;
-        qrCodeHintDrawableId = in.readInt();
+        qrCodeHintDrawableResource = in.readInt();
         qrCodeHintDrawableWidth = in.readInt();
         qrCodeHintDrawableHeight = in.readInt();
+        qrCodeHintAlpha = in.readFloat();
+        isStartCodeHintAnimation = in.readByte() != 0;
     }
 
     @Override
@@ -96,9 +101,11 @@ public class ScanCodeModel implements Parcelable {
         dest.writeInt(frameLength);
         dest.writeInt(frameRadius);
         dest.writeByte((byte) (isIdentifyMultiple ? 1 : 0));
-        dest.writeInt(qrCodeHintDrawableId);
+        dest.writeInt(qrCodeHintDrawableResource);
         dest.writeInt(qrCodeHintDrawableWidth);
         dest.writeInt(qrCodeHintDrawableHeight);
+        dest.writeFloat(qrCodeHintAlpha);
+        dest.writeByte((byte) (isStartCodeHintAnimation ? 1 : 0));
     }
 
     @Override
@@ -306,12 +313,12 @@ public class ScanCodeModel implements Parcelable {
         return this;
     }
 
-    public int getQrCodeHintDrawableId() {
-        return qrCodeHintDrawableId;
+    public int getQrCodeHintDrawableResource() {
+        return qrCodeHintDrawableResource;
     }
 
-    public ScanCodeModel setQrCodeHintDrawableId(int qrCodeHintDrawableId) {
-        this.qrCodeHintDrawableId = qrCodeHintDrawableId;
+    public ScanCodeModel setQrCodeHintDrawableResource(int qrCodeHintDrawableResource) {
+        this.qrCodeHintDrawableResource = qrCodeHintDrawableResource;
         return this;
     }
 
@@ -330,6 +337,25 @@ public class ScanCodeModel implements Parcelable {
 
     public ScanCodeModel setQrCodeHintDrawableHeight(int qrCodeHintDrawableHeight) {
         this.qrCodeHintDrawableHeight = qrCodeHintDrawableHeight;
+        return this;
+    }
+
+    public float getQrCodeHintAlpha() {
+        return qrCodeHintAlpha;
+    }
+
+
+    public ScanCodeModel setQrCodeHintAlpha(@FloatRange(from=0.0, to=1.0) float qrCodeHintAlpha) {
+        this.qrCodeHintAlpha = qrCodeHintAlpha;
+        return this;
+    }
+
+    public boolean isStartCodeHintAnimation() {
+        return isStartCodeHintAnimation;
+    }
+
+    public ScanCodeModel setStartCodeHintAnimation(boolean startCodeHintAnimation) {
+        isStartCodeHintAnimation = startCodeHintAnimation;
         return this;
     }
 

@@ -260,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
                                     //设置扫码框位置  left ： 边框左边位置   top ： 边框上边位置   right ： 边框右边位置   bottom ： 边框下边位置   单位/dp
 //                                    .setScanRect(new ScanRect(50, 200, 300, 450), false)
                                     //是否限制识别区域为设定扫码框大小  true:限制  false：不限制   默认false：识别区域为整个屏幕
-                                    .setLimitRect(true)
+                                    .setLimitRect(false)
                                     //设置扫码框位置 scanSize : 扫码框大小   offsetX ： x轴偏移量    offsetY ：y轴偏移量   单位 /px
                                     .setScanSize(600, 0, 0)
                                     //是否显示边框上四个角标 true ： 显示  false ： 不显示
@@ -283,6 +283,21 @@ public class MainActivity extends AppCompatActivity {
                                     .setScanDuration(3000)
                                     //设置扫码条图片
                                     .setScanBitmapId(R.mipmap.scan_wechatline)
+                                    //////////////////////////////////////////////
+                                    //////////////////////////////////////////////
+                                    //以下配置在 setIdentifyMultiple 为 true 时生效
+                                    //设置是否开启识别多个二维码 true：开启 false：关闭   开启后识别到多个二维码会停留在扫码页 手动选择需要解析的二维码后返回结果
+                                    .setIdentifyMultiple(true)
+                                    //设置 二维码提示按钮的宽度 单位：px
+                                    .setQrCodeHintDrawableWidth(120)
+                                    //设置 二维码提示按钮的高度 单位：px
+                                    .setQrCodeHintDrawableHeight(120)
+                                    //设置 二维码提示按钮的Drawable资源
+//                                    .setQrCodeHintDrawableResource(R.mipmap.in)
+                                    //设置 二维码提示Drawable 是否开启缩放动画效果
+                                    .setStartCodeHintAnimation(true)
+                                    //设置 二维码选择页 背景透明度
+                                    .setQrCodeHintAlpha(0.5f)
                                     //////////////////////////////////////////////
                                     .buidler()
                                     //跳转扫码页   扫码页可自定义样式
@@ -317,7 +332,6 @@ public class MainActivity extends AppCompatActivity {
                                     .setStyle(style)
                                     //扫码成功是否播放音效  true ： 播放   false ： 不播放
                                     .setPlayAudio(true)
-//                                    .setIdentifyMultiple(true)
                                     .buidler()
                                     //跳转扫码页   扫码页可自定义样式
                                     .start(mClass);

@@ -2,9 +2,7 @@ package com.yxing
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.graphics.*
-import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.google.zxing.*
@@ -12,14 +10,14 @@ import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.multi.qrcode.QRCodeMultiReader
 import com.yxing.iface.OnScancodeListener
 import com.yxing.utils.AudioUtil
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
+import com.yxing.utils.ImageRotateUtil
+import com.yxing.utils.ImageUtil
+import com.yxing.utils.YuvToArrayUtil
 import java.util.*
 
 
 class ScanCodeAnalyzer(
-    mActivity: Activity,
+    private val mActivity: Activity,
     private val scanCodeModel: ScanCodeModel,
     private val scanRect: Rect?,
     private val onScancodeListener: OnScancodeListener
@@ -59,7 +57,7 @@ class ScanCodeAnalyzer(
     /**
      * 图片分析
      */
-    @SuppressLint("UnsafeOptInUsageError")
+    @SuppressLint("UnsafeOptInUsageError", "UnsafeExperimentalUsageError")
     override fun analyze(image: ImageProxy) {
         if (pauseAnalyzer) {
             image.close()
@@ -70,13 +68,13 @@ class ScanCodeAnalyzer(
             throw Throwable("expect YUV_420_888, now = ${image.format}")
         }
         //将buffer数据写入数组
-        val data = image.planes[0].buffer.toByteArray()
+        val data = YuvToArrayUtil.yuvToArray(image.image!!)
         //图片宽高
         val width = image.width
         val height = image.height
-        val rotateByteArray = rotateImageByte(data, width, height)
+        val rotateByteArray = ImageRotateUtil.instance.rotateYuvArrayImage(data, width, height, 90)
 
-        mScanRect.set(0, 0, height, width)
+        mScanRect.set(0, 0, rotateByteArray.second, rotateByteArray.third)
 
         //限制区域
         if (scanCodeModel.isLimitRect && scanRect != null) {
@@ -86,9 +84,9 @@ class ScanCodeAnalyzer(
         }
 
         val source = PlanarYUVLuminanceSource(
-            rotateByteArray,
-            height,
-            width,
+            rotateByteArray.first,
+            rotateByteArray.second,
+            rotateByteArray.third,
             mScanRect.left,
             mScanRect.top,
             mScanRect.width(),
@@ -105,8 +103,8 @@ class ScanCodeAnalyzer(
                     return
                 }
                 if (scanCodeModel.isPlayAudio) audioUtil.playSound()
-                val bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
-                onScancodeListener.onBackMultiResultCode(bitmap, results)
+                val snapshotBitmap = ImageUtil.nv21ToBitmap(rotateByteArray.first, rotateByteArray.second, rotateByteArray.third)
+                onScancodeListener.onBackMultiResultCode(snapshotBitmap, results)
                 pauseAnalyzer = true
             }else {
                 val result = reader.decode(bitmap)
@@ -118,45 +116,5 @@ class ScanCodeAnalyzer(
         } finally {
             image.close()
         }
-    }
-
-    fun saveBitmapToFile(context: Context, bitmap: Bitmap, fileName: String) {
-        val directory = context.cacheDir.absolutePath
-        val file = File(directory, fileName)
-
-        var fos: FileOutputStream? = null
-        try {
-            if (file.exists()) {
-                file.delete()
-            }
-            fos = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
-            fos.flush()
-            fos.close()
-            Log.e("am", "===> 保存成功")
-        } catch (e: IOException) {
-            Log.e("am", "===> 保存失败")
-            e.printStackTrace()
-        } finally {
-            fos?.close()
-        }
-    }
-
-
-    /**
-     * 旋转图片
-     */
-    private fun rotateImageByte(oldByteData: ByteArray, width: Int, height: Int): ByteArray {
-        val rotationData = ByteArray(oldByteData.size)
-        var j: Int
-        var k: Int
-        for (y in 0 until height) {
-            for (x in 0 until width) {
-                j = x * height + height - y - 1
-                k = x + y * width
-                rotationData[j] = oldByteData[k]
-            }
-        }
-        return rotationData
     }
 }

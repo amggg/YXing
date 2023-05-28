@@ -15,5 +15,5 @@ interface OnScancodeListener {
     /**
      * 多个扫码内容回调， 只限二维码
      */
-    fun onBackMultiResultCode(resultBitMap: Bitmap, results: Array<Result>)
+    fun onBackMultiResultCode(resultBitmap: Bitmap, results: Array<Result>)
 }
