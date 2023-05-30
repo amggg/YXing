@@ -5,11 +5,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RadioGroup;
 
-import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -48,11 +48,11 @@ public class MainActivity extends AppCompatActivity {
             btnScanAlbum,
             btnScanMultipleCode;
 
-    private final ActivityResultLauncher<Intent> albumLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+    private final ActivityResultLauncher<String> albumLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
         @Override
-        public void onActivityResult(ActivityResult result) {
+        public void onActivityResult(Uri result) {
             //接收图片识别结果
-            String code = ScanCodeConfig.scanningImage(MainActivity.this, result.getData().getData());
+            String code = ScanCodeConfig.scanningImage(MainActivity.this, result);
             tvCode.setText(String.format("识别结果： %s", code));
         }
     });
@@ -235,9 +235,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void toAlbum() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.setType("image/*");
-        albumLauncher.launch(intent);
+        albumLauncher.launch("image/*");
     }
 
     /**
