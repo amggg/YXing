@@ -82,7 +82,10 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
 
     private fun initCodeHintContainer() {
         rlCodeHintContainer = RelativeLayout(this).apply {
-            val lp = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
+            val lp = RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.MATCH_PARENT
+            )
             layoutParams = lp
             translationZ = 99f
             tag = TAG_CODE_HINT
@@ -259,10 +262,15 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
         val offsetY = resultPointTwo.y + ((resultPointOne.y - resultPointTwo.y) / 4)
         val ivCodeHint = AppCompatImageView(this)
         val hintDrawable = CodeHintDefaultDrawable(this)
-        val width = if (scModel.qrCodeHintDrawableWidth > 0 ) scModel.qrCodeHintDrawableWidth else Config.DEFAULT_CODE_HINT_SIZE.width
-        val height = if (scModel.qrCodeHintDrawableHeight > 0 ) scModel.qrCodeHintDrawableHeight else Config.DEFAULT_CODE_HINT_SIZE.height
+        val width =
+            if (scModel.qrCodeHintDrawableWidth > 0) scModel.qrCodeHintDrawableWidth else Config.DEFAULT_CODE_HINT_SIZE.width
+        val height =
+            if (scModel.qrCodeHintDrawableHeight > 0) scModel.qrCodeHintDrawableHeight else Config.DEFAULT_CODE_HINT_SIZE.height
         hintDrawable.setBounds(0, 0, width, height)
-        val drawable = if (scModel.qrCodeHintDrawableResource > 0 ) ContextCompat.getDrawable(this, scModel.qrCodeHintDrawableResource) else hintDrawable
+        val drawable = if (scModel.qrCodeHintDrawableResource > 0) ContextCompat.getDrawable(
+            this,
+            scModel.qrCodeHintDrawableResource
+        ) else hintDrawable
         val lp = RelativeLayout.LayoutParams(width, height)
         lp.marginStart = offsetX.toInt()
         lp.topMargin = offsetY.toInt()
@@ -276,7 +284,10 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
 
     private fun createCodeSnapshotView(bitmap: Bitmap): View {
         val ivCodeHint = AppCompatImageView(this)
-        val lp = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
+        val lp = RelativeLayout.LayoutParams(
+            RelativeLayout.LayoutParams.MATCH_PARENT,
+            RelativeLayout.LayoutParams.MATCH_PARENT
+        )
         ivCodeHint.layoutParams = lp
         ivCodeHint.scaleType = ImageView.ScaleType.FIT_XY
         ivCodeHint.setImageBitmap(bitmap)
@@ -285,7 +296,10 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
 
     private fun createSmegmaView(): View {
         val vSmegma = View(this)
-        val lp = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
+        val lp = RelativeLayout.LayoutParams(
+            RelativeLayout.LayoutParams.MATCH_PARENT,
+            RelativeLayout.LayoutParams.MATCH_PARENT
+        )
         vSmegma.layoutParams = lp
         vSmegma.setBackgroundColor(ContextCompat.getColor(this, R.color.black))
         vSmegma.alpha = scModel.qrCodeHintAlpha
@@ -327,7 +341,7 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
         results.forEach {
             val hintView = createCodeHintView(it)
             rlCodeHintContainer?.addView(hintView)
-            if (scModel.isStartCodeHintAnimation){
+            if (scModel.isStartCodeHintAnimation) {
                 createCodeAnimeSet(hintView)
             }
         }
@@ -339,7 +353,8 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
         val keyframe2 = Keyframe.ofFloat(0.7f, 1f)
         val keyframe3 = Keyframe.ofFloat(0.85f, 0.7f)
         val keyframe4 = Keyframe.ofFloat(1f, 1f)
-        val frameHolderX = PropertyValuesHolder.ofKeyframe("scaleX", keyframe1, keyframe2, keyframe3, keyframe4)
+        val frameHolderX =
+            PropertyValuesHolder.ofKeyframe("scaleX", keyframe1, keyframe2, keyframe3, keyframe4)
 
         val animatorX = ObjectAnimator.ofPropertyValuesHolder(view, frameHolderX)
         animatorX.duration = 2000
@@ -373,7 +388,7 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        if (clearCodeHintContainer()){
+        if (clearCodeHintContainer()) {
             mScanCodeAnalyzer?.resumeMultiReader()
             return
         }

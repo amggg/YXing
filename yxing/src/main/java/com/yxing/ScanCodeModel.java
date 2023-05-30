@@ -345,7 +345,7 @@ public class ScanCodeModel implements Parcelable {
     }
 
 
-    public ScanCodeModel setQrCodeHintAlpha(@FloatRange(from=0.0, to=1.0) float qrCodeHintAlpha) {
+    public ScanCodeModel setQrCodeHintAlpha(@FloatRange(from = 0.0, to = 1.0) float qrCodeHintAlpha) {
         this.qrCodeHintAlpha = qrCodeHintAlpha;
         return this;
     }

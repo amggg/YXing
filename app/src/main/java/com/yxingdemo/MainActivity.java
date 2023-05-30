@@ -6,10 +6,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
 import android.widget.RadioGroup;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -34,8 +37,6 @@ import io.reactivex.rxjava3.disposables.Disposable;
  */
 public class MainActivity extends AppCompatActivity {
 
-    private static final int ALBUM_QUEST_CODE = 0x010;
-
     private RadioGroup rgParent, rgCodeColor;
     private AppCompatButton btnScan, btnTwoScan, btnScanMyStyle;
     private AppCompatTextView tvCode;
@@ -46,6 +47,15 @@ public class MainActivity extends AppCompatActivity {
             btnBuildBarCode,
             btnScanAlbum,
             btnScanMultipleCode;
+
+    private final ActivityResultLauncher<Intent> albumLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            //接收图片识别结果
+            String code = ScanCodeConfig.scanningImage(MainActivity.this, result.getData().getData());
+            tvCode.setText(String.format("识别结果： %s", code));
+        }
+    });
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -225,30 +235,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void toAlbum() {
-        new RxPermissions(this)
-                .requestEachCombined(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .subscribe(new Observer<Permission>() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d) {
-                    }
-
-                    @Override
-                    public void onNext(@NonNull Permission permission) {
-                        if (permission.granted) {
-                            Intent albumIntent = new Intent(Intent.ACTION_PICK, null);
-                            albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                            startActivityForResult(albumIntent, ALBUM_QUEST_CODE);
-                        }
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-                    }
-
-                    @Override
-                    public void onComplete() {
-                    }
-                });
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("image/*");
+        albumLauncher.launch(intent);
     }
 
     /**
@@ -381,11 +370,6 @@ public class MainActivity extends AppCompatActivity {
                                         "码类型: %s  \n" +
                                         "码值  : %s", codeType == 0 ? "一维码" : "二维码", code));
                     }
-                    break;
-                case ALBUM_QUEST_CODE:
-                    //接收图片识别结果
-                    String code = ScanCodeConfig.scanningImage(this, data.getData());
-                    tvCode.setText(String.format("识别结果： %s", code));
                     break;
                 default:
                     break;
