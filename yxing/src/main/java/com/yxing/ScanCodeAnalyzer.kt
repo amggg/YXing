@@ -2,7 +2,8 @@ package com.yxing
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.graphics.*
+import android.graphics.ImageFormat
+import android.graphics.Rect
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.google.zxing.*
@@ -112,10 +113,14 @@ class ScanCodeAnalyzer(
                 }
                 mLastMultiReaderCodeCount = 0
                 if (scanCodeModel.isPlayAudio) audioUtil.playSound()
-                val snapshotBitmap = ImageUtil.nv21ToBitmap(rotateByteArray.first, rotateByteArray.second, rotateByteArray.third)
+                val snapshotBitmap = ImageUtil.nv21ToBitmap(
+                    rotateByteArray.first,
+                    rotateByteArray.second,
+                    rotateByteArray.third
+                )
                 onScancodeListener.onBackMultiResultCode(snapshotBitmap, results)
                 pauseAnalyzer = true
-            }else {
+            } else {
                 val result = reader.decode(bitmap)
                 if (scanCodeModel.isPlayAudio) audioUtil.playSound()
                 onScancodeListener.onBackCode(result)

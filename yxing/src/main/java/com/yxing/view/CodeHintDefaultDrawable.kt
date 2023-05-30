@@ -33,17 +33,21 @@ class CodeHintDefaultDrawable(private val mContext: Context) : Drawable() {
     private fun drawGreenCircle(canvas: Canvas, width: Int, height: Int) {
         mPaint.color = ContextCompat.getColor(mContext, R.color.green)
         mPaint.style = Paint.Style.FILL
-        canvas.drawCircle((width shr 1).toFloat(),
+        canvas.drawCircle(
+            (width shr 1).toFloat(),
             (height shr 1).toFloat(),
-            ((width shr 1).toFloat() * 0.8).toFloat(), mPaint)
+            ((width shr 1).toFloat() * 0.8).toFloat(), mPaint
+        )
     }
 
     private fun drawWhiteCircle(canvas: Canvas, width: Int, height: Int) {
         mPaint.color = ContextCompat.getColor(mContext, R.color.white)
         mPaint.style = Paint.Style.FILL
-        canvas.drawCircle((width shr 1).toFloat(),
+        canvas.drawCircle(
+            (width shr 1).toFloat(),
             (height shr 1).toFloat(),
-            (width shr 1).toFloat(), mPaint)
+            (width shr 1).toFloat(), mPaint
+        )
     }
 
     private fun drawArrowhead(canvas: Canvas, width: Int, height: Int) {
