@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         btnTwoScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toCusomize(false);
+                toCustomization(false);
             }
         });
 
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
         btnScanMultipleCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toCusomize(true);
+                toCustomization(true);
             }
         });
 
@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * @param isMultiple 是否开启识别多个二维码
      */
-    private void toCusomize(boolean isMultiple) {
+    private void toCustomization(boolean isMultiple) {
         new RxPermissions(this)
                 .requestEachCombined(Manifest.permission.CAMERA)
                 .subscribe(new Observer<Permission>() {
