@@ -75,6 +75,7 @@ class CodeHintDefaultDrawable(private val mContext: Context) : Drawable() {
         invalidateSelf()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun getOpacity(): Int {
         return mPaint.alpha
     }

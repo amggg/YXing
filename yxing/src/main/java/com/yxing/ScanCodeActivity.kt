@@ -36,7 +36,6 @@ import java.util.concurrent.TimeUnit
 open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
 
     companion object {
-        private const val TAG = "YXing"
         private const val TAG_CODE_HINT = "Yxing_CodeHintContainer"
         private const val RATIO_4_3_VALUE = 4.0 / 3.0
         private const val RATIO_16_9_VALUE = 16.0 / 9.0
@@ -160,7 +159,7 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
 
                 bindTouchListener()
             } catch (exc: Exception) {
-                Log.e(TAG, "Use case binding failed", exc)
+                Log.e(Config.TAG, "Use case binding failed", exc)
             }
         }, ContextCompat.getMainExecutor(this))
     }

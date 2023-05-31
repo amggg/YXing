@@ -31,6 +31,7 @@ class ScanCodeAnalyzer(
 
     private var mScanRect: Rect = Rect()
 
+    @Volatile
     private var pauseAnalyzer = false
 
     private var mLastMultiReaderCodeCount: Int = 0
@@ -78,7 +79,7 @@ class ScanCodeAnalyzer(
         }
         if (ImageFormat.YUV_420_888 != image.format) {
             image.close()
-            throw Throwable("expect YUV_420_888, now = ${image.format}")
+            throw Throwable("${Config.TAG} expect YUV_420_888, now = ${image.format}")
         }
         //将buffer数据写入数组
         val data = YuvToArrayUtil.yuvToArray(image.image!!)
@@ -91,23 +92,22 @@ class ScanCodeAnalyzer(
         mScanRect.set(0, 0, rotateByteArray.second, rotateByteArray.third)
 
         scanRect?.apply {
-            val copyScanRect = Rect(left, top, right, bottom)
-            var scaleWidthFactor: Float
-            var scaleHeightFactor: Float
-            mResolutionSize?.let {
-                scaleWidthFactor = rotateByteArray.second / it.width.toFloat()
-                scaleHeightFactor = rotateByteArray.third / it.height.toFloat()
-                copyScanRect.let { rect ->
-                    rect.set((rect.left * scaleWidthFactor).toInt(),
-                        (rect.top * scaleHeightFactor).toInt(),
-                        (rect.right * scaleWidthFactor).toInt(),
-                        (rect.bottom * scaleHeightFactor).toInt()
-                    )
-                }
-            }
-
             //限制区域
             if (scanCodeModel.isLimitRect) {
+                val copyScanRect = Rect(left, top, right, bottom)
+                var scaleWidthFactor: Float
+                var scaleHeightFactor: Float
+                mResolutionSize?.let {
+                    scaleWidthFactor = rotateByteArray.second / it.width.toFloat()
+                    scaleHeightFactor = rotateByteArray.third / it.height.toFloat()
+                    copyScanRect.let { rect ->
+                        rect.set((rect.left * scaleWidthFactor).toInt(),
+                            (rect.top * scaleHeightFactor).toInt(),
+                            (rect.right * scaleWidthFactor).toInt(),
+                            (rect.bottom * scaleHeightFactor).toInt()
+                        )
+                    }
+                }
                 if (copyScanRect.width() <= rotateByteArray.second && copyScanRect.height() <= rotateByteArray.third) {
                     mScanRect.set(copyScanRect.left, copyScanRect.top, copyScanRect.right, copyScanRect.bottom)
                 }

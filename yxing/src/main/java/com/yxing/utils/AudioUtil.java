@@ -6,8 +6,10 @@ import android.content.res.AssetFileDescriptor;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.util.Log;
 
 import com.example.yxing.R;
+import com.yxing.Config;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -46,12 +48,16 @@ public class AudioUtil implements MediaPlayer.OnCompletionListener,
      * 播放
      */
     public synchronized void playSound() {
-        if (System.currentTimeMillis() - lastPlayTime < PLAY_INTERVAL_TIME) {
-            return;
-        }
-        if (mediaPlayer != null) {
-            mediaPlayer.start();
-            lastPlayTime = System.currentTimeMillis();
+        try {
+            if (System.currentTimeMillis() - lastPlayTime < PLAY_INTERVAL_TIME) {
+                return;
+            }
+            if (mediaPlayer != null) {
+                mediaPlayer.start();
+                lastPlayTime = System.currentTimeMillis();
+            }
+        }catch (IllegalStateException e) {
+            Log.e(Config.TAG, "playSound error : " + e.getMessage());
         }
     }
 
@@ -81,6 +87,7 @@ public class AudioUtil implements MediaPlayer.OnCompletionListener,
             return mediaPlayer;
         } catch (IOException ioe) {
             mediaPlayer.release();
+            Log.e(Config.TAG, "buildMediaPlayer error : " + ioe.getMessage());
             return null;
         }
     }
@@ -88,7 +95,11 @@ public class AudioUtil implements MediaPlayer.OnCompletionListener,
     @Override
     public void onCompletion(MediaPlayer mp) {
         // When the beep has finished playing, rewind to queue up another one.
-        mp.seekTo(0);
+        try{
+            mp.seekTo(0);
+        }catch (IllegalStateException e) {
+            Log.e(Config.TAG, "seek error : " + e.getMessage());
+        }
     }
 
     @Override
