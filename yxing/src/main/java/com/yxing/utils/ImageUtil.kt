@@ -50,8 +50,6 @@ object ImageUtil {
             ), 100, outputStream
         )
         val jpegData = outputStream.toByteArray()
-        val options = BitmapFactory.Options()
-        options.inSampleSize = 1
         return BitmapFactory.decodeByteArray(jpegData, 0, jpegData.size)
     }
 

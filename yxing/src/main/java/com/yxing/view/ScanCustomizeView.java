@@ -174,7 +174,7 @@ public class ScanCustomizeView extends BaseScanView {
         if (valueAnimator == null) {
             valueAnimator = ValueAnimator.ofInt(scanRect.top - bitmapHigh, scanRect.bottom - bitmapHigh);
             valueAnimator.setRepeatCount(ValueAnimator.INFINITE);
-            valueAnimator.setRepeatMode(scanCodeModel.getScanMode() == 0 ? ValueAnimator.RESTART : scanCodeModel.getScanMode());
+            valueAnimator.setRepeatMode(scanCodeModel.getScanMode() == 0 ? ValueAnimator.RESTART : ValueAnimator.REVERSE);
             valueAnimator.setDuration(scanCodeModel.getScanDuration() == 0 ? DEFAULT_SPEED : scanCodeModel.getScanDuration());
             valueAnimator.setInterpolator(new LinearInterpolator());
             valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {

@@ -1,6 +1,7 @@
 package com.yxing.iface
 
 import android.graphics.Bitmap
+import android.util.Size
 import com.google.zxing.Result
 
 /**
@@ -15,5 +16,5 @@ interface OnScancodeListener {
     /**
      * 多个扫码内容回调， 只限二维码
      */
-    fun onBackMultiResultCode(resultBitmap: Bitmap, results: Array<Result>)
+    fun onBackMultiResultCode(resultBitmap: Bitmap, results: Array<Result>, realSize: Size)
 }

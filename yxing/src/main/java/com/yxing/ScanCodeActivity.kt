@@ -44,7 +44,7 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
 
     //设置所选相机
     private val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-    private lateinit var scanSize: Size
+    private lateinit var resolutionSize: Size
     private lateinit var camera: Camera
     private lateinit var preview: Preview
     private lateinit var imageAnalyzer: ImageAnalysis
@@ -57,7 +57,8 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
 
     private var rlCodeHintContainer: RelativeLayout? = null
     private var mScanCodeAnalyzer: ScanCodeAnalyzer? = null
-    private var mCodeHintAnimeSet: AnimatorSet? = null
+
+    private var mAnimeSetList: MutableList<AnimatorSet> = mutableListOf()
 
     override fun getLayoutId(): Int = R.layout.activity_scancode
 
@@ -125,7 +126,8 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
         val width = pvCamera.measuredWidth
         val height = pvCamera.measuredHeight
 
-        scanSize = Size(width, height)
+        resolutionSize = Size(width, height)
+        mScanCodeAnalyzer?.setResolutionSize(resolutionSize)
 
         //获取旋转角度
         val rotation = pvCamera.display.rotation
@@ -168,7 +170,7 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
      */
     private fun getCameraPreView(rotation: Int): Preview {
         return Preview.Builder()
-            .setTargetResolution(scanSize)
+            .setTargetResolution(resolutionSize)
             .setTargetRotation(rotation)
             .build()
     }
@@ -178,7 +180,7 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
      */
     private fun getCameraAnalyzer(rotation: Int): ImageAnalysis {
         val mImageAnalysis = ImageAnalysis.Builder()
-            .setTargetResolution(scanSize)
+            .setTargetResolution(resolutionSize)
             .setTargetRotation(rotation)
             .build()
         mScanCodeAnalyzer?.apply {
@@ -218,8 +220,8 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
      */
     private fun cameraFocus(pointX: Float, pointY: Float) {
         val factory = SurfaceOrientedMeteringPointFactory(
-            scanSize.width.toFloat(),
-            scanSize.height.toFloat()
+            resolutionSize.width.toFloat(),
+            resolutionSize.height.toFloat()
         )
         val point = factory.createPoint(pointX, pointY)
         val action = FocusMeteringAction.Builder(point, FocusMeteringAction.FLAG_AF)
@@ -254,12 +256,21 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
         return ScanType.UN_KNOW
     }
 
-    private fun createCodeHintView(result: Result): View {
+    private fun createCodeHintView(result: Result, realSize: Size): View {
         val resultPointOne = result.resultPoints[0]
         val resultPointTwo = result.resultPoints[1]
         val resultPointThree = result.resultPoints[2]
-        val offsetX = resultPointTwo.x + ((resultPointThree.x - resultPointTwo.x) / 4)
-        val offsetY = resultPointTwo.y + ((resultPointOne.y - resultPointTwo.y) / 4)
+
+        var initOffsetX = 0
+        var initOffsetY = 0
+        if (scModel.isLimitRect && baseScanView?.scanRect != null) {
+            initOffsetX = baseScanView?.scanRect?.left ?: 0
+            initOffsetY = baseScanView?.scanRect?.top ?: 0
+        }
+        val scaleWidthFactor = resolutionSize.width / realSize.width.toFloat()
+        val scaleHeightFactor = resolutionSize.height / realSize.height.toFloat()
+        val offsetX = initOffsetX + (resultPointTwo.x + ((resultPointThree.x - resultPointTwo.x) / 4)) * scaleWidthFactor
+        val offsetY = initOffsetY + (resultPointTwo.y + ((resultPointOne.y - resultPointTwo.y) / 4)) * scaleHeightFactor
         val ivCodeHint = AppCompatImageView(this)
         val hintDrawable = CodeHintDefaultDrawable(this)
         val width =
@@ -335,11 +346,11 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
         return false
     }
 
-    private fun createSmegma(resultBitmap: Bitmap, results: Array<Result>) {
+    private fun createSmegma(resultBitmap: Bitmap, results: Array<Result>, realSize: Size) {
         rlCodeHintContainer?.addView(createCodeSnapshotView(resultBitmap))
         rlCodeHintContainer?.addView(createSmegmaView())
         results.forEach {
-            val hintView = createCodeHintView(it)
+            val hintView = createCodeHintView(it, realSize)
             rlCodeHintContainer?.addView(hintView)
             if (scModel.isStartCodeHintAnimation) {
                 createCodeAnimeSet(hintView)
@@ -369,20 +380,24 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
         animatorY.repeatCount = ValueAnimator.INFINITE
         animatorY.repeatMode = ValueAnimator.REVERSE
 
-        mCodeHintAnimeSet = AnimatorSet()
-        mCodeHintAnimeSet!!.playTogether(animatorX, animatorY)
+        val codeHintAnimeSet = AnimatorSet()
+        codeHintAnimeSet.playTogether(animatorX, animatorY)
         // 设置插值器，使动画速度变化更加平滑
-        mCodeHintAnimeSet!!.interpolator = DecelerateInterpolator()
-        mCodeHintAnimeSet!!.start()
+        codeHintAnimeSet.interpolator = DecelerateInterpolator()
+        codeHintAnimeSet.start()
+
+        mAnimeSetList.add(codeHintAnimeSet)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdownNow()
         baseScanView?.cancelAnim()
-        if (mCodeHintAnimeSet != null) {
-            mCodeHintAnimeSet!!.cancel()
-            mCodeHintAnimeSet = null
+        if (mAnimeSetList.isEmpty()){
+            return
+        }
+        mAnimeSetList.forEach {
+            it.cancel()
         }
     }
 
@@ -399,7 +414,7 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
         callBackResult(result)
     }
 
-    override fun onBackMultiResultCode(resultBitmap: Bitmap, results: Array<Result>) {
+    override fun onBackMultiResultCode(resultBitmap: Bitmap, results: Array<Result>, realSize: Size) {
         runOnUiThread {
             kotlin.Result.runCatching {
                 if (results.size == 1) {
@@ -407,7 +422,7 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
                     callBackResult(result)
                     return@runCatching
                 }
-                createSmegma(resultBitmap, results)
+                createSmegma(resultBitmap, results, realSize)
             }.onFailure {
                 mScanCodeAnalyzer?.resumeMultiReader()
             }

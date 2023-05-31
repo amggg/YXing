@@ -9,12 +9,16 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="10dp"
+        >
 
         <RadioGroup
             android:id="@+id/rg_parent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
 
             <RadioButton
                 android:id="@+id/rb_none"
@@ -27,13 +31,43 @@
                 android:id="@+id/rb_qq"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="QQ" />
+                android:text="QQ"
+                android:layout_marginStart="6dp"
+                />
 
             <RadioButton
                 android:id="@+id/rb_wechat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="WeChat" />
+                android:text="WeChat"
+                android:layout_marginStart="6dp"
+                />
+
+        </RadioGroup>
+
+        <RadioGroup
+            android:id="@+id/rg_scan_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            >
+
+            <RadioButton
+                android:id="@+id/rb_one_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="识别一个码"
+                android:checked="true" />
+
+            <RadioButton
+                android:id="@+id/rb_multiple_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="识别多个码(仅限二维码)"
+                android:layout_marginStart="6dp"
+                />
 
         </RadioGroup>
 
@@ -58,12 +92,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="自定义界面scan" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_scan_multiple_code"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="识别多个二维码" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_scan_album"

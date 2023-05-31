@@ -37,7 +37,7 @@ import io.reactivex.rxjava3.disposables.Disposable;
  */
 public class MainActivity extends AppCompatActivity {
 
-    private RadioGroup rgParent, rgCodeColor;
+    private RadioGroup rgParent, rgScanType, rgCodeColor;
     private AppCompatButton btnScan, btnTwoScan, btnScanMyStyle;
     private AppCompatTextView tvCode;
     private AppCompatImageView ivCode;
@@ -45,8 +45,9 @@ public class MainActivity extends AppCompatActivity {
             btnBuildLogoCode,
             btnBuildStorkLogoCode,
             btnBuildBarCode,
-            btnScanAlbum,
-            btnScanMultipleCode;
+            btnScanAlbum;
+
+    private boolean isMultiple = false;
 
     private final ActivityResultLauncher<String> albumLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
         @Override
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         rgParent = findViewById(R.id.rg_parent);
+        rgScanType = findViewById(R.id.rg_scan_type);
         rgCodeColor = findViewById(R.id.rg_codecolor);
         btnScan = findViewById(R.id.btn_scan);
         btnTwoScan = findViewById(R.id.btn_scantwo);
@@ -73,12 +75,27 @@ public class MainActivity extends AppCompatActivity {
         btnBuildStorkLogoCode = findViewById(R.id.btn_buildstorklogocode);
         btnBuildBarCode = findViewById(R.id.btn_buildbarcode);
         btnScanAlbum = findViewById(R.id.btn_scan_album);
-        btnScanMultipleCode = findViewById(R.id.btn_scan_multiple_code);
 
         setListener();
     }
 
     private void setListener() {
+        //设置识别类型 单码识别 或 多码识别
+        rgScanType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.rb_one_code:
+                        isMultiple = false;
+                        break;
+                    case R.id.rb_multiple_code:
+                        isMultiple = true;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
         //预定义界面
         btnScan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         btnTwoScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toCustomization(false);
+                toCustomization();
             }
         });
 
@@ -126,14 +143,6 @@ public class MainActivity extends AppCompatActivity {
                     default:
                         break;
                 }
-            }
-        });
-
-        //识别多个二维码
-        btnScanMultipleCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toCustomization(true);
             }
         });
 
@@ -238,10 +247,8 @@ public class MainActivity extends AppCompatActivity {
         albumLauncher.launch("image/*");
     }
 
-    /**
-     * @param isMultiple 是否开启识别多个二维码
-     */
-    private void toCustomization(boolean isMultiple) {
+
+    private void toCustomization() {
         new RxPermissions(this)
                 .requestEachCombined(Manifest.permission.CAMERA)
                 .subscribe(new Observer<Permission>() {
@@ -264,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
                                     //设置扫码框位置  left ： 边框左边位置   top ： 边框上边位置   right ： 边框右边位置   bottom ： 边框下边位置   单位/dp
 //                                    .setScanRect(new ScanRect(50, 200, 300, 450), false)
                                     //是否限制识别区域为设定扫码框大小  true:限制  false：不限制   默认false：识别区域为整个屏幕
-                                    .setLimitRect(false)
+                                    .setLimitRect(true)
                                     //设置扫码框位置 scanSize : 扫码框大小   offsetX ： x轴偏移量    offsetY ：y轴偏移量   单位 /px
                                     .setScanSize(600, 0, 0)
                                     //是否显示边框上四个角标 true ： 显示  false ： 不显示
@@ -336,6 +343,21 @@ public class MainActivity extends AppCompatActivity {
                                     .setStyle(style)
                                     //扫码成功是否播放音效  true ： 播放   false ： 不播放
                                     .setPlayAudio(true)
+                                    //////////////////////////////////////////////
+                                    //以下配置在 setIdentifyMultiple 为 true 时生效
+                                    //设置是否开启识别多个二维码 true：开启 false：关闭   开启后识别到多个二维码会停留在扫码页 手动选择需要解析的二维码后返回结果
+                                    .setIdentifyMultiple(isMultiple)
+                                    //设置 二维码提示按钮的宽度 单位：px
+                                    .setQrCodeHintDrawableWidth(120)
+                                    //设置 二维码提示按钮的高度 单位：px
+                                    .setQrCodeHintDrawableHeight(120)
+                                    //设置 二维码提示按钮的Drawable资源
+//                                    .setQrCodeHintDrawableResource(R.mipmap.in)
+                                    //设置 二维码提示Drawable 是否开启缩放动画效果
+                                    .setStartCodeHintAnimation(true)
+                                    //设置 二维码选择页 背景透明度
+                                    .setQrCodeHintAlpha(0.5f)
+                                    //////////////////////////////////////////////
                                     .buidler()
                                     //跳转扫码页   扫码页可自定义样式
                                     .start(mClass);

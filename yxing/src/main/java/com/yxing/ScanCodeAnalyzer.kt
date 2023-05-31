@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.ImageFormat
 import android.graphics.Rect
+import android.util.Size
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.google.zxing.*
@@ -34,6 +35,8 @@ class ScanCodeAnalyzer(
 
     private var mLastMultiReaderCodeCount: Int = 0
 
+    private var mResolutionSize: Size? = null
+
     private fun initReader(): MultiFormatReader {
         val formatReader = MultiFormatReader()
         val hints = Hashtable<DecodeHintType, Any>()
@@ -44,6 +47,13 @@ class ScanCodeAnalyzer(
         hints[DecodeHintType.CHARACTER_SET] = "UTF-8"
         formatReader.setHints(hints)
         return formatReader
+    }
+
+    /**
+     * 设置分辨率
+     */
+    fun setResolutionSize(resolutionSize: Size) {
+        this.mResolutionSize = resolutionSize
     }
 
     /**
@@ -75,14 +85,32 @@ class ScanCodeAnalyzer(
         //图片宽高
         val width = image.width
         val height = image.height
+
         val rotateByteArray = ImageRotateUtil.instance.rotateYuvArrayImage(data, width, height, 90)
 
         mScanRect.set(0, 0, rotateByteArray.second, rotateByteArray.third)
 
-        //限制区域
-        if (scanCodeModel.isLimitRect && scanRect != null) {
-            if (scanRect.width() <= height && scanRect.height() <= width) {
-                mScanRect.set(scanRect.left, scanRect.top, scanRect.right, scanRect.bottom)
+        scanRect?.apply {
+            val copyScanRect = Rect(left, top, right, bottom)
+            var scaleWidthFactor: Float
+            var scaleHeightFactor: Float
+            mResolutionSize?.let {
+                scaleWidthFactor = rotateByteArray.second / it.width.toFloat()
+                scaleHeightFactor = rotateByteArray.third / it.height.toFloat()
+                copyScanRect.let { rect ->
+                    rect.set((rect.left * scaleWidthFactor).toInt(),
+                        (rect.top * scaleHeightFactor).toInt(),
+                        (rect.right * scaleWidthFactor).toInt(),
+                        (rect.bottom * scaleHeightFactor).toInt()
+                    )
+                }
+            }
+
+            //限制区域
+            if (scanCodeModel.isLimitRect) {
+                if (copyScanRect.width() <= rotateByteArray.second && copyScanRect.height() <= rotateByteArray.third) {
+                    mScanRect.set(copyScanRect.left, copyScanRect.top, copyScanRect.right, copyScanRect.bottom)
+                }
             }
         }
 
@@ -118,7 +146,8 @@ class ScanCodeAnalyzer(
                     rotateByteArray.second,
                     rotateByteArray.third
                 )
-                onScancodeListener.onBackMultiResultCode(snapshotBitmap, results)
+                val realSize = Size(rotateByteArray.second, rotateByteArray.third)
+                onScancodeListener.onBackMultiResultCode(snapshotBitmap, results, realSize)
                 pauseAnalyzer = true
             } else {
                 val result = reader.decode(bitmap)
