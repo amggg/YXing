@@ -11,10 +11,7 @@ import com.google.zxing.*
 import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.multi.qrcode.QRCodeMultiReader
 import com.yxing.iface.OnScancodeListener
-import com.yxing.utils.AudioUtil
-import com.yxing.utils.ImageRotateUtil
-import com.yxing.utils.ImageUtil
-import com.yxing.utils.YuvToArrayUtil
+import com.yxing.utils.*
 import java.util.*
 
 

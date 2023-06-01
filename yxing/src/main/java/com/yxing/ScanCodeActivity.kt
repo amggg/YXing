@@ -256,6 +256,7 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
     }
 
     private fun createCodeHintView(result: Result, realSize: Size): View {
+        // 位置信息根据码的方向返回 不是根据屏幕方向 永远按码的正方向返回信息
         val resultPointOne = result.resultPoints[0]
         val resultPointTwo = result.resultPoints[1]
         val resultPointThree = result.resultPoints[2]
@@ -266,11 +267,6 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
             initOffsetX = baseScanView?.scanRect?.left ?: 0
             initOffsetY = baseScanView?.scanRect?.top ?: 0
         }
-        val scaleWidthFactor = resolutionSize.width / realSize.width.toFloat()
-        val scaleHeightFactor = resolutionSize.height / realSize.height.toFloat()
-        val offsetX = initOffsetX + (resultPointTwo.x + ((resultPointThree.x - resultPointTwo.x) / 4)) * scaleWidthFactor
-        val offsetY = initOffsetY + (resultPointTwo.y + ((resultPointOne.y - resultPointTwo.y) / 4)) * scaleHeightFactor
-        val ivCodeHint = AppCompatImageView(this)
         val hintDrawable = CodeHintDefaultDrawable(this)
         val width =
             if (scModel.qrCodeHintDrawableWidth > 0) scModel.qrCodeHintDrawableWidth else Config.DEFAULT_CODE_HINT_SIZE.width
@@ -281,6 +277,22 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
             this,
             scModel.qrCodeHintDrawableResource
         ) else hintDrawable
+
+        val maxX = maxOf(resultPointOne.x, resultPointTwo.x, resultPointThree.x)
+        val maxY = maxOf(resultPointOne.y, resultPointTwo.y, resultPointThree.y)
+        val minX = minOf(resultPointOne.x, resultPointTwo.x, resultPointThree.x)
+        val minY = minOf(resultPointOne.y, resultPointTwo.y, resultPointThree.y)
+        val centX = minX + ((maxX - minX) / 2)
+        val centY = minY + ((maxY - minY) / 2)
+        val startX = centX - (width shr 1)
+        val startY = centY - (height shr 1)
+
+        val scaleWidthFactor = resolutionSize.width / realSize.width.toFloat()
+        val scaleHeightFactor = resolutionSize.height / realSize.height.toFloat()
+        val offsetX = initOffsetX + (startX * scaleWidthFactor)
+        val offsetY = initOffsetY + (startY * scaleHeightFactor)
+        val ivCodeHint = AppCompatImageView(this)
+
         val lp = RelativeLayout.LayoutParams(width, height)
         lp.marginStart = offsetX.toInt()
         lp.topMargin = offsetY.toInt()
