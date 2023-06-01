@@ -593,10 +593,10 @@ public class QrCodeUtil {
      * @return 解码内容
      */
     public static String scanningImage(Activity mActivity, Uri uri) {
-        Bitmap srcBitmap = getBitmapByUri(mActivity, uri);
-        if (srcBitmap == null) {
+        if (uri == null) {
             return null;
         }
+        Bitmap srcBitmap = getBitmapByUri(mActivity, uri);
         return scanningImageByBitmap(srcBitmap);
     }
 
@@ -606,6 +606,9 @@ public class QrCodeUtil {
      * @return 解码内容
      */
     public static String scanningImageByBitmap(Bitmap srcBitmap) {
+        if (srcBitmap == null) {
+            return null;
+        }
         MultiFormatReader formatReader = new MultiFormatReader();
         Hashtable<DecodeHintType, Object> hints = new Hashtable<>();
         Vector<BarcodeFormat> decodeFormats = new Vector<>();

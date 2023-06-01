@@ -52,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
     private final ActivityResultLauncher<String> albumLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
         @Override
         public void onActivityResult(Uri result) {
+            if (result == null){
+                return;
+            }
             //接收图片识别结果
             String code = ScanCodeConfig.scanningImage(MainActivity.this, result);
             tvCode.setText(String.format("识别结果： %s", code));
