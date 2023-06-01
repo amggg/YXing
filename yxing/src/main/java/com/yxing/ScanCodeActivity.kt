@@ -278,21 +278,22 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
             scModel.qrCodeHintDrawableResource
         ) else hintDrawable
 
+        val scaleWidthFactor = resolutionSize.width / realSize.width.toFloat()
+        val scaleHeightFactor = resolutionSize.height / realSize.height.toFloat()
+
         val maxX = maxOf(resultPointOne.x, resultPointTwo.x, resultPointThree.x)
         val maxY = maxOf(resultPointOne.y, resultPointTwo.y, resultPointThree.y)
         val minX = minOf(resultPointOne.x, resultPointTwo.x, resultPointThree.x)
         val minY = minOf(resultPointOne.y, resultPointTwo.y, resultPointThree.y)
         val centX = minX + ((maxX - minX) / 2)
         val centY = minY + ((maxY - minY) / 2)
-        val startX = centX - (width shr 1)
-        val startY = centY - (height shr 1)
+        val startX = centX - ((width shr 1) * (1 / scaleWidthFactor))
+        val startY = centY - ((height shr 1) * (1 / scaleHeightFactor))
 
-        val scaleWidthFactor = resolutionSize.width / realSize.width.toFloat()
-        val scaleHeightFactor = resolutionSize.height / realSize.height.toFloat()
         val offsetX = initOffsetX + (startX * scaleWidthFactor)
         val offsetY = initOffsetY + (startY * scaleHeightFactor)
-        val ivCodeHint = AppCompatImageView(this)
 
+        val ivCodeHint = AppCompatImageView(this)
         val lp = RelativeLayout.LayoutParams(width, height)
         lp.marginStart = offsetX.toInt()
         lp.topMargin = offsetY.toInt()
@@ -346,6 +347,7 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
         if (rlParentContent == null) {
             return false
         }
+        clearAnimation()
         for (i in 0 until rlParentContent!!.childCount) {
             val view = rlParentContent!!.getChildAt(i)
             if (TAG_CODE_HINT == view.tag) {
@@ -400,16 +402,20 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
         mAnimeSetList.add(codeHintAnimeSet)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        cameraExecutor.shutdownNow()
-        baseScanView?.cancelAnim()
+    private fun clearAnimation() {
         if (mAnimeSetList.isEmpty()){
             return
         }
         mAnimeSetList.forEach {
             it.cancel()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cameraExecutor.shutdownNow()
+        baseScanView?.cancelAnim()
+        clearAnimation()
     }
 
     @Deprecated("Deprecated in Java")
