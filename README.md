@@ -145,5 +145,5 @@ Fragment中启动：
 
 APP下载链接：https://www.pgyer.com/FMi9
 
-![image](app/src/main/assets/20230604213832.jpg)
-![image](app/src/main/assets/20230604213840.jpg)
+![image](http://18390826440.3vkj.club/img/20230604213832.jpg)
+![image](http://18390826440.3vkj.club/img/20230604213840.jpg)
