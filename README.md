@@ -141,7 +141,7 @@ Fragment中启动：
 
 使用文档：http://18390826440.3vkj.club
 
-简书：https://www.jianshu.com/p/c549f91cb9c5
+掘金：https://juejin.cn/post/6891260304132014087
 
 APP下载链接：https://www.pgyer.com/FMi9
 
