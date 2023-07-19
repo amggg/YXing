@@ -144,8 +144,3 @@ Fragment中启动：
 简书：https://www.jianshu.com/p/c549f91cb9c5
 
 APP下载链接：https://www.pgyer.com/FMi9
-
-
-希望有朝一日 一夜暴富
-![image](http://18390826440.3vkj.club/img/20230604213832.jpg)
-![image](http://18390826440.3vkj.club/img/20230604213840.jpg)
