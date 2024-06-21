@@ -1,6 +1,10 @@
 package com.yxing.utils
 
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.ImageFormat
+import android.graphics.Rect
+import android.graphics.YuvImage
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 

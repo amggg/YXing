@@ -19,7 +19,12 @@ object BitmapUtils {
      * @param quality  图片质量，默认为 100
      * @return true 表示保存成功，false 表示保存失败
      */
-    fun saveBitmapToFile(bitmap: Bitmap, filePath: String, format: CompressFormat = CompressFormat.JPEG, quality: Int = 100): Boolean {
+    fun saveBitmapToFile(
+        bitmap: Bitmap,
+        filePath: String,
+        format: CompressFormat = CompressFormat.JPEG,
+        quality: Int = 100
+    ): Boolean {
         var outputStream: OutputStream? = null
         try {
             outputStream = FileOutputStream(filePath)
@@ -48,7 +53,13 @@ object BitmapUtils {
      * @param quality  图片质量，默认为 100
      * @return 保存成功返回文件路径，保存失败返回 null
      */
-    fun saveBitmapToInternalStorage(context: Context, bitmap: Bitmap, fileName: String, format: CompressFormat = CompressFormat.JPEG, quality: Int = 100): String? {
+    fun saveBitmapToInternalStorage(
+        context: Context,
+        bitmap: Bitmap,
+        fileName: String,
+        format: CompressFormat = CompressFormat.JPEG,
+        quality: Int = 100
+    ): String? {
         val fileDir = context.filesDir
         val filePath = File(fileDir, fileName).absolutePath
         return if (saveBitmapToFile(bitmap, filePath, format, quality)) {
@@ -67,7 +78,12 @@ object BitmapUtils {
      * @param quality  图片质量，默认为 100
      * @return 保存成功返回文件路径，保存失败返回 null
      */
-    fun saveBitmapToExternalStorage(bitmap: Bitmap, fileName: String, format: CompressFormat = CompressFormat.JPEG, quality: Int = 100): String? {
+    fun saveBitmapToExternalStorage(
+        bitmap: Bitmap,
+        fileName: String,
+        format: CompressFormat = CompressFormat.JPEG,
+        quality: Int = 100
+    ): String? {
         val state = Environment.getExternalStorageState()
         if (Environment.MEDIA_MOUNTED == state) {
             val externalDir = Environment.getExternalStorageDirectory()

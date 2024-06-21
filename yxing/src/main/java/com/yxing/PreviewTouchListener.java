@@ -106,6 +106,7 @@ public class PreviewTouchListener implements View.OnTouchListener, GestureDetect
 
         /**
          * 对焦
+         *
          * @param pointX 点击x坐标
          * @param pointY 点击y坐标
          */

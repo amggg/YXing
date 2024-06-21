@@ -31,12 +31,15 @@ class ImageRotateUtil {
             ROTATE_DEGREE_90 -> {
                 Triple(rotateYUV420Degree90(imageArray, with, high), high, with)
             }
+
             ROTATE_DEGREE_180 -> {
                 Triple(rotateYUV420Degree180(imageArray, with, high), with, high)
             }
+
             ROTATE_DEGREE_270 -> {
                 Triple(rotateYUV420Degree270(imageArray, with, high), high, with)
             }
+
             else -> Triple(imageArray, with, high)
         }
     }

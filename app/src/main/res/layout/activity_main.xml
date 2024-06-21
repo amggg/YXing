@@ -10,15 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="10dp"
-        >
+        android:padding="10dp">
 
         <RadioGroup
             android:id="@+id/rg_parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
 
             <RadioButton
                 android:id="@+id/rb_none"
@@ -32,16 +30,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="QQ"
-                android:layout_marginStart="6dp"
-                />
+                android:layout_marginStart="6dp" />
 
             <RadioButton
                 android:id="@+id/rb_wechat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="WeChat"
-                android:layout_marginStart="6dp"
-                />
+                android:layout_marginStart="6dp" />
 
         </RadioGroup>
 
@@ -51,8 +47,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            >
+            android:layout_marginBottom="10dp">
 
             <RadioButton
                 android:id="@+id/rb_one_code"
@@ -66,8 +61,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="识别多个码(仅限二维码)"
-                android:layout_marginStart="6dp"
-                />
+                android:layout_marginStart="6dp" />
 
         </RadioGroup>
 

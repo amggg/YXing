@@ -94,16 +94,19 @@ object YuvToArrayUtil {
                     outputStride = 1
                     outputOffset = 0
                 }
+
                 1 -> {
                     outputStride = 2
                     // For NV21 format, U is in odd-numbered indices
                     outputOffset = pixelCount + 1
                 }
+
                 2 -> {
                     outputStride = 2
                     // For NV21 format, V is in even-numbered indices
                     outputOffset = pixelCount
                 }
+
                 else -> {
                     // Image contains more than 3 planes, something strange is going on
                     return@forEachIndexed

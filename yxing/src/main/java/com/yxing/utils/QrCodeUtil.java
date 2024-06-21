@@ -284,12 +284,12 @@ public class QrCodeUtil {
      * @param text        文字
      * @param size        二维码大小 1 ：1
      * @param logo        logo
-     * @param logoWidth    logo宽
-     * @param logoHeight    logo高
+     * @param logoWidth   logo宽
+     * @param logoHeight  logo高
      * @param logoRadiusX logo x圆角
      * @param logoRadiusY logo y圆角
-     * @param strokeWidth   描边宽度
-     * @param strokeColor  描边颜色
+     * @param strokeWidth 描边宽度
+     * @param strokeColor 描边颜色
      * @return 生成图片
      */
     public static Bitmap createQrCodeWithStrokeLogo(String text, int size, Bitmap logo, int logoWidth, int logoHeight, float logoRadiusX, float logoRadiusY, int strokeWidth, int strokeColor) {
@@ -333,12 +333,12 @@ public class QrCodeUtil {
      * @param codeColor       二维码颜色
      * @param backgroundColor 背景颜色
      * @param logo            logo
-     * @param logoWidth        logo宽
-     * @param logoHeight        logo高
+     * @param logoWidth       logo宽
+     * @param logoHeight      logo高
      * @param logoRadiusX     logo x圆角
      * @param logoRadiusY     logo y圆角
-     * @param strokeWidth       描边宽度
-     * @param strokeColor      描边颜色
+     * @param strokeWidth     描边宽度
+     * @param strokeColor     描边颜色
      * @return 生成图片
      */
     public static Bitmap createQrCodeWithStrokeLogo(String text, int size, int codeColor, int backgroundColor, Bitmap logo, int logoWidth, int logoHeight, float logoRadiusX, float logoRadiusY, int strokeWidth, int strokeColor) {
@@ -379,12 +379,12 @@ public class QrCodeUtil {
      *
      * @param src         原图
      * @param logo        logo
-     * @param logoWidth    添加logo的宽度
-     * @param logoHeight    添加logo的高度
+     * @param logoWidth   添加logo的宽度
+     * @param logoHeight  添加logo的高度
      * @param logoRadiusX logo圆角
      * @param logoRadiusY logo圆角
-     * @param strokeWidth   描边宽度
-     * @param strokeColor  描边颜色
+     * @param strokeWidth 描边宽度
+     * @param strokeColor 描边颜色
      * @return 生成图片
      */
     @SuppressLint("NewApi")
@@ -450,8 +450,8 @@ public class QrCodeUtil {
      * @param text        文字
      * @param size        二维码大小 1 ：1
      * @param logo        logo
-     * @param logoWidth    logo宽
-     * @param logoHeight    logo高
+     * @param logoWidth   logo宽
+     * @param logoHeight  logo高
      * @param logoRadiusX logo x圆角
      * @param logoRadiusY logo y圆角
      * @return 生成图片
@@ -496,8 +496,8 @@ public class QrCodeUtil {
      * @param codeColor       二维码颜色
      * @param backgroundColor 背景颜色
      * @param logo            logo
-     * @param logoWidth        logo宽
-     * @param logoHeight        logo高
+     * @param logoWidth       logo宽
+     * @param logoHeight      logo高
      * @param logoRadiusX     logo x圆角
      * @param logoRadiusY     logo y圆角
      * @return 生成图片
@@ -539,8 +539,8 @@ public class QrCodeUtil {
      *
      * @param src         原图
      * @param logo        logo
-     * @param logoWidth    添加logo的宽度
-     * @param logoHeight    添加logo的高度
+     * @param logoWidth   添加logo的宽度
+     * @param logoHeight  添加logo的高度
      * @param logoRadiusX logo圆角
      * @param logoRadiusY logo圆角
      * @return 生成图片
@@ -590,6 +590,7 @@ public class QrCodeUtil {
 
     /**
      * 解码uri二维码图片
+     *
      * @return 解码内容
      */
     public static String scanningImage(Activity mActivity, Uri uri) {
@@ -603,6 +604,7 @@ public class QrCodeUtil {
 
     /**
      * 解码bitmap二维码图片
+     *
      * @return 解码内容
      */
     public static String scanningImageByBitmap(Bitmap srcBitmap) {

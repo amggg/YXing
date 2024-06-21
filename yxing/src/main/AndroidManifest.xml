@@ -2,6 +2,6 @@
     package="com.example.yxing">
 
     <application>
-        <activity android:name="com.yxing.ScanCodeActivity"/>
+        <activity android:name="com.yxing.ScanCodeActivity" />
     </application>
 </manifest>

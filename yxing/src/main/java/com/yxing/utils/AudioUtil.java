@@ -56,7 +56,7 @@ public class AudioUtil implements MediaPlayer.OnCompletionListener,
                 mediaPlayer.start();
                 lastPlayTime = System.currentTimeMillis();
             }
-        }catch (IllegalStateException e) {
+        } catch (IllegalStateException e) {
             Log.e(Config.TAG, "playSound error : " + e.getMessage());
         }
     }
@@ -95,9 +95,9 @@ public class AudioUtil implements MediaPlayer.OnCompletionListener,
     @Override
     public void onCompletion(MediaPlayer mp) {
         // When the beep has finished playing, rewind to queue up another one.
-        try{
+        try {
             mp.seekTo(0);
-        }catch (IllegalStateException e) {
+        } catch (IllegalStateException e) {
             Log.e(Config.TAG, "seek error : " + e.getMessage());
         }
     }

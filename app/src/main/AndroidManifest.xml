@@ -22,9 +22,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MyScanActivity"
-            android:configChanges="keyboard|orientation|screenSize"
-            />
+        <activity
+            android:name=".MyScanActivity"
+            android:configChanges="keyboard|orientation|screenSize" />
     </application>
 
 </manifest>

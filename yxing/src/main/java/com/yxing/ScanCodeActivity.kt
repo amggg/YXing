@@ -1,6 +1,10 @@
 package com.yxing
 
-import android.animation.*
+import android.animation.AnimatorSet
+import android.animation.Keyframe
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
+import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
@@ -12,7 +16,15 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.camera.core.*
+import androidx.camera.core.AspectRatio
+import androidx.camera.core.Camera
+import androidx.camera.core.CameraControl
+import androidx.camera.core.CameraInfo
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.FocusMeteringAction
+import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.Preview
+import androidx.camera.core.SurfaceOrientedMeteringPointFactory
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.example.yxing.R
@@ -26,8 +38,10 @@ import com.yxing.view.ScanCustomizeView
 import com.yxing.view.ScanQqView
 import com.yxing.view.ScanWechatView
 import com.yxing.view.base.BaseScanView
-import kotlinx.android.synthetic.main.activity_scancode.*
-import java.lang.Math.*
+import kotlinx.android.synthetic.main.activity_scancode.pvCamera
+import java.lang.Math.abs
+import java.lang.Math.max
+import java.lang.Math.min
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -102,9 +116,11 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
             ScanStyle.QQ -> {
                 baseScanView = ScanQqView(this)
             }
+
             ScanStyle.WECHAT -> {
                 baseScanView = ScanWechatView(this)
             }
+
             ScanStyle.CUSTOMIZE -> {
                 baseScanView = ScanCustomizeView(this).apply {
                     setScanCodeModel(scModel)
@@ -403,7 +419,7 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
     }
 
     private fun clearAnimation() {
-        if (mAnimeSetList.isEmpty()){
+        if (mAnimeSetList.isEmpty()) {
             return
         }
         mAnimeSetList.forEach {
@@ -431,7 +447,11 @@ open class ScanCodeActivity : BaseScanActivity(), OnScancodeListener {
         callBackResult(result)
     }
 
-    override fun onBackMultiResultCode(resultBitmap: Bitmap, results: Array<Result>, realSize: Size) {
+    override fun onBackMultiResultCode(
+        resultBitmap: Bitmap,
+        results: Array<Result>,
+        realSize: Size
+    ) {
         runOnUiThread {
             kotlin.Result.runCatching {
                 if (results.size == 1) {

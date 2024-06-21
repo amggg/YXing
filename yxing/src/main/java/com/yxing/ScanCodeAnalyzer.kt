@@ -7,12 +7,20 @@ import android.graphics.Rect
 import android.util.Size
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
-import com.google.zxing.*
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.BinaryBitmap
+import com.google.zxing.DecodeHintType
+import com.google.zxing.MultiFormatReader
+import com.google.zxing.PlanarYUVLuminanceSource
 import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.multi.qrcode.QRCodeMultiReader
 import com.yxing.iface.OnScancodeListener
-import com.yxing.utils.*
-import java.util.*
+import com.yxing.utils.AudioUtil
+import com.yxing.utils.ImageRotateUtil
+import com.yxing.utils.ImageUtil
+import com.yxing.utils.YuvToArrayUtil
+import java.util.Hashtable
+import java.util.Vector
 
 
 class ScanCodeAnalyzer(
@@ -98,7 +106,8 @@ class ScanCodeAnalyzer(
                     scaleWidthFactor = rotateByteArray.second / it.width.toFloat()
                     scaleHeightFactor = rotateByteArray.third / it.height.toFloat()
                     copyScanRect.let { rect ->
-                        rect.set((rect.left * scaleWidthFactor).toInt(),
+                        rect.set(
+                            (rect.left * scaleWidthFactor).toInt(),
                             (rect.top * scaleHeightFactor).toInt(),
                             (rect.right * scaleWidthFactor).toInt(),
                             (rect.bottom * scaleHeightFactor).toInt()
@@ -106,7 +115,12 @@ class ScanCodeAnalyzer(
                     }
                 }
                 if (copyScanRect.width() <= rotateByteArray.second && copyScanRect.height() <= rotateByteArray.third) {
-                    mScanRect.set(copyScanRect.left, copyScanRect.top, copyScanRect.right, copyScanRect.bottom)
+                    mScanRect.set(
+                        copyScanRect.left,
+                        copyScanRect.top,
+                        copyScanRect.right,
+                        copyScanRect.bottom
+                    )
                 }
             }
         }
@@ -131,7 +145,7 @@ class ScanCodeAnalyzer(
                     return
                 }
                 if (results.size < 2) {
-                    mLastMultiReaderCodeCount ++
+                    mLastMultiReaderCodeCount++
                     if (mLastMultiReaderCodeCount <= Config.MULTI_READER_MIN_COUNT) {
                         return
                     }
