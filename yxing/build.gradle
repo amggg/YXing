@@ -47,5 +47,5 @@ dependencies {
     // CameraX View
     implementation "androidx.camera:camera-view:$camerax_version"
     // Zxing
-    implementation 'com.google.zxing:core:3.5.1'
+    implementation 'com.google.zxing:core:3.5.3'
 }
